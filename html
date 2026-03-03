@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лучшая девочка школы - 8 марта</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .filters {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+        }
+        
+        .class-filter {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            min-width: 200px;
+        }
+        
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .candidate-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .candidate-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .candidate-photo {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 3px solid #ff6b6b;
+        }
+        
+        .candidate-info {
+            padding: 20px;
+        }
+        
+        .candidate-name {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .candidate-class {
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .candidate-bio {
+            color: #777;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .vote-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .votes-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .vote-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        
+        .vote-btn:hover:not(:disabled) {
+            background: #ff5252;
+        }
+        
+        .vote-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .vote-btn.voted {
+            background: #4caf50;
+        }
+        
+        .leaderboard {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+        
+        .leaderboard h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .leaderboard-rank {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .leaderboard-info {
+            flex: 1;
+        }
+        
+        .leaderboard-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .leaderboard-class {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .leaderboard-votes {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-left: 15px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            padding: 50px;
+        }
+        
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌸 Лучшая девочка школы 🌸</h1>
+            <p>Проголосуй за свою одноклассницу в честь 8 марта!</p>
+        </header>
+        
+        <div class="filters">
+            <input type="text" class="search-box" id="searchInput" placeholder="🔍 Поиск по имени...">
+            <select class="class-filter" id="classFilter">
+                <option value="">Все классы</option>
+            </select>
+        </div>
+        
+        <div id="message"></div>
+        
+        <div class="candidates-grid" id="candidatesGrid"></div>
+        
+        <div class="leaderboard" id="leaderboard">
+            <h2>🏆 Доска почёта 🏆</h2>
+            <div class="leaderboard-list" id="leaderboardList"></div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ⚠️ ЗАМЕНИ ЭТИ ДАННЫЕ НА СВОИ ИЗ SUPABASE ⚠️
+        const SUPABASE_URL = 'https://твой-проект.supabase.co';
+        const SUPABASE_KEY = 'твой-anon-key';
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let candidates = [];
+        let votedIds = new Set();
+        
+        // Загрузка кандидатов
+        async function loadCandidates() {
+            try {
+                const { data, error } = await supabase
+                    .from('candidates')
+                    .select('*')
+                    .order('votes', { ascending: false });
+                
+                if (error) throw error;
+                
+                candidates = data || [];
+                displayCandidates(candidates);
+                updateLeaderboard(candidates);
+                populateClassFilter(candidates);
+                checkVoted();
+            } catch (error) {
+                showMessage('Ошибка загрузки данных: ' + error.message, 'error');
+            }
+        }
+        
+        // Отображение кандидатов
+        function displayCandidates(candidatesToShow) {
+            const grid = document.getElementById('candidatesGrid');
+            
+            if (candidatesToShow.length === 0) {
+                grid.innerHTML = '<div class="candidate-card" style="grid-column: 1/-1; text-align: center; padding: 50px;">Ничего не найдено 😢</div>';
+                return;
+            }
+            
+            grid.innerHTML = candidatesToShow.map(candidate => `
+                <div class="candidate-card">
+                    <img src="${candidate.photo_url}" alt="${candidate.name}" class="candidate-photo" onerror="this.src='https://i.pravatar.cc/300?u=${candidate.id}'">
+                    <div class="candidate-info">
+                        <h3 class="candidate-name">${candidate.name}</h3>
+                        <div class="candidate-class">${candidate.class} класс</div>
+                        <div class="candidate-bio">${candidate.bio || 'Нет описания'}</div>
+                        <div class="vote-section">
+                            <span class="votes-count">❤️ ${candidate.votes || 0}</span>
+                            <button class="vote-btn ${votedIds.has(candidate.id) ? 'voted' : ''}" 
+                                    onclick="vote(${candidate.id})" 
+                                    ${votedIds.has(candidate.id) ? 'disabled' : ''}>
+                                ${votedIds.has(candidate.id) ? '✓ Проголосовано' : 'Голосовать'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Голосование
+        async function vote(id) {
+            try {
+                const candidate = candidates.find(c => c.id === id);
+                const newVotes = (candidate.votes || 0) + 1;
+                
+                const { error } = await supabase
+                    .from('candidates')
+                    .update({ votes: newVotes })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                // Обновляем локальные данные
+                candidate.votes = newVotes;
+                votedIds.add(id);
+                localStorage.setItem('votedIds', JSON.stringify([...votedIds]));
+                
+                // Обновляем отображение
+                displayCandidates(candidates);
+                updateLeaderboard(candidates);
+                showMessage('Спасибо за ваш голос! ❤️', 'success');
+            } catch (error) {
+                showMessage('Ошибка при голосовании: ' + error.message, 'error');
+            }
+        }
+        
+        // Обновление доски почёта
+        function updateLeaderboard(candidates) {
+            const sorted = [...candidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+            const list = document.getElementById('leaderboardList');
+            
+            list.innerHTML = sorted.slice(0, 5).map((candidate, index) => `
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank">${index + 1}</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">${candidate.name}</div>
+                        <div class="leaderboard-class">${candidate.class} класс</div>
+                    </div>
+                    <div class="leaderboard-votes">❤️ ${candidate.votes || 0}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Фильтрация
+        function filterCandidates() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const classFilter = document.getElementById('classFilter').value;
+            
+            const filtered = candidates.filter(candidate => {
+                const matchesSearch = candidate.name.toLowerCase().includes(searchText);
+                const matchesClass = !classFilter || candidate.class === classFilter;
+                return matchesSearch && matchesClass;
+            });
+            
+            displayCandidates(filtered);
+        }
+        
+        // Заполнение фильтра классов
+        function populateClassFilter(candidates) {
+            const classes = [...new Set(candidates.map(c => c.class))].sort();
+            const filter = document.getElementById('classFilter');
+            
+            classes.forEach(className => {
+                const option = document.createElement('option');
+                option.value = className;
+                option.textContent = `${className} класс`;
+                filter.appendChild(option);
+            });
+        }
+        
+        // Проверка уже проголосовавших
+        function checkVoted() {
+            const saved = localStorage.getItem('votedIds');
+            if (saved) {
+                votedIds = new Set(JSON.parse(saved));
+            }
+        }
+        
+        // Показ сообщений
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${type}">${text}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        // Слушатели событий
+        document.getElementById('searchInput').addEventListener('input', filterCandidates);
+        document.getElementById('classFilter').addEventListener('change', filterCandidates);
+        
+        // Загрузка при старте
+        loadCandidates();
+    </script>
+</body>
+</html>
