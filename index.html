@@ -247,8 +247,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>🌸 Лучшая девочка школы 🌸</h1>
-            <p>Проголосуй за свою одноклассницу в честь 8 марта!</p>
+            <h1>Голосуй за лучшую девочку школы</h1>
+            <p>Проголосуй за свою одноклассницу (или ща привлекательную) в честь 8 марта!</p>
         </header>
         
         <div class="filters">
@@ -274,7 +274,8 @@
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // ИНИЦИАЛИЗИРУЕМ Supabase (исправлено)
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let candidates = [];
         let votedIds = new Set();
@@ -282,7 +283,7 @@
         // Загрузка кандидатов
         async function loadCandidates() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('candidates')
                     .select('*')
                     .order('votes', { ascending: false });
@@ -334,7 +335,7 @@
                 const candidate = candidates.find(c => c.id === id);
                 const newVotes = (candidate.votes || 0) + 1;
                 
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('candidates')
                     .update({ votes: newVotes })
                     .eq('id', id);
