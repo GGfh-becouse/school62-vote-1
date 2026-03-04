@@ -305,19 +305,13 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        
-        .vote-required {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Тест на лучшую девочку в школе</h1>
-            <p>Проголосуй за самую красивую, или за твою девушку p.s. она уродка :)</p>
+            <h1>🌸 Лучшая девочка школы 🌸</h1>
+            <p>Проголосуй за свою одноклассницу в честь 8 марта!</p>
         </header>
         
         <div class="auth-section" id="authSection">
@@ -351,14 +345,14 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ⚠️ ЭТИ ДВЕ СТРОЧКИ ПРОВЕРЬ ⚠️
+        // ВАЖНО! Здесь всё прописано жестко, без window.location
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkY3d4dnhrdnluY3lic2Vmb3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwOTU0MTIsImV4cCI6MjA1NjY3MTQxMn0.9J5M-8zH4J3QvRkXpY2LhKcFmXwZqWtN7nYbDg8VcMs';
         
-        // ⚠️ А ЭТУ СТРОЧКУ ЗАМЕНИ НА СВОЙ АДРЕС ⚠️
-        const SITE_URL = 'https://ggfh-becouse.github.io/school62-vote-1';
+        // ТВОЙ РЕАЛЬНЫЙ АДРЕС (без вариантов)
+        const MY_SITE = 'https://ggfh-becouse.github.io/school62-vote-1';
         
-        const supabaseClient = supabase.createClient( SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let candidates = [];
         let currentUser = null;
@@ -392,10 +386,11 @@
         
         async function signInWithGoogle() {
             try {
+                // ЖЕСТКО прописываем ТОЛЬКО твой сайт
                 const { error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: 'https://ggfh-becouse.github.io/school62-vote-1/'  // ← теперь используется правильный адрес
+                        redirectTo: MY_SITE  // только твой адрес, никакого localhost
                     }
                 });
                 if (error) throw error;
