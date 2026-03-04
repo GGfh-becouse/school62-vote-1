@@ -355,7 +355,7 @@
     <script>
         // ⚠️ ЗАМЕНИ НА СВОИ ДАННЫЕ ⚠️
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkY3d4dnhrdnluY3lic2Vmb3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwOTU0MTIsImV4cCI6MjA1NjY3MTQxMn0.9J5M-8zH4J3QvRkXpY2LhKcFmXwZqWtN7nYbDg8VcMs';
+const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
@@ -397,7 +397,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
                 const { error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin
+                        redirectTo: 'https://ggfh-becouse.github.io/school62-vote-1'
                     }
                 });
                 if (error) throw error;
