@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Лучшая девочка школы - 8 марта</title>
     <style>
-     * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -38,6 +38,70 @@
         header p {
             font-size: 1.2em;
             opacity: 0.9;
+        }
+        
+        /* Стили для авторизации */
+        .auth-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #F64c72;
+        }
+        
+        .google-btn {
+            background: white;
+            color: #444;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .google-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .logout-btn {
+            background: #F64c72;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .logout-btn:hover {
+            background: #553D67;
         }
         
         .filters {
@@ -242,14 +306,33 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        
+        .vote-required {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Голосуй за лучшую девочку школы</h1>
-            <p>Проголосуй за свою одноклассницу (или ща привлекательную) в честь 8 марта!</p>
+            <h1>🌸 Лучшая девочка школы 🌸</h1>
+            <p>Проголосуй за свою одноклассницу в честь 8 марта!</p>
         </header>
+        
+        <!-- Секция авторизации -->
+        <div class="auth-section" id="authSection">
+            <div id="userInfo" class="user-info" style="display: none;">
+                <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+                <span id="userName"></span>
+                <button class="logout-btn" id="logoutBtn">Выйти</button>
+            </div>
+            <button class="google-btn" id="loginBtn">
+                <img src="https://www.google.com/favicon.ico" alt="Google">
+                Войти через Google
+            </button>
+        </div>
         
         <div class="filters">
             <input type="text" class="search-box" id="searchInput" placeholder="🔍 Поиск по имени...">
@@ -270,15 +353,94 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ⚠️ ЗАМЕНИ ЭТИ ДАННЫЕ НА СВОИ ИЗ SUPABASE ⚠️
-        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        // ⚠️ ЗАМЕНИ НА СВОИ ДАННЫЕ ⚠️
+        const SUPABASE_URL = 'https://твой-проект.supabase.co';
+        const SUPABASE_KEY = 'твой-anon-key';
         
-        // ИНИЦИАЛИЗИРУЕМ Supabase (исправлено)
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let candidates = [];
+        let currentUser = null;
         let votedIds = new Set();
+        
+        // Проверка авторизации при загрузке
+        async function checkUser() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                currentUser = user;
+                updateAuthUI();
+                loadUserVotes();
+            }
+        }
+        
+        // Обновление интерфейса авторизации
+        function updateAuthUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            const userInfo = document.getElementById('userInfo');
+            const userName = document.getElementById('userName');
+            const userAvatar = document.getElementById('userAvatar');
+            
+            if (currentUser) {
+                loginBtn.style.display = 'none';
+                userInfo.style.display = 'flex';
+                userName.textContent = currentUser.user_metadata.full_name || 'Пользователь';
+                userAvatar.src = currentUser.user_metadata.avatar_url || 'https://i.pravatar.cc/40';
+            } else {
+                loginBtn.style.display = 'flex';
+                userInfo.style.display = 'none';
+            }
+        }
+        
+        // Вход через Google
+        async function signInWithGoogle() {
+            try {
+                const { error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+                if (error) throw error;
+            } catch (error) {
+                showMessage('Ошибка входа: ' + error.message, 'error');
+            }
+        }
+        
+        // Выход
+        async function signOut() {
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+                if (error) throw error;
+                currentUser = null;
+                updateAuthUI();
+                votedIds.clear();
+                displayCandidates(candidates);
+                showMessage('Вы вышли из аккаунта', 'success');
+            } catch (error) {
+                showMessage('Ошибка выхода: ' + error.message, 'error');
+            }
+        }
+        
+        // Загрузка проголосовавших
+        async function loadUserVotes() {
+            if (!currentUser) return;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('votes')
+                    .select('candidate_id')
+                    .eq('user_id', currentUser.id);
+                
+                if (error && error.code !== '42P01') throw error; // 42P01 = таблица не существует
+                
+                if (data) {
+                    votedIds = new Set(data.map(v => v.candidate_id));
+                    displayCandidates(candidates);
+                }
+            } catch (error) {
+                console.log('Таблица votes еще не создана');
+            }
+        }
         
         // Загрузка кандидатов
         async function loadCandidates() {
@@ -294,7 +456,6 @@
                 displayCandidates(candidates);
                 updateLeaderboard(candidates);
                 populateClassFilter(candidates);
-                checkVoted();
             } catch (error) {
                 showMessage('Ошибка загрузки данных: ' + error.message, 'error');
             }
@@ -309,43 +470,70 @@
                 return;
             }
             
-            grid.innerHTML = candidatesToShow.map(candidate => `
-                <div class="candidate-card">
-                    <img src="${candidate.photo_url}" alt="${candidate.name}" class="candidate-photo" onerror="this.src='https://i.pravatar.cc/300?u=${candidate.id}'">
-                    <div class="candidate-info">
-                        <h3 class="candidate-name">${candidate.name}</h3>
-                        <div class="candidate-class">${candidate.class} класс</div>
-                        <div class="candidate-bio">${candidate.bio || 'Нет описания'}</div>
-                        <div class="vote-section">
-                            <span class="votes-count">❤️ ${candidate.votes || 0}</span>
-                            <button class="vote-btn ${votedIds.has(candidate.id) ? 'voted' : ''}" 
-                                    onclick="vote(${candidate.id})" 
-                                    ${votedIds.has(candidate.id) ? 'disabled' : ''}>
-                                ${votedIds.has(candidate.id) ? '✓ Проголосовано' : 'Голосовать'}
-                            </button>
+            grid.innerHTML = candidatesToShow.map(candidate => {
+                const hasVoted = votedIds.has(candidate.id);
+                const canVote = currentUser && !hasVoted;
+                
+                return `
+                    <div class="candidate-card">
+                        <img src="${candidate.photo_url}" alt="${candidate.name}" class="candidate-photo" onerror="this.src='https://i.pravatar.cc/300?u=${candidate.id}'">
+                        <div class="candidate-info">
+                            <h3 class="candidate-name">${candidate.name}</h3>
+                            <div class="candidate-class">${candidate.class} класс</div>
+                            <div class="candidate-bio">${candidate.bio || 'Нет описания'}</div>
+                            <div class="vote-section">
+                                <span class="votes-count">❤️ ${candidate.votes || 0}</span>
+                                ${canVote ? 
+                                    `<button class="vote-btn" onclick="vote(${candidate.id})">Голосовать</button>` : 
+                                    hasVoted ?
+                                    `<button class="vote-btn voted" disabled>✓ Проголосовано</button>` :
+                                    `<button class="vote-btn" disabled title="Войдите чтобы голосовать">Войдите</button>`
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         // Голосование
         async function vote(id) {
+            if (!currentUser) {
+                showMessage('Сначала войдите через Google', 'error');
+                return;
+            }
+            
+            if (votedIds.has(id)) {
+                showMessage('Вы уже голосовали за эту кандидатку', 'error');
+                return;
+            }
+            
             try {
                 const candidate = candidates.find(c => c.id === id);
                 const newVotes = (candidate.votes || 0) + 1;
                 
-                const { error } = await supabaseClient
+                // Обновляем голоса кандидата
+                const { error: voteError } = await supabaseClient
                     .from('candidates')
                     .update({ votes: newVotes })
                     .eq('id', id);
                 
-                if (error) throw error;
+                if (voteError) throw voteError;
+                
+                // Сохраняем информацию о голосе
+                const { error: recordError } = await supabaseClient
+                    .from('votes')
+                    .insert({
+                        user_id: currentUser.id,
+                        candidate_id: id,
+                        voted_at: new Date()
+                    });
+                
+                if (recordError && recordError.code !== '42P01') throw recordError;
                 
                 // Обновляем локальные данные
                 candidate.votes = newVotes;
                 votedIds.add(id);
-                localStorage.setItem('votedIds', JSON.stringify([...votedIds]));
                 
                 // Обновляем отображение
                 displayCandidates(candidates);
@@ -392,20 +580,17 @@
             const classes = [...new Set(candidates.map(c => c.class))].sort();
             const filter = document.getElementById('classFilter');
             
+            // Очищаем кроме первого
+            while (filter.options.length > 1) {
+                filter.remove(1);
+            }
+            
             classes.forEach(className => {
                 const option = document.createElement('option');
                 option.value = className;
                 option.textContent = `${className} класс`;
                 filter.appendChild(option);
             });
-        }
-        
-        // Проверка уже проголосовавших
-        function checkVoted() {
-            const saved = localStorage.getItem('votedIds');
-            if (saved) {
-                votedIds = new Set(JSON.parse(saved));
-            }
         }
         
         // Показ сообщений
@@ -420,8 +605,21 @@
         // Слушатели событий
         document.getElementById('searchInput').addEventListener('input', filterCandidates);
         document.getElementById('classFilter').addEventListener('change', filterCandidates);
+        document.getElementById('loginBtn').addEventListener('click', signInWithGoogle);
+        document.getElementById('logoutBtn').addEventListener('click', signOut);
+        
+        // Обработка редиректа после авторизации
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN') {
+                currentUser = session.user;
+                updateAuthUI();
+                loadUserVotes();
+                showMessage('Успешный вход!', 'success');
+            }
+        });
         
         // Загрузка при старте
+        checkUser();
         loadCandidates();
     </script>
 </body>
