@@ -390,7 +390,7 @@
                 const { error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: MY_SITE  // только твой адрес, никакого localhost
+                        redirectTo: 'https://ggfh-becouse.github.io/school62-vote-1'
                     }
                 });
                 if (error) throw error;
