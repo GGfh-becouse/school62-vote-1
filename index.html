@@ -316,8 +316,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>🌸 Лучшая девочка школы 🌸</h1>
-            <p>Проголосуй за свою одноклассницу в честь 8 марта!</p>
+            <h1>Тест на лучшую девочку в школе</h1>
+            <p>Проголосуй за самую красивую, или за твою девушку p.s. она уродка :)</p>
         </header>
         
         <div class="auth-section" id="authSection">
@@ -356,9 +356,9 @@
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         
         // ⚠️ А ЭТУ СТРОЧКУ ЗАМЕНИ НА СВОЙ АДРЕС ⚠️
-        const SITE_URL = 'https://ggfh-becouse.github.io/school62-vote-1/';
+        const SITE_URL = 'https://ggfh-becouse.github.io/school62-vote-1';
         
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = supabase.createClient( SUPABASE_URL, SUPABASE_KEY);
         
         let candidates = [];
         let currentUser = null;
@@ -395,7 +395,7 @@
                 const { error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: SITE_URL  // ← теперь используется правильный адрес
+                        redirectTo: 'https://ggfh-becouse.github.io/school62-vote-1/'  // ← теперь используется правильный адрес
                     }
                 });
                 if (error) throw error;
