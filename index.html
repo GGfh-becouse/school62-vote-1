@@ -440,355 +440,355 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-        // НАСТРОЙКИ - ТВОИ ДАННЫЕ (НЕ МЕНЯТЬ!)
-        // ============================================
-        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkY3d4dnhrdnluY3lic2Vmb3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NTMzODksImV4cCI6MjA4ODEyOTM4OX0.gIF0di79PaPA_0ckWX5R-wxQ435oaiu4jf1J48qz7SE';
+// НАСТРОЙКИ - ТВОИ ДАННЫЕ (НЕ МЕНЯТЬ!)
+// ============================================
+const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkY3d4dnhrdnluY3lic2Vmb3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NTMzODksImV4cCI6MjA4ODEyOTM4OX0.gIF0di79PaPA_0ckWX5R-wxQ435oaiu4jf1J48qz7SE';
+
+// ТВОЙ САЙТ - БОЛЬШЕ НИЧЕГО НЕ НУЖНО!
+const MY_SITE = 'https://ggfh-becouse.github.io/school62-vote-1';
+
+// ============================================
+// ИНИЦИАЛИЗАЦИЯ - ИСПРАВЛЕНО!
+// ============================================
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let allCandidates = [];
+let currentUser = null;
+let currentPair = [];
+let userVotes = new Set(); // для истории голосований
+
+// ============================================
+// АВТОРИЗАЦИЯ
+// ============================================
+async function checkUser() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (user) {
+        currentUser = user;
+        updateAuthUI();
+        loadUserVotes();
+        loadCandidates();
+    } else {
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('battleContainer').style.display = 'none';
+        document.getElementById('ratingContainer').style.display = 'none';
+    }
+}
+
+function updateAuthUI() {
+    const loginBtn = document.getElementById('loginBtn');
+    const userProfile = document.getElementById('userProfile');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+    
+    if (currentUser) {
+        loginBtn.style.display = 'none';
+        userProfile.style.display = 'flex';
+        userName.textContent = currentUser.user_metadata.full_name || 'Участник';
+        userAvatar.src = currentUser.user_metadata.avatar_url || 'https://i.pravatar.cc/40';
+    } else {
+        loginBtn.style.display = 'flex';
+        userProfile.style.display = 'none';
+    }
+}
+
+async function login() {
+    try {
+        showMessage('Перенаправление...', 'info');
         
-        // ТВОЙ САЙТ - БОЛЬШЕ НИЧЕГО НЕ НУЖНО!
-        const MY_SITE = 'https://ggfh-becouse.github.io/school62-vote-1';
-        
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        let allCandidates = [];
-        let currentUser = null;
-        let currentPair = [];
-        let userVotes = new Set(); // для истории голосований
-        
-        // ============================================
-        // АВТОРИЗАЦИЯ
-        // ============================================
-        async function checkUser() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                currentUser = user;
-                updateAuthUI();
-                loadUserVotes();
-                loadCandidates();
-            } else {
-                document.getElementById('emptyState').style.display = 'block';
-                document.getElementById('battleContainer').style.display = 'none';
-                document.getElementById('ratingContainer').style.display = 'none';
-            }
-        }
-        
-        function updateAuthUI() {
-            const loginBtn = document.getElementById('loginBtn');
-            const userProfile = document.getElementById('userProfile');
-            const userName = document.getElementById('userName');
-            const userAvatar = document.getElementById('userAvatar');
-            
-            if (currentUser) {
-                loginBtn.style.display = 'none';
-                userProfile.style.display = 'flex';
-                userName.textContent = currentUser.user_metadata.full_name || 'Участник';
-                userAvatar.src = currentUser.user_metadata.avatar_url || 'https://i.pravatar.cc/40';
-            } else {
-                loginBtn.style.display = 'flex';
-                userProfile.style.display = 'none';
-            }
-        }
-        
-        async function login() {
-            try {
-                showMessage('Перенаправление...', 'info');
-                
-                const { error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: MY_SITE  // ЖЁСТКО ПРОПИСАНО!
-                    }
-                });
-                
-                if (error) throw error;
-            } catch (err) {
-                showMessage('Ошибка входа: ' + err.message, 'error');
-            }
-        }
-        
-        async function logout() {
-            await supabase.auth.signOut();
-            currentUser = null;
-            userVotes.clear();
-            updateAuthUI();
-            document.getElementById('emptyState').style.display = 'block';
-            document.getElementById('battleContainer').style.display = 'none';
-            document.getElementById('ratingContainer').style.display = 'none';
-            showMessage('Вы вышли', 'success');
-        }
-        
-        // ============================================
-        // ЗАГРУЗКА ГОЛОСОВ ПОЛЬЗОВАТЕЛЯ
-        // ============================================
-        async function loadUserVotes() {
-            if (!currentUser) return;
-            
-            const { data } = await supabase
-                .from('votes')
-                .select('candidate_id')
-                .eq('user_id', currentUser.id);
-            
-            if (data) {
-                userVotes = new Set(data.map(v => v.candidate_id));
-            }
-        }
-        
-        // ============================================
-        // ЗАГРУЗКА КАНДИДАТОВ
-        // ============================================
-        async function loadCandidates() {
-            try {
-                const { data, error } = await supabase
-                    .from('candidates')
-                    .select('*')
-                    .order('votes', { ascending: false });
-                
-                if (error) throw error;
-                
-                allCandidates = data || [];
-                
-                if (allCandidates.length < 2) {
-                    showMessage('Нужно минимум 2 кандидата', 'error');
-                    return;
-                }
-                
-                document.getElementById('emptyState').style.display = 'none';
-                document.getElementById('battleContainer').style.display = 'block';
-                document.getElementById('ratingContainer').style.display = 'block';
-                document.getElementById('infoBar').style.display = 'block';
-                
-                updateLeaderboard();
-                selectNewPair();
-            } catch (err) {
-                showMessage('Ошибка загрузки: ' + err.message, 'error');
-            }
-        }
-        
-        // ============================================
-        // ВЫБОР НОВОЙ ПАРЫ
-        // ============================================
-        function selectNewPair() {
-            if (allCandidates.length < 2) return;
-            
-            // Фильтруем тех, за кого уже голосовали
-            const available = allCandidates.filter(c => !userVotes.has(c.id));
-            
-            if (available.length < 2) {
-                showMessage('Вы уже проголосовали за всех! Ждите новых кандидатов', 'info');
-                currentPair = [];
-                renderBattle([]);
-                return;
-            }
-            
-            // Выбираем двух случайных
-            let first, second;
-            do {
-                const shuffled = [...available].sort(() => 0.5 - Math.random());
-                first = shuffled[0];
-                second = shuffled[1];
-            } while (first.id === second.id);
-            
-            currentPair = [first, second];
-            renderBattle(currentPair);
-        }
-        
-        // ============================================
-        // ОТОБРАЖЕНИЕ БИТВЫ
-        // ============================================
-        function renderBattle(pair) {
-            const container = document.getElementById('battleGrid');
-            
-            if (pair.length < 2) {
-                container.innerHTML = `
-                    <div style="grid-column:1/-1; text-align:center; color:white; padding:40px;">
-                        Недостаточно кандидатов для битвы
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = `
-                <div class="candidate-card" onclick="selectCandidate(${pair[0].id})" id="card-${pair[0].id}">
-                    <img src="${pair[0].photo_url || 'https://i.pravatar.cc/300'}" class="candidate-photo" onerror="this.src='https://i.pravatar.cc/300?u=${pair[0].id}'">
-                    <div class="candidate-info">
-                        <h2 class="candidate-name">${pair[0].name}</h2>
-                        <div class="candidate-class">${pair[0].class || '??'} класс</div>
-                        <div class="candidate-bio">${pair[0].bio || 'Нет описания'}</div>
-                        <div class="rating-container">
-                            <span class="rating">❤️ ${pair[0].votes || 0}</span>
-                            <span class="rating-change">+100 если победит</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="vs-divider">VS</div>
-                
-                <div class="candidate-card" onclick="selectCandidate(${pair[1].id})" id="card-${pair[1].id}">
-                    <img src="${pair[1].photo_url || 'https://i.pravatar.cc/300'}" class="candidate-photo" onerror="this.src='https://i.pravatar.cc/300?u=${pair[1].id}'">
-                    <div class="candidate-info">
-                        <h2 class="candidate-name">${pair[1].name}</h2>
-                        <div class="candidate-class">${pair[1].class || '??'} класс</div>
-                        <div class="candidate-bio">${pair[1].bio || 'Нет описания'}</div>
-                        <div class="rating-container">
-                            <span class="rating">❤️ ${pair[1].votes || 0}</span>
-                            <span class="rating-change">+100 если победит</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Убираем выделение
-            document.querySelectorAll('.candidate-card').forEach(c => {
-                c.classList.remove('selected');
-            });
-        }
-        
-        // ============================================
-        // ВЫБОР КАНДИДАТА
-        // ============================================
-        let selectedCandidateId = null;
-        
-        window.selectCandidate = function(id) {
-            // Убираем выделение у всех
-            document.querySelectorAll('.candidate-card').forEach(c => {
-                c.classList.remove('selected');
-            });
-            
-            // Выделяем выбранную
-            document.getElementById(`card-${id}`).classList.add('selected');
-            selectedCandidateId = id;
-        };
-        
-        // ============================================
-        // ГОЛОСОВАНИЕ
-        // ============================================
-        document.getElementById('voteBtn').addEventListener('click', async function() {
-            if (!currentUser) {
-                showMessage('Сначала войдите', 'error');
-                return;
-            }
-            
-            if (!selectedCandidateId) {
-                showMessage('Выберите девушку', 'error');
-                return;
-            }
-            
-            if (currentPair.length !== 2) return;
-            
-            const winner = currentPair.find(c => c.id === selectedCandidateId);
-            const loser = currentPair.find(c => c.id !== selectedCandidateId);
-            
-            if (!winner || !loser) return;
-            
-            try {
-                // Новые рейтинги
-                const newWinnerVotes = (winner.votes || 0) + 100;
-                const newLoserVotes = Math.max(0, (loser.votes || 0) - 50); // не ниже 0
-                
-                // Обновляем победителя
-                await supabase
-                    .from('candidates')
-                    .update({ votes: newWinnerVotes })
-                    .eq('id', winner.id);
-                
-                // Обновляем проигравшего
-                await supabase
-                    .from('candidates')
-                    .update({ votes: newLoserVotes })
-                    .eq('id', loser.id);
-                
-                // Записываем голос
-                await supabase
-                    .from('votes')
-                    .insert({
-                        user_id: currentUser.id,
-                        candidate_id: winner.id,
-                        voted_at: new Date()
-                    });
-                
-                // Обновляем локальные данные
-                winner.votes = newWinnerVotes;
-                loser.votes = newLoserVotes;
-                userVotes.add(winner.id);
-                
-                // Обновляем рейтинг
-                updateLeaderboard();
-                
-                // Выбираем новую пару
-                selectedCandidateId = null;
-                selectNewPair();
-                
-                showMessage(`✅ ${winner.name} победила! +100 рейтинга`, 'success');
-                
-            } catch (err) {
-                showMessage('Ошибка: ' + err.message, 'error');
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: MY_SITE  // ЖЁСТКО ПРОПИСАНО!
             }
         });
         
-        // ============================================
-        // ОБНОВЛЕНИЕ РЕЙТИНГА
-        // ============================================
-        function updateLeaderboard() {
-            const sorted = [...allCandidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
-            const container = document.getElementById('ratingList');
-            
-            let html = '';
-            sorted.forEach((c, index) => {
-                html += `
-                    <div class="rating-item">
-                        <div class="rating-position">${index + 1}</div>
-                        <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="rating-avatar" onerror="this.src='https://i.pravatar.cc/300?u=${c.id}'">
-                        <div class="rating-info">
-                            <div class="rating-name">${c.name}</div>
-                            <div class="rating-class">${c.class || '??'} класс</div>
-                        </div>
-                        <div class="rating-score">❤️ ${c.votes || 0}</div>
-                    </div>
-                `;
+        if (error) throw error;
+    } catch (err) {
+        showMessage('Ошибка входа: ' + err.message, 'error');
+    }
+}
+
+async function logout() {
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    userVotes.clear();
+    updateAuthUI();
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('battleContainer').style.display = 'none';
+    document.getElementById('ratingContainer').style.display = 'none';
+    showMessage('Вы вышли', 'success');
+}
+
+// ============================================
+// ЗАГРУЗКА ГОЛОСОВ ПОЛЬЗОВАТЕЛЯ
+// ============================================
+async function loadUserVotes() {
+    if (!currentUser) return;
+    
+    const { data } = await supabaseClient
+        .from('votes')
+        .select('candidate_id')
+        .eq('user_id', currentUser.id);
+    
+    if (data) {
+        userVotes = new Set(data.map(v => v.candidate_id));
+    }
+}
+
+// ============================================
+// ЗАГРУЗКА КАНДИДАТОВ
+// ============================================
+async function loadCandidates() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('candidates')
+            .select('*')
+            .order('votes', { ascending: false });
+        
+        if (error) throw error;
+        
+        allCandidates = data || [];
+        
+        if (allCandidates.length < 2) {
+            showMessage('Нужно минимум 2 кандидата', 'error');
+            return;
+        }
+        
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('battleContainer').style.display = 'block';
+        document.getElementById('ratingContainer').style.display = 'block';
+        document.getElementById('infoBar').style.display = 'block';
+        
+        updateLeaderboard();
+        selectNewPair();
+    } catch (err) {
+        showMessage('Ошибка загрузки: ' + err.message, 'error');
+    }
+}
+
+// ============================================
+// ВЫБОР НОВОЙ ПАРЫ
+// ============================================
+function selectNewPair() {
+    if (allCandidates.length < 2) return;
+    
+    // Фильтруем тех, за кого уже голосовали
+    const available = allCandidates.filter(c => !userVotes.has(c.id));
+    
+    if (available.length < 2) {
+        showMessage('Вы уже проголосовали за всех! Ждите новых кандидатов', 'info');
+        currentPair = [];
+        renderBattle([]);
+        return;
+    }
+    
+    // Выбираем двух случайных
+    let first, second;
+    do {
+        const shuffled = [...available].sort(() => 0.5 - Math.random());
+        first = shuffled[0];
+        second = shuffled[1];
+    } while (first.id === second.id);
+    
+    currentPair = [first, second];
+    renderBattle(currentPair);
+}
+
+// ============================================
+// ОТОБРАЖЕНИЕ БИТВЫ
+// ============================================
+function renderBattle(pair) {
+    const container = document.getElementById('battleGrid');
+    
+    if (pair.length < 2) {
+        container.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; color:white; padding:40px;">
+                Недостаточно кандидатов для битвы
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="candidate-card" onclick="selectCandidate(${pair[0].id})" id="card-${pair[0].id}">
+            <img src="${pair[0].photo_url || 'https://i.pravatar.cc/300'}" class="candidate-photo" onerror="this.src='https://i.pravatar.cc/300?u=${pair[0].id}'">
+            <div class="candidate-info">
+                <h2 class="candidate-name">${pair[0].name}</h2>
+                <div class="candidate-class">${pair[0].class || '??'} класс</div>
+                <div class="candidate-bio">${pair[0].bio || 'Нет описания'}</div>
+                <div class="rating-container">
+                    <span class="rating">❤️ ${pair[0].votes || 0}</span>
+                    <span class="rating-change">+100 если победит</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="vs-divider">VS</div>
+        
+        <div class="candidate-card" onclick="selectCandidate(${pair[1].id})" id="card-${pair[1].id}">
+            <img src="${pair[1].photo_url || 'https://i.pravatar.cc/300'}" class="candidate-photo" onerror="this.src='https://i.pravatar.cc/300?u=${pair[1].id}'">
+            <div class="candidate-info">
+                <h2 class="candidate-name">${pair[1].name}</h2>
+                <div class="candidate-class">${pair[1].class || '??'} класс</div>
+                <div class="candidate-bio">${pair[1].bio || 'Нет описания'}</div>
+                <div class="rating-container">
+                    <span class="rating">❤️ ${pair[1].votes || 0}</span>
+                    <span class="rating-change">+100 если победит</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Убираем выделение
+    document.querySelectorAll('.candidate-card').forEach(c => {
+        c.classList.remove('selected');
+    });
+}
+
+// ============================================
+// ВЫБОР КАНДИДАТА
+// ============================================
+let selectedCandidateId = null;
+
+window.selectCandidate = function(id) {
+    // Убираем выделение у всех
+    document.querySelectorAll('.candidate-card').forEach(c => {
+        c.classList.remove('selected');
+    });
+    
+    // Выделяем выбранную
+    document.getElementById(`card-${id}`).classList.add('selected');
+    selectedCandidateId = id;
+};
+
+// ============================================
+// ГОЛОСОВАНИЕ
+// ============================================
+document.getElementById('voteBtn').addEventListener('click', async function() {
+    if (!currentUser) {
+        showMessage('Сначала войдите', 'error');
+        return;
+    }
+    
+    if (!selectedCandidateId) {
+        showMessage('Выберите девушку', 'error');
+        return;
+    }
+    
+    if (currentPair.length !== 2) return;
+    
+    const winner = currentPair.find(c => c.id === selectedCandidateId);
+    const loser = currentPair.find(c => c.id !== selectedCandidateId);
+    
+    if (!winner || !loser) return;
+    
+    try {
+        // Новые рейтинги
+        const newWinnerVotes = (winner.votes || 0) + 100;
+        const newLoserVotes = Math.max(0, (loser.votes || 0) - 50); // не ниже 0
+        
+        // Обновляем победителя
+        await supabaseClient
+            .from('candidates')
+            .update({ votes: newWinnerVotes })
+            .eq('id', winner.id);
+        
+        // Обновляем проигравшего
+        await supabaseClient
+            .from('candidates')
+            .update({ votes: newLoserVotes })
+            .eq('id', loser.id);
+        
+        // Записываем голос
+        await supabaseClient
+            .from('votes')
+            .insert({
+                user_id: currentUser.id,
+                candidate_id: winner.id,
+                voted_at: new Date()
             });
-            
-            container.innerHTML = html;
-        }
         
-        // ============================================
-        // СООБЩЕНИЯ
-        // ============================================
-        function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            const msg = document.createElement('div');
-            msg.className = `message ${type}`;
-            msg.textContent = text;
-            container.appendChild(msg);
-            
-            setTimeout(() => {
-                msg.remove();
-            }, 3000);
-        }
+        // Обновляем локальные данные
+        winner.votes = newWinnerVotes;
+        loser.votes = newLoserVotes;
+        userVotes.add(winner.id);
         
-        // ============================================
-        // СЛУШАТЕЛИ
-        // ============================================
-        document.getElementById('loginBtn').addEventListener('click', login);
-        document.getElementById('logoutBtn').addEventListener('click', logout);
+        // Обновляем рейтинг
+        updateLeaderboard();
         
-        // Слушаем изменения авторизации
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN') {
-                currentUser = session.user;
-                updateAuthUI();
-                loadUserVotes();
-                loadCandidates();
-                showMessage('Добро пожаловать!', 'success');
-            }
-        });
+        // Выбираем новую пару
+        selectedCandidateId = null;
+        selectNewPair();
         
-        // ============================================
-        // СТАРТ
-        // ============================================
-        checkUser();
+        showMessage(`✅ ${winner.name} победила! +100 рейтинга`, 'success');
+        
+    } catch (err) {
+        showMessage('Ошибка: ' + err.message, 'error');
+    }
+});
+
+// ============================================
+// ОБНОВЛЕНИЕ РЕЙТИНГА
+// ============================================
+function updateLeaderboard() {
+    const sorted = [...allCandidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+    const container = document.getElementById('ratingList');
+    
+    let html = '';
+    sorted.forEach((c, index) => {
+        html += `
+            <div class="rating-item">
+                <div class="rating-position">${index + 1}</div>
+                <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="rating-avatar" onerror="this.src='https://i.pravatar.cc/300?u=${c.id}'">
+                <div class="rating-info">
+                    <div class="rating-name">${c.name}</div>
+                    <div class="rating-class">${c.class || '??'} класс</div>
+                </div>
+                <div class="rating-score">❤️ ${c.votes || 0}</div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// ============================================
+// СООБЩЕНИЯ
+// ============================================
+function showMessage(text, type) {
+    const container = document.getElementById('messageContainer');
+    const msg = document.createElement('div');
+    msg.className = `message ${type}`;
+    msg.textContent = text;
+    container.appendChild(msg);
+    
+    setTimeout(() => {
+        msg.remove();
+    }, 3000);
+}
+
+// ============================================
+// СЛУШАТЕЛИ
+// ============================================
+document.getElementById('loginBtn').addEventListener('click', login);
+document.getElementById('logoutBtn').addEventListener('click', logout);
+
+// Слушаем изменения авторизации
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN') {
+        currentUser = session.user;
+        updateAuthUI();
+        loadUserVotes();
+        loadCandidates();
+        showMessage('Добро пожаловать!', 'success');
+    }
+});
+
+// ============================================
+// СТАРТ
+// ============================================
+checkUser();
     </script>
 </body>
 </html>
