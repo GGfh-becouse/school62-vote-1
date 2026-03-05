@@ -499,7 +499,7 @@ async function login() {
         const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: MY_SITE  // ЖЁСТКО ПРОПИСАНО!
+                redirectTo: 'https://ggfh-becouse.github.io/school62-vote-1/auth.html' // ЖЁСТКО ПРОПИСАНО!
             }
         });
         
