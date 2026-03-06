@@ -1,1 +1,1289 @@
-https://ggfh-becouse.github.io/school62-vote-1/admin.html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Битва за 8 марта</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Экран входа */
+        .login-screen {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255,215,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .login-screen h2 {
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .login-screen input {
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .login-screen input:focus {
+            border-color: #ffd700;
+        }
+
+        .login-screen button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            border: none;
+            border-radius: 30px;
+            color: #1a1a2e;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-screen button:hover {
+            transform: scale(1.02);
+        }
+
+        .login-error {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Основной интерфейс (скрыт до входа) */
+        .admin-panel {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .header h1 span {
+            color: #ffd700;
+        }
+
+        .admin-badge {
+            background: #ffd700;
+            color: #1a1a2e;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid #ffd700;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,215,0,0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: #ffd700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: rgba(255,215,0,0.2);
+        }
+
+        .tab.active {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .panel h2 {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.warning {
+            background: #ffc107;
+            color: #1a1a2e;
+        }
+
+        .badge.success {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge.danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .badge.info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            background: #ffa500;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 0.8rem;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            height: 250px;
+            gap: 2px;
+            margin-top: 20px;
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: linear-gradient(180deg, #ffd700, #ffa500);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s;
+            min-height: 2px;
+        }
+
+        .chart-label {
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: #666;
+            transform: rotate(-45deg);
+            white-space: nowrap;
+        }
+
+        .chart-value {
+            font-size: 0.8rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+
+        .candidates-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .candidate-mini-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .candidate-mini-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid #ffd700;
+        }
+
+        .candidate-mini-name {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .candidate-mini-class {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .candidate-mini-votes {
+            background: #ffd700;
+            color: #1a1a2e;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .message.success { background: #28a745; }
+        .message.error { background: #dc3545; }
+        .message.info { background: #17a2b8; }
+
+        .loader {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Экран входа по паролю -->
+    <div class="login-screen" id="loginScreen">
+        <h2>🔐 АДМИН-ПАНЕЛЬ</h2>
+        <input type="password" id="passwordInput" placeholder="Введите пароль" autofocus>
+        <button id="loginBtn">Войти</button>
+        <div class="login-error" id="loginError">Неверный пароль!</div>
+    </div>
+
+    <!-- Основная админ-панель (скрыта) -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="header">
+            <h1>👑 <span>ADMIN PANEL</span> / Битва за 8 марта</h1>
+            <div>
+                <span class="admin-badge">✅ Администратор</span>
+                <button class="logout-btn" id="logoutBtn">Выйти</button>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <h3>Всего голосов</h3>
+                <div class="stat-number" id="totalVotes">-</div>
+                <div class="stat-label">за всё время</div>
+            </div>
+            <div class="stat-card">
+                <h3>За 24 часа</h3>
+                <div class="stat-number" id="votes24h">-</div>
+                <div class="stat-label">последние сутки</div>
+            </div>
+            <div class="stat-card">
+                <h3>Уникальных IP</h3>
+                <div class="stat-number" id="uniqueIPs">-</div>
+                <div class="stat-label">разных пользователей</div>
+            </div>
+            <div class="stat-card">
+                <h3>Кандидатов</h3>
+                <div class="stat-number" id="totalCandidates">-</div>
+                <div class="stat-label">в базе</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="dashboard">📊 Дашборд</div>
+            <div class="tab" data-tab="votes">🗳️ Голоса</div>
+            <div class="tab" data-tab="candidates">👩 Кандидаты</div>
+            <div class="tab" data-tab="suggestions">📝 Предложения</div>
+            <div class="tab" data-tab="feedback">💬 Обратная связь</div>
+            <div class="tab" data-tab="security">🛡️ Безопасность</div>
+        </div>
+
+        <div id="dashboardPanel" class="panel active">
+            <h2>📊 График голосований (по часам)</h2>
+            <div class="chart-container">
+                <div id="votesChart" class="chart-bars"></div>
+            </div>
+            
+            <h2>🏆 Топ-10 кандидатов</h2>
+            <div class="table-container">
+                <table id="topCandidatesTable">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Фото</th>
+                            <th>Имя</th>
+                            <th>Класс</th>
+                            <th>Голоса</th>
+                            <th>% от всех</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topCandidatesBody">
+                        <tr><td colspan="7" style="text-align:center;">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="votesPanel" class="panel">
+            <div class="filters">
+                <input type="text" id="voteSearch" class="filter-select" placeholder="🔍 Поиск по IP или кандидату...">
+                <select id="voteFilter" class="filter-select">
+                    <option value="all">Все голоса</option>
+                    <option value="today">За сегодня</option>
+                    <option value="week">За неделю</option>
+                    <option value="month">За месяц</option>
+                </select>
+                <button class="btn btn-primary" id="refreshVotes">🔄 Обновить</button>
+            </div>
+            <div class="table-container">
+                <table id="votesTable">
+                    <thead>
+                        <tr>
+                            <th>Время</th>
+                            <th>Кандидат</th>
+                            <th>IP-адрес</th>
+                            <th>User-Agent</th>
+                        </tr>
+                    </thead>
+                    <tbody id="votesBody">
+                        <tr><td colspan="4" style="text-align:center;">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="candidatesPanel" class="panel">
+            <div class="filters">
+                <button class="btn btn-primary" id="addCandidateBtn">➕ Добавить кандидата</button>
+                <input type="text" id="candidateSearch" class="filter-select" placeholder="🔍 Поиск по имени...">
+            </div>
+            <div class="candidates-mini-grid" id="candidatesGrid"></div>
+        </div>
+
+        <div id="suggestionsPanel" class="panel">
+            <div class="filters">
+                <select id="suggestionFilter" class="filter-select">
+                    <option value="all">Все предложения</option>
+                    <option value="pending">Ожидают</option>
+                    <option value="approved">Одобренные</option>
+                    <option value="rejected">Отклонённые</option>
+                </select>
+                <button class="btn btn-primary" id="refreshSuggestions">🔄 Обновить</button>
+            </div>
+            <div class="table-container">
+                <table id="suggestionsTable">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Имя</th>
+                            <th>Описание</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="suggestionsBody">
+                        <tr><td colspan="5" style="text-align:center;">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="feedbackPanel" class="panel">
+            <div class="filters">
+                <select id="feedbackFilter" class="filter-select">
+                    <option value="all">Всё</option>
+                    <option value="support">Поддержка</option>
+                    <option value="bug">Ошибки</option>
+                    <option value="idea">Идеи</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="feedbackTable">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Тип</th>
+                            <th>Сообщение</th>
+                            <th>Инфо</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feedbackBody">
+                        <tr><td colspan="4" style="text-align:center;">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="securityPanel" class="panel">
+            <h2>🛡️ Подозрительные IP</h2>
+            <div class="filters">
+                <select id="securityFilter" class="filter-select">
+                    <option value="10">> 10 голосов</option>
+                    <option value="20">> 20 голосов</option>
+                    <option value="50">> 50 голосов</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="securityTable">
+                    <thead>
+                        <tr>
+                            <th>IP-адрес</th>
+                            <th>Всего голосов</th>
+                            <th>Первый голос</th>
+                            <th>Последний голос</th>
+                            <th>Средний интервал</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="securityBody">
+                        <tr><td colspan="6" style="text-align:center;">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления кандидата -->
+    <div id="addCandidateModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;">
+        <div style="background:white; border-radius:24px; padding:30px; max-width:500px; width:90%;">
+            <h2 style="margin-bottom:20px;">➕ Добавить кандидата</h2>
+            <input type="text" id="newName" placeholder="Имя" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:12px;">
+            <input type="text" id="newClass" placeholder="Класс" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:12px;">
+            <input type="text" id="newPhoto" placeholder="URL фото" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:12px;">
+            <textarea id="newBio" placeholder="Описание" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:12px; min-height:100px;"></textarea>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="btn" id="cancelAdd" style="background:#ccc;">Отмена</button>
+                <button class="btn btn-primary" id="saveAdd">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ============================================
+        // КОНФИГУРАЦИЯ
+        // ============================================
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        
+        // ============================================
+        // ТВОЙ СЕКРЕТНЫЙ ПАРОЛЬ (16 символов)
+        // ============================================
+        const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8';
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let isAuthenticated = false;
+        
+        // ============================================
+        // ПРОВЕРКА ПАРОЛЯ
+        // ============================================
+        document.getElementById('loginBtn').addEventListener('click', checkPassword);
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+        
+        function checkPassword() {
+            const enteredPassword = document.getElementById('passwordInput').value;
+            
+            if (enteredPassword === ADMIN_PASSWORD) {
+                isAuthenticated = true;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAllData();
+                showMessage('Добро пожаловать, администратор!', 'success');
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                showMessage('Неверный пароль!', 'error');
+            }
+        }
+        
+        // ============================================
+        // ВЫХОД
+        // ============================================
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            isAuthenticated = false;
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        });
+        
+        // ============================================
+        // ЗАГРУЗКА ВСЕХ ДАННЫХ
+        // ============================================
+        async function loadAllData() {
+            loadStats();
+            loadChartData();
+            loadTopCandidates();
+            loadVotes();
+            loadCandidatesGrid();
+            loadSuggestions();
+            loadFeedback();
+            loadSecurity();
+        }
+        
+        // ============================================
+        // СТАТИСТИКА
+        // ============================================
+        async function loadStats() {
+            try {
+                const { count: totalVotes } = await supabaseClient
+                    .from('votes')
+                    .select('*', { count: 'exact', head: true });
+                
+                const dayAgo = new Date(Date.now() - 24*60*60*1000).toISOString();
+                const { count: votes24h } = await supabaseClient
+                    .from('votes')
+                    .select('*', { count: 'exact', head: true })
+                    .gte('created_at', dayAgo);
+                
+                const { data: ips } = await supabaseClient
+                    .from('votes')
+                    .select('ip_address');
+                const uniqueIPs = new Set(ips?.map(v => v.ip_address) || []).size;
+                
+                const { count: totalCandidates } = await supabaseClient
+                    .from('candidates')
+                    .select('*', { count: 'exact', head: true });
+                
+                document.getElementById('totalVotes').textContent = totalVotes || 0;
+                document.getElementById('votes24h').textContent = votes24h || 0;
+                document.getElementById('uniqueIPs').textContent = uniqueIPs;
+                document.getElementById('totalCandidates').textContent = totalCandidates || 0;
+                
+            } catch (error) {
+                showMessage('Ошибка загрузки статистики', 'error');
+            }
+        }
+        
+        // ============================================
+        // ГРАФИК
+        // ============================================
+        async function loadChartData() {
+            try {
+                const dayAgo = new Date(Date.now() - 24*60*60*1000).toISOString();
+                
+                const { data, error } = await supabaseClient
+                    .from('votes')
+                    .select('created_at')
+                    .gte('created_at', dayAgo)
+                    .order('created_at');
+                
+                if (error) throw error;
+                
+                const hours = {};
+                for (let i = 0; i < 24; i++) {
+                    const hour = new Date(Date.now() - i*60*60*1000).getHours();
+                    hours[hour] = 0;
+                }
+                
+                data.forEach(vote => {
+                    const hour = new Date(vote.created_at).getHours();
+                    hours[hour] = (hours[hour] || 0) + 1;
+                });
+                
+                const sortedHours = Object.keys(hours).sort((a,b) => a - b);
+                
+                const chart = document.getElementById('votesChart');
+                const maxVotes = Math.max(...Object.values(hours), 1);
+                
+                let html = '';
+                sortedHours.forEach(hour => {
+                    const count = hours[hour] || 0;
+                    const height = (count / maxVotes) * 200;
+                    html += `
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar" style="height: ${height}px;"></div>
+                            <div class="chart-value">${count}</div>
+                            <div class="chart-label">${hour}:00</div>
+                        </div>
+                    `;
+                });
+                
+                chart.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Ошибка графика:', error);
+            }
+        }
+        
+        // ============================================
+        // ТОП КАНДИДАТОВ
+        // ============================================
+        async function loadTopCandidates() {
+            try {
+                const { data: candidates, error } = await supabaseClient
+                    .from('candidates')
+                    .select('*')
+                    .order('votes', { ascending: false })
+                    .limit(10);
+                
+                if (error) throw error;
+                
+                const { count: totalVotes } = await supabaseClient
+                    .from('votes')
+                    .select('*', { count: 'exact', head: true });
+                
+                const tbody = document.getElementById('topCandidatesBody');
+                
+                if (!candidates || candidates.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Нет кандидатов</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                candidates.forEach((c, index) => {
+                    const percent = totalVotes ? ((c.votes/100) / totalVotes * 100).toFixed(1) : 0;
+                    html += `
+                        <tr>
+                            <td><strong>#${index + 1}</strong></td>
+                            <td><img src="${c.photo_url || 'https://i.pravatar.cc/300'}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;"></td>
+                            <td>${c.name}</td>
+                            <td>${c.class || '??'}</td>
+                            <td><strong>${c.votes || 0}</strong></td>
+                            <td>${percent}%</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="editCandidate(${c.id})">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCandidate(${c.id})">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+                
+            } catch (error) {
+                showMessage('Ошибка загрузки кандидатов', 'error');
+            }
+        }
+        
+        // ============================================
+        // ГОЛОСА
+        // ============================================
+        async function loadVotes() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('votes')
+                    .select(`
+                        id,
+                        created_at,
+                        ip_address,
+                        user_agent,
+                        candidates (name, photo_url)
+                    `)
+                    .order('created_at', { ascending: false })
+                    .limit(100);
+                
+                if (error) throw error;
+                
+                const tbody = document.getElementById('votesBody');
+                
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Нет голосов</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                data.forEach(vote => {
+                    const date = new Date(vote.created_at).toLocaleString('ru');
+                    html += `
+                        <tr>
+                            <td>${date}</td>
+                            <td>
+                                <img src="${vote.candidates?.photo_url || 'https://i.pravatar.cc/300'}" style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:5px;">
+                                ${vote.candidates?.name || 'Удалён'}
+                            </td>
+                            <td><code>${vote.ip_address}</code></td>
+                            <td style="max-width:300px; overflow:hidden; text-overflow:ellipsis;">${vote.user_agent || '—'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+                
+            } catch (error) {
+                showMessage('Ошибка загрузки голосов', 'error');
+            }
+        }
+        
+        // ============================================
+        // СЕТКА КАНДИДАТОВ
+        // ============================================
+        async function loadCandidatesGrid() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('candidates')
+                    .select('*')
+                    .order('votes', { ascending: false });
+                
+                if (error) throw error;
+                
+                const grid = document.getElementById('candidatesGrid');
+                
+                if (!data || data.length === 0) {
+                    grid.innerHTML = '<p>Нет кандидатов</p>';
+                    return;
+                }
+                
+                let html = '';
+                data.forEach(c => {
+                    html += `
+                        <div class="candidate-mini-card">
+                            <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="candidate-mini-photo">
+                            <div class="candidate-mini-name">${c.name}</div>
+                            <div class="candidate-mini-class">${c.class || '??'} класс</div>
+                            <div class="candidate-mini-votes">❤️ ${c.votes || 0}</div>
+                            <div style="margin-top:10px;">
+                                <button class="btn btn-sm btn-primary" onclick="editCandidate(${c.id})">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCandidate(${c.id})">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                grid.innerHTML = html;
+                
+            } catch (error) {
+                showMessage('Ошибка загрузки кандидатов', 'error');
+            }
+        }
+        
+        // ============================================
+        // ПРЕДЛОЖЕНИЯ
+        // ============================================
+        async function loadSuggestions() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('suggestions')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const tbody = document.getElementById('suggestionsBody');
+                
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Нет предложений</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                data.forEach(s => {
+                    const date = new Date(s.created_at).toLocaleString('ru');
+                    let statusBadge = '';
+                    if (s.status === 'pending') statusBadge = '<span class="badge warning">Ожидает</span>';
+                    else if (s.status === 'approved') statusBadge = '<span class="badge success">Одобрено</span>';
+                    else if (s.status === 'rejected') statusBadge = '<span class="badge danger">Отклонено</span>';
+                    
+                    html += `
+                        <tr>
+                            <td>${date}</td>
+                            <td><strong>${s.name}</strong></td>
+                            <td>${s.description || '—'}</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                ${s.status === 'pending' ? `
+                                    <button class="btn btn-sm btn-success" onclick="approveSuggestion(${s.id}, '${s.name}', '${s.description || ''}')">✅</button>
+                                    <button class="btn btn-sm btn-danger" onclick="rejectSuggestion(${s.id})">❌</button>
+                                ` : '—'}
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+                
+            } catch (error) {
+                showMessage('Ошибка загрузки предложений', 'error');
+            }
+        }
+        
+        // ============================================
+        // ОБРАТНАЯ СВЯЗЬ
+        // ============================================
+        async function loadFeedback() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('feedback')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const tbody = document.getElementById('feedbackBody');
+                
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Нет сообщений</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                data.forEach(f => {
+                    const date = new Date(f.created_at).toLocaleString('ru');
+                    let typeBadge = '';
+                    if (f.type === 'support') typeBadge = '<span class="badge info">Поддержка</span>';
+                    else if (f.type === 'bug') typeBadge = '<span class="badge danger">Ошибка</span>';
+                    else if (f.type === 'idea') typeBadge = '<span class="badge success">Идея</span>';
+                    
+                    html += `
+                        <tr>
+                            <td>${date}</td>
+                            <td>${typeBadge}</td>
+                            <td>${f.message}</td>
+                            <td>${f.user_info || '—'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+                
+            } catch (error) {
+                showMessage('Ошибка загрузки обратной связи', 'error');
+            }
+        }
+        
+        // ============================================
+        // БЕЗОПАСНОСТЬ
+        // ============================================
+        async function loadSecurity() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('votes')
+                    .select('ip_address, created_at, candidate_id');
+                
+                if (error) throw error;
+                
+                const ipStats = {};
+                data.forEach(vote => {
+                    if (!ipStats[vote.ip_address]) {
+                        ipStats[vote.ip_address] = {
+                            count: 0,
+                            first: vote.created_at,
+                            last: vote.created_at,
+                            times: []
+                        };
+                    }
+                    ipStats[vote.ip_address].count++;
+                    ipStats[vote.ip_address].times.push(new Date(vote.created_at));
+                    if (new Date(vote.created_at) < new Date(ipStats[vote.ip_address].first)) {
+                        ipStats[vote.ip_address].first = vote.created_at;
+                    }
+                    if (new Date(vote.created_at) > new Date(ipStats[vote.ip_address].last)) {
+                        ipStats[vote.ip_address].last = vote.created_at;
+                    }
+                });
+                
+                const suspicious = Object.entries(ipStats)
+                    .filter(([_, stats]) => stats.count > 10)
+                    .sort((a, b) => b[1].count - a[1].count);
+                
+                const tbody = document.getElementById('securityBody');
+                
+                if (suspicious.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Нет подозрительных IP</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                suspicious.forEach(([ip, stats]) => {
+                    const times = stats.times.sort((a,b) => a - b);
+                    let totalDiff = 0;
+                    for (let i = 1; i < times.length; i++) {
+                        totalDiff += (times[i] - times[i-1]) / 1000;
+                    }
+                    const avgInterval = times.length > 1 ? (totalDiff / (times.length - 1)).toFixed(0) : '—';
+                    
+                    html += `
+                        <tr>
+                            <td><code>${ip}</code></td>
+                            <td><strong>${stats.count}</strong></td>
+                            <td>${new Date(stats.first).toLocaleString('ru')}</td>
+                            <td>${new Date(stats.last).toLocaleString('ru')}</td>
+                            <td>${avgInterval} сек</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="blockIP('${ip}')">🚫 Блокировать</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+                
+            } catch (error) {
+                showMessage('Ошибка загрузки данных безопасности', 'error');
+            }
+        }
+        
+        // ============================================
+        // ДЕЙСТВИЯ
+        // ============================================
+        
+        window.approveSuggestion = async (id, name, description) => {
+            try {
+                await supabaseClient.from('candidates').insert({
+                    name: name,
+                    bio: description,
+                    votes: 0
+                });
+                
+                await supabaseClient.from('suggestions')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                
+                showMessage('Кандидат добавлен', 'success');
+                loadSuggestions();
+                loadCandidatesGrid();
+                loadTopCandidates();
+                
+            } catch (error) {
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        };
+        
+        window.rejectSuggestion = async (id) => {
+            await supabaseClient.from('suggestions')
+                .update({ status: 'rejected' })
+                .eq('id', id);
+            showMessage('Предложение отклонено', 'info');
+            loadSuggestions();
+        };
+        
+        window.editCandidate = (id) => {
+            showMessage('Редактирование будет доступно позже', 'info');
+        };
+        
+        window.deleteCandidate = async (id) => {
+            if (confirm('Удалить кандидата? Голоса тоже удалятся.')) {
+                await supabaseClient.from('candidates').delete().eq('id', id);
+                showMessage('Кандидат удалён', 'success');
+                loadCandidatesGrid();
+                loadTopCandidates();
+            }
+        };
+        
+        window.blockIP = (ip) => {
+            showMessage(`IP ${ip} заблокирован (нужно добавить в блэклист)`, 'info');
+        };
+        
+        // ============================================
+        // МОДАЛЬНОЕ ОКНО
+        // ============================================
+        document.getElementById('addCandidateBtn').addEventListener('click', () => {
+            document.getElementById('addCandidateModal').style.display = 'flex';
+        });
+        
+        document.getElementById('cancelAdd').addEventListener('click', () => {
+            document.getElementById('addCandidateModal').style.display = 'none';
+        });
+        
+        document.getElementById('saveAdd').addEventListener('click', async () => {
+            const name = document.getElementById('newName').value;
+            const classText = document.getElementById('newClass').value;
+            const photo = document.getElementById('newPhoto').value;
+            const bio = document.getElementById('newBio').value;
+            
+            if (!name) {
+                showMessage('Введите имя', 'error');
+                return;
+            }
+            
+            await supabaseClient.from('candidates').insert({
+                name: name,
+                class: classText,
+                photo_url: photo || 'https://i.pravatar.cc/300',
+                bio: bio,
+                votes: 0
+            });
+            
+            document.getElementById('addCandidateModal').style.display = 'none';
+            showMessage('Кандидат добавлен', 'success');
+            loadCandidatesGrid();
+            loadTopCandidates();
+        });
+        
+        // ============================================
+        // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+        // ============================================
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + 'Panel').classList.add('active');
+            });
+        });
+        
+        // ============================================
+        // ПОИСК И ФИЛЬТРЫ
+        // ============================================
+        document.getElementById('refreshVotes').addEventListener('click', loadVotes);
+        document.getElementById('refreshSuggestions').addEventListener('click', loadSuggestions);
+        
+        document.getElementById('voteSearch').addEventListener('input', function() {
+            // Функция поиска по таблице голосов
+        });
+        
+        document.getElementById('voteFilter').addEventListener('change', function() {
+            loadVotes();
+        });
+        
+        document.getElementById('suggestionFilter').addEventListener('change', async function() {
+            const filter = this.value;
+            try {
+                let query = supabaseClient.from('suggestions').select('*').order('created_at', { ascending: false });
+                
+                if (filter !== 'all') {
+                    query = query.eq('status', filter);
+                }
+                
+                const { data, error } = await query;
+                if (error) throw error;
+                
+                const tbody = document.getElementById('suggestionsBody');
+                // ... отображение данных (как в loadSuggestions)
+                loadSuggestions(); // временно просто перезагружаем
+            } catch (error) {
+                showMessage('Ошибка фильтрации', 'error');
+            }
+        });
+        
+        document.getElementById('securityFilter').addEventListener('change', function() {
+            loadSecurity();
+        });
+        
+        document.getElementById('feedbackFilter').addEventListener('change', async function() {
+            const filter = this.value;
+            try {
+                let query = supabaseClient.from('feedback').select('*').order('created_at', { ascending: false });
+                
+                if (filter !== 'all') {
+                    query = query.eq('type', filter);
+                }
+                
+                const { data, error } = await query;
+                if (error) throw error;
+                
+                const tbody = document.getElementById('feedbackBody');
+                // ... отображение данных
+                loadFeedback(); // временно просто перезагружаем
+            } catch (error) {
+                showMessage('Ошибка фильтрации', 'error');
+            }
+        });
+        
+        document.getElementById('candidateSearch').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            // Можно добавить фильтрацию кандидатов
+        });
+        
+        // ============================================
+        // СООБЩЕНИЯ
+        // ============================================
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            
+            setTimeout(() => msg.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
