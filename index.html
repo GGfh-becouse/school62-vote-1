@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Битва за 8 марта</title>
     <style>
-        /* ===== ВСТАВЬ СТИЛИ ИЗ ПРЕДЫДУЩЕГО index.html ===== */
-        /* Они остаются без изменений */
         * {
             margin: 0;
             padding: 0;
@@ -25,7 +23,6 @@
             margin: 0 auto;
         }
 
-        /* Шапка */
         .header {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
@@ -57,24 +54,6 @@
             50% { opacity: 0.7; }
         }
 
-        /* Кнопка админки */
-        .admin-link {
-            background: rgba(255,215,0,0.2);
-            color: #ffd700;
-            padding: 8px 16px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 500;
-            border: 1px solid rgba(255,215,0,0.3);
-            transition: all 0.3s;
-        }
-
-        .admin-link:hover {
-            background: #ffd700;
-            color: #1a1a2e;
-        }
-
-        /* Информация о пользователе */
         .user-info {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
@@ -105,7 +84,6 @@
             font-size: 0.9rem;
         }
 
-        /* Информация о голосовании */
         .info-bar {
             background: rgba(255,215,0,0.1);
             border: 1px solid rgba(255,215,0,0.3);
@@ -118,7 +96,6 @@
             backdrop-filter: blur(5px);
         }
 
-        /* Битва */
         .battle-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -158,11 +135,6 @@
             opacity: 0.7;
             cursor: not-allowed;
             filter: grayscale(0.5);
-        }
-
-        .candidate-card.disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
         }
 
         .candidate-photo {
@@ -214,11 +186,6 @@
             box-shadow: 0 4px 10px rgba(255,215,0,0.3);
         }
 
-        .rating-change {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
         .vote-badge {
             background: #28a745;
             color: white;
@@ -227,7 +194,6 @@
             font-size: 0.9rem;
         }
 
-        /* VS разделитель */
         .vs-divider {
             display: flex;
             align-items: center;
@@ -254,7 +220,6 @@
             }
         }
 
-        /* Кнопка действия */
         .action-button {
             background: linear-gradient(135deg, #ffd700, #ffa500);
             border: none;
@@ -281,7 +246,6 @@
             cursor: not-allowed;
         }
 
-        /* Блок рекомендаций */
         .recommendations {
             background: white;
             border-radius: 32px;
@@ -347,7 +311,6 @@
             font-weight: 600;
         }
 
-        /* Рейтинг */
         .rating-table {
             background: white;
             border-radius: 32px;
@@ -473,16 +436,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        .vote-message {
-            background: rgba(255,215,0,0.1);
-            border-left: 4px solid #ffd700;
-            padding: 16px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            color: #ffd700;
-        }
-
-        /* Ссылка на бота */
         .bot-link {
             text-align: center;
             margin-top: 20px;
@@ -501,53 +454,44 @@
             background: rgba(255,215,0,0.2);
         }
     </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
 </head>
 <body>
     <div class="container">
-        <!-- Шапка -->
         <div class="header">
             <h1>🌸 БИТВА <span>ЗА 8 МАРТА</span> 🌸</h1>
-            <a href="admin.html" class="admin-link" target="_blank">👑 Админ-панель</a>
         </div>
 
-        <!-- Информация о пользователе -->
         <div class="user-info" id="userInfo">
             <span>🔍 Ваш IP: <span id="userIp" class="user-ip">определяется...</span></span>
             <span class="vote-count-badge" id="voteCountBadge">0 голосов</span>
         </div>
 
-        <!-- Информация -->
         <div id="infoBar" class="info-bar">
             ⚔️ Выберите лучшую! Победитель +100, проигравший -50
         </div>
 
-        <!-- Сообщения -->
         <div id="messageContainer"></div>
 
-        <!-- Основная битва -->
         <div id="battleContainer" style="display: none;">
             <div class="battle-container" id="battleGrid"></div>
             <button id="voteBtn" class="action-button">⚔️ Сделать выбор ⚔️</button>
         </div>
 
-        <!-- Блок рекомендаций (появляется после голосования) -->
         <div id="recommendations" class="recommendations" style="display: none;">
             <h3>🌟 Возможно, вам также понравятся</h3>
             <div id="recommendationsGrid" class="recommendations-grid"></div>
         </div>
 
-        <!-- Рейтинг -->
         <div id="ratingContainer" class="rating-table" style="display: none;">
             <h2>🏆 РЕЙТИНГ ДЕВУШЕК 🏆</h2>
             <div id="ratingList" class="rating-list"></div>
         </div>
 
-        <!-- Ссылка на Telegram-бота -->
         <div class="bot-link">
             <a href="https://t.me/school_vote_bot" target="_blank">📱 Предложить кандидата через Telegram</a>
         </div>
 
-        <!-- Пустое состояние -->
         <div id="emptyState" class="empty-state">
             <div class="loader"></div>
             <p>Загрузка кандидатов...</p>
@@ -560,8 +504,11 @@
         // КОНФИГУРАЦИЯ - ТВОИ ДАННЫЕ
         // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkY3d4dnhrdnluY3lic2Vmb3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NTMzODksImV4cCI6MjA4ODEyOTM4OX0.gIF0di79PaPA_0ckWX5R-wxQ435oaiu4jf1J48qz7SE';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ - ТОЛЬКО ОДИН РАЗ!
+        // ============================================
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         // ============================================
@@ -571,7 +518,7 @@
         let currentPair = [];
         let selectedCandidateId = null;
         let userIp = null;
-        let userVotes = {}; // { candidate_id: true }
+        let userVotes = {};
         let userVoteCount = 0;
         let lastVoteTime = null;
         
@@ -600,7 +547,7 @@
             if (!userIp) return;
             
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('votes')
                     .select('candidate_id, created_at')
                     .eq('ip_address', userIp);
@@ -630,6 +577,7 @@
                 console.log('Загружены голоса:', userVotes);
             } catch (error) {
                 console.error('Ошибка загрузки голосов:', error);
+                showMessage('Ошибка загрузки голосов', 'error');
             }
         }
         
@@ -677,11 +625,9 @@
         function selectNewPair() {
             if (allCandidates.length < 2) return;
             
-            // Находим кандидатов, за которых ещё не голосовали
             const available = allCandidates.filter(c => !userVotes[c.id]);
             
             if (available.length >= 2) {
-                // Выбираем двух случайных из доступных
                 let first, second;
                 do {
                     const shuffled = [...available].sort(() => 0.5 - Math.random());
@@ -691,11 +637,9 @@
                 
                 currentPair = [first, second];
             } else if (available.length === 1) {
-                // Один доступный, второй из уже голосованных
                 const voted = allCandidates.find(c => userVotes[c.id]);
                 currentPair = [available[0], voted];
             } else {
-                // Все проголосованы - показываем любых двух
                 showMessage('Вы проголосовали за всех! Посмотрите рейтинг', 'info');
                 const shuffled = [...allCandidates].sort(() => 0.5 - Math.random());
                 currentPair = [shuffled[0], shuffled[1]];
@@ -779,14 +723,11 @@
         // ПОЛУЧЕНИЕ РЕКОМЕНДАЦИЙ
         // ============================================
         function getRecommendations(excludeId) {
-            // Исключаем текущего кандидата и уже проголосованных
             const candidates = allCandidates.filter(c => 
                 c.id !== excludeId && !userVotes[c.id]
             );
             
             if (candidates.length === 0) return [];
-            
-            // Перемешиваем и берём до 3
             return candidates.sort(() => 0.5 - Math.random()).slice(0, 3);
         }
         
@@ -866,13 +807,11 @@
             
             if (!winner || !loser) return;
             
-            // Проверка на повторное голосование
             if (userVotes[winner.id]) {
                 showMessage(`Вы уже голосовали за ${winner.name}`, 'warning');
                 return;
             }
             
-            // Защита от накрутки: проверка времени
             if (lastVoteTime) {
                 const secondsSinceLastVote = (new Date() - lastVoteTime) / 1000;
                 if (secondsSinceLastVote < 5) {
@@ -886,18 +825,16 @@
                 const newLoserVotes = Math.max(0, (loser.votes || 0) - 50);
                 const userAgent = navigator.userAgent;
                 
-                // Транзакция через Promise.all
                 await Promise.all([
-                    supabase.from('candidates').update({ votes: newWinnerVotes }).eq('id', winner.id),
-                    supabase.from('candidates').update({ votes: newLoserVotes }).eq('id', loser.id),
-                    supabase.from('votes').insert({
+                    supabaseClient.from('candidates').update({ votes: newWinnerVotes }).eq('id', winner.id),
+                    supabaseClient.from('candidates').update({ votes: newLoserVotes }).eq('id', loser.id),
+                    supabaseClient.from('votes').insert({
                         candidate_id: winner.id,
                         ip_address: userIp,
                         user_agent: userAgent
                     })
                 ]);
                 
-                // Обновляем локальные данные
                 winner.votes = newWinnerVotes;
                 loser.votes = newLoserVotes;
                 userVotes[winner.id] = true;
@@ -909,11 +846,9 @@
                 
                 updateLeaderboard();
                 
-                // Показываем сообщение и рекомендации
                 showMessage(`✅ Вы проголосовали за ${winner.name}!`, 'success');
                 showRecommendations(winner.id);
                 
-                // Выбираем новую пару
                 selectedCandidateId = null;
                 selectNewPair();
                 
