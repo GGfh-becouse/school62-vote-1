@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -980,3 +980,201 @@
                         ipStats[vote.ip_address] = {
                             count: 0,
                             first: vote.created_at,
+                            last: vote.created_at,
+                            times: []
+                        };
+                    }
+                    ipStats[vote.ip_address].count++;
+                    ipStats[vote.ip_address].times.push(new Date(vote.created_at));
+                    if (new Date(vote.created_at) < new Date(ipStats[vote.ip_address].first)) {
+                        ipStats[vote.ip_address].first = vote.created_at;
+                    }
+                    if (new Date(vote.created_at) > new Date(ipStats[vote.ip_address].last)) {
+                        ipStats[vote.ip_address].last = vote.created_at;
+                    }
+                });
+                
+                // Фильтруем > 10 голосов
+                const suspicious = Object.entries(ipStats)
+                    .filter(([_, stats]) => stats.count > 10)
+                    .sort((a, b) => b[1].count - a[1].count);
+                
+                const tbody = document.getElementById('securityBody');
+                
+                if (suspicious.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Нет подозрительных IP</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                suspicious.forEach(([ip, stats]) => {
+                    // Вычисляем средний интервал
+                    const times = stats.times.sort((a,b) => a - b);
+                    let totalDiff = 0;
+                    for (let i = 1; i < times.length; i++) {
+                        totalDiff += (times[i] - times[i-1]) / 1000; // в секундах
+                    }
+                    const avgInterval = times.length > 1 ? (totalDiff / (times.length - 1)).toFixed(0) : '—';
+                    
+                    html += `
+                        <tr>
+                            <td><code>${ip}</code></td>
+                            <td><strong>${stats.count}</strong></td>
+                            <td>${new Date(stats.first).toLocaleString('ru')}</td>
+                            <td>${new Date(stats.last).toLocaleString('ru')}</td>
+                            <td>${avgInterval} сек</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="blockIP('${ip}')">🚫 Блокировать</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+                
+            } catch (error) {
+                showMessage('Ошибка загрузки данных безопасности', 'error');
+            }
+        }
+        
+        // ============================================
+        // ДЕЙСТВИЯ
+        // ============================================
+        
+        // Одобрить предложение
+        window.approveSuggestion = async (id, name, description) => {
+            try {
+                // Добавляем кандидата
+                await supabase.from('candidates').insert({
+                    name: name,
+                    bio: description,
+                    votes: 0
+                });
+                
+                // Обновляем статус предложения
+                await supabase.from('suggestions')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                
+                showMessage('Кандидат добавлен', 'success');
+                loadSuggestions();
+                loadCandidatesGrid();
+                loadTopCandidates();
+                
+            } catch (error) {
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        };
+        
+        // Отклонить предложение
+        window.rejectSuggestion = async (id) => {
+            await supabase.from('suggestions')
+                .update({ status: 'rejected' })
+                .eq('id', id);
+            showMessage('Предложение отклонено', 'info');
+            loadSuggestions();
+        };
+        
+        // Редактировать кандидата
+        window.editCandidate = (id) => {
+            showMessage('Редактирование будет доступно позже', 'info');
+        };
+        
+        // Удалить кандидата
+        window.deleteCandidate = async (id) => {
+            if (confirm('Удалить кандидата? Голоса тоже удалятся.')) {
+                await supabase.from('candidates').delete().eq('id', id);
+                showMessage('Кандидат удалён', 'success');
+                loadCandidatesGrid();
+                loadTopCandidates();
+            }
+        };
+        
+        // Блокировать IP
+        window.blockIP = (ip) => {
+            showMessage(`IP ${ip} заблокирован (нужно добавить в блэклист)`, 'info');
+        };
+        
+        // ============================================
+        // МОДАЛЬНОЕ ОКНО
+        // ============================================
+        document.getElementById('addCandidateBtn').addEventListener('click', () => {
+            document.getElementById('addCandidateModal').style.display = 'flex';
+        });
+        
+        document.getElementById('cancelAdd').addEventListener('click', () => {
+            document.getElementById('addCandidateModal').style.display = 'none';
+        });
+        
+        document.getElementById('saveAdd').addEventListener('click', async () => {
+            const name = document.getElementById('newName').value;
+            const classText = document.getElementById('newClass').value;
+            const photo = document.getElementById('newPhoto').value;
+            const bio = document.getElementById('newBio').value;
+            
+            if (!name) {
+                showMessage('Введите имя', 'error');
+                return;
+            }
+            
+            await supabase.from('candidates').insert({
+                name: name,
+                class: classText,
+                photo_url: photo || 'https://i.pravatar.cc/300',
+                bio: bio,
+                votes: 0
+            });
+            
+            document.getElementById('addCandidateModal').style.display = 'none';
+            showMessage('Кандидат добавлен', 'success');
+            loadCandidatesGrid();
+            loadTopCandidates();
+        });
+        
+        // ============================================
+        // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+        // ============================================
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + 'Panel').classList.add('active');
+            });
+        });
+        
+        // ============================================
+        // ПОИСК И ФИЛЬТРЫ
+        // ============================================
+        document.getElementById('refreshVotes').addEventListener('click', loadVotes);
+        document.getElementById('refreshSuggestions').addEventListener('click', loadSuggestions);
+        
+        // ============================================
+        // СООБЩЕНИЯ
+        // ============================================
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            
+            setTimeout(() => msg.remove(), 3000);
+        }
+        
+        // ============================================
+        // ЗАПУСК
+        // ============================================
+        checkAdmin();
+        
+        // Обновляем каждые 30 секунд
+        setInterval(() => {
+            if (isAdmin) {
+                loadStats();
+                loadChartData();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
