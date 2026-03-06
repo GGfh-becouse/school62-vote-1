@@ -562,7 +562,7 @@
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkY3d4dnhrdnluY3lic2Vmb3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NTMzODksImV4cCI6MjA4ODEyOTM4OX0.gIF0di79PaPA_0ckWX5R-wxQ435oaiu4jf1J48qz7SE';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         // ============================================
         // СОСТОЯНИЕ
@@ -644,7 +644,7 @@
         // ============================================
         async function loadCandidates() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('candidates')
                     .select('*')
                     .order('votes', { ascending: false });
