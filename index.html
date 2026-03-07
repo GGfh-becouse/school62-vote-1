@@ -3,179 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Битва за 8 марта - VK Classic</title>
+    <title>Школьная битва • Школа №62</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, 'Helvetica Neue', 'Arial', sans-serif;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
         }
 
         body {
-            background: #EDEEF0;  /* Фон как в старом ВК */
+            background: #f8f5f0;
             min-height: 100vh;
-            padding: 10px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         .container {
-            max-width: 800px;  /* Ограничиваем ширину для мобилок */
-            margin: 0 auto;
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+            min-height: 100vh;
+            position: relative;
         }
 
-        /* Шапка в стиле ВК */
+        /* ЭКРАН СОГЛАШЕНИЯ */
+        .agreement-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+
+        .agreement-card {
+            background: white;
+            border-radius: 32px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            border: 2px solid #e5b567;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .agreement-card h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e5b567;
+            font-weight: 700;
+        }
+
+        .agreement-card h2 span {
+            background: #e5b567;
+            color: white;
+            font-size: 1rem;
+            padding: 4px 10px;
+            border-radius: 30px;
+            margin-left: 10px;
+        }
+
+        .agreement-text {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .agreement-text p {
+            margin: 20px 0;
+        }
+
+        .agreement-text ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .agreement-text li {
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+
+        .agreement-highlight {
+            background: #fdf5e6;
+            padding: 15px;
+            border-radius: 16px;
+            border-left: 5px solid #e5b567;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+
+        .checkbox-container {
+            background: #f8f5f0;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkbox-container:hover {
+            background: #f0e8d8;
+        }
+
+        .checkbox-container input {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #e5b567;
+        }
+
+        .checkbox-container label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .agreement-button {
+            background: #e5b567;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 5px solid #c99a4a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .agreement-button:hover {
+            background: #d4a454;
+            transform: translateY(-2px);
+        }
+
+        .agreement-button:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+
+        .agreement-button:disabled {
+            background: #ccc;
+            border-bottom-color: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ОСНОВНОЙ КОНТЕНТ (скрыт до соглашения) */
+        .main-content {
+            display: none;
+            padding: 20px 16px 40px;
+        }
+
+        /* Шапка */
         .header {
-            background: linear-gradient(180deg, #597DA3 0%, #2B587A 100%);  /* Знаменитый синий градиент */
-            border-radius: 8px 8px 0 0;
-            padding: 12px 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 2px rgba(0,0,0,0.2);
-            border-bottom: 1px solid #0E2F4B;
+            background: linear-gradient(145deg, #4a6fa5 0%, #3a5a8a 100%);
+            border-radius: 24px 24px 24px 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 0 #2c3e50;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "62";
+            position: absolute;
+            right: 10px;
+            bottom: 5px;
+            font-size: 6rem;
+            opacity: 0.1;
+            color: white;
+            font-weight: 800;
         }
 
         .header h1 {
             color: white;
-            font-size: 1.4rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-            font-weight: bold;
-            letter-spacing: -0.5px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 3px 3px 0 #2c3e50;
+            margin-bottom: 5px;
         }
 
-        .header h1 span {
-            color: #FFED85;  /* Жёлтый как в старом лого */
+        .header h1 small {
+            font-size: 1rem;
+            display: block;
+            opacity: 0.9;
+            font-weight: 400;
+            text-shadow: 1px 1px 0 #2c3e50;
         }
 
-        /* Информация о пользователе */
-        .user-info {
-            background: white;
-            border-radius: 6px;
-            padding: 10px 15px;
-            margin-bottom: 12px;
-            color: #2B587A;
+        /* Статистика пользователя (без IP) */
+        .user-stats {
+            background: #f8f5f0;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 2px solid #e0d6c8;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #C5D0DB;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            font-size: 0.9rem;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 12px;
         }
 
-        .user-ip {
-            font-family: monospace;
-            background: #EDEEF0;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            border: 1px solid #C5D0DB;
+        .stat-items {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .vote-count-badge {
-            background: #E1E7ED;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            border: 1px solid #C5D0DB;
+        .stat-pill {
+            background: #4a6fa5;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border-bottom: 3px solid #2c3e50;
         }
 
-        .info-bar {
-            background: #FFF9D7;  /* Жёлтый как в старых уведомлениях */
-            border: 1px solid #E2D5A0;
-            border-radius: 6px;
-            padding: 10px 15px;
-            margin-bottom: 15px;
-            color: #5A4A00;
-            text-align: center;
-            font-weight: 500;
-            font-size: 0.95rem;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        .stat-pill span {
+            background: #ffd966;
+            color: #2c3e50;
+            padding: 2px 8px;
+            border-radius: 30px;
+            margin-left: 5px;
         }
 
-        /* Битва - адаптация под мобилки */
+        .school-badge {
+            background: #e5b567;
+            color: #2c3e50;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-bottom: 3px solid #c99a4a;
+        }
+
+        /* Карточки кандидатов */
         .battle-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        /* VS разделитель для мобилок */
-        .vs-divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #2B587A;
-            background: white;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            margin: 0 auto;
-            border: 2px solid #C5D0DB;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        /* Карточки кандидатов - компактные для мобилок */
         .candidate-card {
             background: white;
-            border-radius: 8px;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 0 #c0b8a8;
             cursor: pointer;
             position: relative;
-            border: 2px solid #C5D0DB;
+            border: 2px solid #e0d6c8;
             transition: all 0.1s ease;
         }
 
-        .candidate-card:hover {
-            border-color: #2B587A;
-        }
-
         .candidate-card.selected {
-            border-color: #4A76A8;
-            box-shadow: 0 0 0 2px #8CAAC8;
+            border: 3px solid #e5b567;
+            box-shadow: 0 6px 0 #b38f4a;
+            transform: translateY(-2px);
         }
 
         .candidate-card.voted {
             opacity: 0.6;
-            filter: grayscale(0.3);
+            filter: grayscale(0.5);
         }
 
-        /* Фото - теперь компактнее */
+        /* Редкость кандидатов */
+        .rarity-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rarity-common { background: #95a5a6; color: white; }
+        .rarity-rare { background: #3498db; color: white; }
+        .rarity-epic { background: #9b59b6; color: white; }
+        .rarity-legendary { background: #f1c40f; color: #2c3e50; }
+
         .candidate-photo {
             width: 100%;
-            height: auto;
-            aspect-ratio: 1/1;  /* Квадратное фото как в старом ВК */
+            aspect-ratio: 1/1;
             object-fit: cover;
-            border-bottom: 2px solid #D3DCE8;
+            border-bottom: 3px solid #f0f0f0;
         }
 
         .candidate-info {
-            padding: 10px;
+            padding: 12px;
         }
 
         .candidate-name {
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 1.2rem;
+            font-weight: 700;
             margin-bottom: 3px;
-            color: #2B587A;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .candidate-class {
-            color: #656565;
+            color: #7f8c8d;
             font-size: 0.8rem;
             margin-bottom: 6px;
+            font-weight: 500;
         }
 
         .candidate-bio {
-            color: #414141;
+            color: #34495e;
             font-size: 0.8rem;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             line-height: 1.3;
             display: -webkit-box;
-            -webkit-line-clamp: 2;  /* Обрезаем длинные описания */
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -185,220 +366,228 @@
             justify-content: space-between;
             align-items: center;
             padding-top: 8px;
-            border-top: 1px solid #E7E8EC;
+            border-top: 2px dashed #e0d6c8;
         }
 
         .rating {
-            background: #E1E7ED;
-            color: #2B587A;
+            background: #4a6fa5;
+            color: #ffd966;
             font-weight: bold;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 1rem;
-            border: 1px solid #B3C4D4;
-        }
-
-        .vote-badge {
-            background: #4A76A8;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        .rating-change {
-            font-size: 0.75rem;
-            color: #656565;
-        }
-
-        /* Кнопка действия */
-        .action-button {
-            background: linear-gradient(180deg, #6A8BBF 0%, #2B587A 100%);
-            border: none;
-            color: white;
-            font-weight: bold;
+            padding: 4px 14px;
+            border-radius: 30px;
             font-size: 1.1rem;
-            padding: 12px 30px;
-            border-radius: 6px;
+            border-bottom: 3px solid #2c3e50;
+        }
+
+        .vs-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #4a6fa5;
+            background: white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin: 0 auto;
+            border: 2px solid #e5b567;
+            box-shadow: 0 4px 0 #b38f4a;
+        }
+
+        /* Кнопка голосования */
+        .vote-button {
+            background: #e5b567;
+            border: none;
+            color: #2c3e50;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 16px 30px;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 2px 2px rgba(0,0,0,0.2);
-            margin: 10px auto 20px;
+            box-shadow: 0 6px 0 #b38f4a;
+            margin: 10px auto 25px;
             display: block;
             width: fit-content;
-            border: 1px solid #1D3F5C;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.1s;
         }
 
-        .action-button:active {
-            background: linear-gradient(180deg, #2B587A 0%, #1D3F5C 100%);
+        .vote-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #b38f4a;
         }
 
-        .action-button:disabled {
+        .vote-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        /* Система предсказаний */
+        .prediction-box {
+            background: #f8f5f0;
+            border-radius: 20px;
+            padding: 16px;
+            margin: 20px 0;
+            border: 2px solid #e0d6c8;
+        }
+
+        .prediction-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .prediction-bars {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .prediction-bar {
+            flex: 1;
+            height: 30px;
+            background: #d0d0d0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .prediction-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a6fa5, #6b8ec9);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .prediction-fill.right {
+            background: linear-gradient(90deg, #e5b567, #f5c587);
+        }
+
+        .prediction-percent {
+            font-weight: 700;
+            color: #2c3e50;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        /* Достижения */
+        .achievements {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #e0d6c8;
+        }
+
+        .achievements h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .achievement-item {
+            background: #f8f5f0;
+            border-radius: 16px;
+            padding: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .achievement-item.unlocked {
+            border-color: #e5b567;
+            background: #fdf5e6;
+        }
+
+        .achievement-icon {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .achievement-title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #2c3e50;
+        }
+
+        .achievement-progress {
+            font-size: 0.7rem;
+            color: #7f8c8d;
+            margin-top: 3px;
         }
 
         /* Рекомендации */
         .recommendations {
             background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            border: 1px solid #C5D0DB;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .recommendations h3 {
-            color: #2B587A;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            border-radius: 24px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #e0d6c8;
         }
 
         .recommendations-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
 
         .recommendation-card {
-            background: #EDEEF0;
-            border-radius: 6px;
+            background: #f8f5f0;
+            border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
-            border: 1px solid #C5D0DB;
-            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.1s;
+        }
+
+        .recommendation-card:hover {
+            border-color: #e5b567;
         }
 
         .recommendation-photo {
             width: 100%;
-            height: auto;
             aspect-ratio: 1/1;
             object-fit: cover;
-            border-bottom: 1px solid #C5D0DB;
         }
 
         .recommendation-info {
-            padding: 6px;
+            padding: 8px;
+            text-align: center;
         }
 
         .recommendation-name {
-            font-weight: bold;
-            color: #2B587A;
+            font-weight: 600;
             font-size: 0.8rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .recommendation-rating {
-            background: #E1E7ED;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            display: inline-block;
-            margin-top: 3px;
-            border: 1px solid #B3C4D4;
-        }
-
-        /* Стена новостей */
-        .news-wall {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-            border: 1px solid #C5D0DB;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .news-wall h2 {
-            color: #2B587A;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            border-bottom: 2px solid #D3DCE8;
-            padding-bottom: 8px;
-        }
-
-        .news-item {
-            background: #EDEEF0;
-            border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 4px solid #2B587A;
-        }
-
-        .news-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        .news-title {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #2B587A;
-        }
-
-        .news-date {
-            background: #D3DCE8;
-            color: #2B587A;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .news-content {
-            color: #414141;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-
-        .news-tag {
-            display: inline-block;
-            background: #E1E7ED;
-            color: #2B587A;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            border: 1px solid #B3C4D4;
-        }
-
-        .news-tag.update { background: #C2E0FF; }
-        .news-tag.event { background: #FFE5A3; }
-        .news-tag.development { background: #D8D8D8; }
-
-        .admin-news-badge {
-            background: #4A76A8;
-            color: white;
-            padding: 1px 6px;
-            border-radius: 4px;
-            font-size: 0.6rem;
-            margin-left: 5px;
+            color: #2c3e50;
         }
 
         /* Рейтинг */
         .rating-table {
             background: white;
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 24px;
+            padding: 20px;
             margin: 20px 0;
-            border: 1px solid #C5D0DB;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .rating-table h2 {
-            color: #2B587A;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            text-align: center;
+            border: 2px solid #e0d6c8;
         }
 
         .rating-list {
@@ -410,33 +599,31 @@
         .rating-item {
             display: flex;
             align-items: center;
-            padding: 8px 12px;
-            background: #EDEEF0;
-            border-radius: 6px;
-            border: 1px solid #D3DCE8;
+            padding: 10px 12px;
+            background: #f8f5f0;
+            border-radius: 16px;
         }
 
         .rating-position {
-            width: 28px;
-            height: 28px;
-            background: #2B587A;
-            color: white;
-            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            background: #4a6fa5;
+            color: #ffd966;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            margin-right: 10px;
-            font-size: 0.9rem;
+            margin-right: 12px;
         }
 
         .rating-avatar {
             width: 40px;
             height: 40px;
-            border-radius: 4px;
+            border-radius: 10px;
             object-fit: cover;
-            margin-right: 10px;
-            border: 2px solid #C5D0DB;
+            margin-right: 12px;
+            border: 2px solid #e5b567;
         }
 
         .rating-info {
@@ -444,39 +631,36 @@
         }
 
         .rating-name {
-            font-weight: bold;
-            color: #2B587A;
-            font-size: 1rem;
+            font-weight: 700;
+            color: #2c3e50;
         }
 
         .rating-class {
-            color: #656565;
             font-size: 0.8rem;
+            color: #7f8c8d;
         }
 
         .rating-score {
-            font-weight: bold;
-            color: #2B587A;
-            background: #E1E7ED;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 1rem;
-            border: 1px solid #B3C4D4;
+            font-weight: 700;
+            color: #4a6fa5;
+            background: #ffd966;
+            padding: 4px 12px;
+            border-radius: 30px;
         }
 
+        /* Сообщения */
         .message {
             position: fixed;
-            top: 10px;
-            right: 10px;
+            top: 20px;
+            right: 20px;
             padding: 12px 20px;
-            border-radius: 6px;
+            border-radius: 40px;
             color: white;
             font-weight: 500;
-            z-index: 1000;
+            z-index: 10001;
             animation: slideIn 0.2s;
-            max-width: 280px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             font-size: 0.9rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         @keyframes slideIn {
@@ -484,279 +668,272 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .message.success { background: #4A76A8; }
-        .message.error { background: #A84A4A; }
-        .message.info { background: #6A8BBF; }
-        .message.warning { background: #E2A84A; color: #1D3F5C; }
+        .message.success { background: #4a6fa5; }
+        .message.error { background: #c0392b; }
+        .message.info { background: #7f8c8d; }
 
-        .empty-state {
+        /* Загрузка */
+        .loading {
             text-align: center;
             padding: 40px;
-            background: white;
-            border-radius: 8px;
-            color: #656565;
-            border: 1px solid #C5D0DB;
+            color: #7f8c8d;
         }
 
         .loader {
-            border: 3px solid #E1E7ED;
-            border-top: 3px solid #2B587A;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e5b567;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 15px auto;
+            margin: 20px auto;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .bot-link {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .bot-link a {
-            color: #2B587A;
-            text-decoration: none;
-            background: #E1E7ED;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            border: 1px solid #B3C4D4;
-            display: inline-block;
-        }
-
-        .bot-link a:hover {
-            background: #D3DCE8;
-        }
-
-        /* Адаптация для очень маленьких экранов */
-        @media (max-width: 480px) {
-            .candidate-name {
-                font-size: 1rem;
-            }
-            .candidate-class, .candidate-bio {
-                font-size: 0.75rem;
-            }
-            .rating {
-                font-size: 0.9rem;
-                padding: 3px 8px;
-            }
-            .action-button {
-                font-size: 1rem;
-                padding: 10px 25px;
-            }
-            .recommendations-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 5px;
-            }
-        }
     </style>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
 </head>
 <body>
     <div class="container">
-        <!-- Шапка ВК-стайл -->
-        <div class="header">
-            <h1>БИТВА <span>ЗА 8 МАРТА</span></h1>
-        </div>
-
-        <!-- Инфо-блок -->
-        <div class="user-info" id="userInfo">
-            <span>IP: <span id="userIp" class="user-ip">опр...</span></span>
-            <span class="vote-count-badge" id="voteCountBadge">0</span>
-        </div>
-
-        <div id="infoBar" class="info-bar">
-            ⚔️ +100 победителю / -50 проигравшему
-        </div>
-
-        <div id="messageContainer"></div>
-
-        <!-- Битва -->
-        <div id="battleContainer" style="display: none;">
-            <div class="battle-container" id="battleGrid"></div>
-            <button id="voteBtn" class="action-button">ГОЛОСОВАТЬ</button>
-        </div>
-
-        <!-- Рекомендации -->
-        <div id="recommendations" class="recommendations" style="display: none;">
-            <h3>📌 Вам也可能 понравятся</h3>
-            <div id="recommendationsGrid" class="recommendations-grid"></div>
-        </div>
-
-        <!-- Стена новостей -->
-        <div class="news-wall" id="newsWall">
-            <h2>📢 НОВОСТИ</h2>
-            <div class="news-container" id="newsContainer">
-                <div class="news-empty">Загрузка...</div>
+        <!-- ЭКРАН СОГЛАШЕНИЯ -->
+        <div class="agreement-screen" id="agreementScreen">
+            <div class="agreement-card">
+                <h2>Школа №62 <span>Караганда</span></h2>
+                
+                <div class="agreement-text">
+                    <p><strong>Добро пожаловать на сайт школьного голосования!</strong></p>
+                    
+                    <p>Используя данный сайт, вы подтверждаете следующее:</p>
+                    
+                    <ul>
+                        <li><strong>Участие:</strong> Вы являетесь учеником или сотрудником школы №62 г. Караганда</li>
+                        <li><strong>Честное голосование:</strong> Запрещается использование способов искусственного увеличения голосов</li>
+                        <li><strong>VPN:</strong> Для обеспечения честности голосования запрещается использовать VPN или прокси-сервисы</li>
+                    </ul>
+                    
+                    <div class="agreement-highlight">
+                        <strong>📊 Технические данные:</strong> Для защиты от накруток сайт автоматически фиксирует технические данные подключения (IP-адрес). Эти данные используются исключительно для обеспечения корректной работы и не передаются третьим лицам.
+                    </div>
+                    
+                    <p><small>Продолжая использование сайта, вы соглашаетесь с условиями данного соглашения.</small></p>
+                </div>
+                
+                <div class="checkbox-container" id="agreementCheckbox">
+                    <input type="checkbox" id="schoolCheckbox">
+                    <label for="schoolCheckbox">✅ Я учусь в школе №62 г. Караганда</label>
+                </div>
+                
+                <button class="agreement-button" id="enterSiteBtn" disabled>Войти на сайт</button>
             </div>
         </div>
 
-        <!-- Рейтинг -->
-        <div id="ratingContainer" class="rating-table" style="display: none;">
-            <h2>🏆 РЕЙТИНГ</h2>
-            <div id="ratingList" class="rating-list"></div>
-        </div>
+        <!-- ОСНОВНОЙ КОНТЕНТ (скрыт до соглашения) -->
+        <div class="main-content" id="mainContent">
+            <!-- Шапка -->
+            <div class="header">
+                <h1>ШКОЛЬНАЯ БИТВА <small>Школа №62 • Караганда</small></h1>
+            </div>
 
-        <!-- Ссылка на бота -->
-        <div class="bot-link">
-            <a href="https://t.me/school_vote_bot" target="_blank">📱 Предложить кандидата</a>
-        </div>
+            <!-- Статистика пользователя (IP скрыт) -->
+            <div class="user-stats">
+                <div class="stat-items">
+                    <div class="stat-pill">
+                        🗳️ Голосов <span id="voteCountBadge">0</span>
+                    </div>
+                    <div class="stat-pill">
+                        🔥 Комбо <span id="comboCount">0</span>
+                    </div>
+                    <div class="stat-pill">
+                        ⭐ Предсказания <span id="predictionsWon">0</span>/<span id="predictionsTotal">0</span>
+                    </div>
+                </div>
+                <div class="school-badge">
+                    🏫 Школа №62
+                </div>
+            </div>
 
-        <!-- Пустое состояние -->
-        <div id="emptyState" class="empty-state">
-            <div class="loader"></div>
-            <p>Загрузка...</p>
+            <!-- Сообщения -->
+            <div id="messageContainer"></div>
+
+            <!-- Битва -->
+            <div id="battleContainer" style="display: none;">
+                <div class="battle-container" id="battleGrid"></div>
+                
+                <!-- Блок предсказаний -->
+                <div class="prediction-box" id="predictionBox">
+                    <h3>🔮 Кто победит?</h3>
+                    <div class="prediction-bars">
+                        <div class="prediction-bar">
+                            <div class="prediction-fill" id="predictionLeft" style="width: 50%;">50%</div>
+                        </div>
+                        <span class="prediction-percent">VS</span>
+                        <div class="prediction-bar">
+                            <div class="prediction-fill right" id="predictionRight" style="width: 50%;">50%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="vote-button" id="voteBtn">⚡ ГОЛОСОВАТЬ ⚡</button>
+            </div>
+
+            <!-- Достижения -->
+            <div class="achievements">
+                <h3>🏆 ДОСТИЖЕНИЯ</h3>
+                <div class="achievement-grid" id="achievements">
+                    <div class="achievement-item" id="ach1">
+                        <div class="achievement-icon">🗳️</div>
+                        <div class="achievement-title">Новичок</div>
+                        <div class="achievement-progress" id="ach1Progress">0/1</div>
+                    </div>
+                    <div class="achievement-item" id="ach2">
+                        <div class="achievement-icon">🔥</div>
+                        <div class="achievement-title">Комбо</div>
+                        <div class="achievement-progress" id="ach2Progress">0/3</div>
+                    </div>
+                    <div class="achievement-item" id="ach3">
+                        <div class="achievement-icon">🔮</div>
+                        <div class="achievement-title">Провидец</div>
+                        <div class="achievement-progress" id="ach3Progress">0/5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Рекомендации -->
+            <div id="recommendations" class="recommendations" style="display: none;">
+                <h3>🎯 Вам также могут понравиться</h3>
+                <div id="recommendationsGrid" class="recommendations-grid"></div>
+            </div>
+
+            <!-- Рейтинг -->
+            <div id="ratingContainer" class="rating-table" style="display: none;">
+                <h3>🏆 ТОП-10 ШКОЛЫ №62</h3>
+                <div id="ratingList" class="rating-list"></div>
+            </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-        // КОНФИГУРАЦИЯ - ТВОИ ДАННЫЕ
+        // НАСТРОЙКИ SUPABASE
         // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
-        
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
+
+        // ============================================
+        // УПРАВЛЕНИЕ СОГЛАШЕНИЕМ
+        // ============================================
+        const agreementScreen = document.getElementById('agreementScreen');
+        const mainContent = document.getElementById('mainContent');
+        const schoolCheckbox = document.getElementById('schoolCheckbox');
+        const enterBtn = document.getElementById('enterSiteBtn');
+
+        // Проверяем, было ли уже согласие
+        if (localStorage.getItem('agreementAccepted') === 'true') {
+            agreementScreen.style.display = 'none';
+            mainContent.style.display = 'block';
+            initApp();
+        }
+
+        schoolCheckbox.addEventListener('change', function() {
+            enterBtn.disabled = !this.checked;
+        });
+
+        enterBtn.addEventListener('click', function() {
+            if (schoolCheckbox.checked) {
+                localStorage.setItem('agreementAccepted', 'true');
+                agreementScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                initApp();
+            }
+        });
+
+        // ============================================
+        // ОСНОВНОЕ СОСТОЯНИЕ
+        // ============================================
         let allCandidates = [];
         let currentPair = [];
         let selectedCandidateId = null;
         let userIp = null;
         let userVotes = {};
         let userVoteCount = 0;
+        let comboCount = 0;
         let lastVoteTime = null;
+        let predictions = { won: 0, total: 0 };
         
+        // Редкости
+        const rarities = ['common', 'rare', 'epic', 'legendary'];
+        const rarityNames = { common: 'Обычная', rare: 'Редкая', epic: 'Эпическая', legendary: 'Легендарная' };
+
         // ============================================
-        // ПОЛУЧЕНИЕ IP
+        // ПОЛУЧЕНИЕ IP (скрыто от пользователя)
         // ============================================
         async function getUserIp() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
                 const data = await response.json();
                 userIp = data.ip;
-                document.getElementById('userIp').textContent = userIp;
                 return userIp;
             } catch (error) {
-                console.error('Ошибка получения IP:', error);
-                document.getElementById('userIp').textContent = '?';
-                userIp = 'unknown-' + Math.random().toString(36).substring(2);
+                userIp = 'user-' + Math.random().toString(36).substring(2, 10);
                 return userIp;
             }
         }
-        
+
         // ============================================
-        // ЗАГРУЗКА НОВОСТЕЙ
+        // ГЕНЕРАЦИЯ РЕДКОСТИ
         // ============================================
-        async function loadNews() {
-            try {
-                const testNews = [
-                    {
-                        id: 1,
-                        title: "🚀 ЗАПУСК",
-                        content: "Старт голосования! Участвуйте и выбирайте лучших.",
-                        date: "07.03.2024",
-                        tag: "update"
-                    },
-                    {
-                        id: 2,
-                        title: "⚙️ РЕЙТИНГ",
-                        content: "Победитель +100, проигравший -50",
-                        date: "07.03.2024",
-                        tag: "development"
-                    },
-                    {
-                        id: 3,
-                        title: "🤖 БОТ",
-                        content: "Предлагайте кандидатов через Telegram",
-                        date: "07.03.2024",
-                        tag: "update"
-                    }
-                ];
-                
-                displayNews(testNews);
-            } catch (error) {
-                console.error('Ошибка загрузки новостей:', error);
-            }
+        function getRandomRarity() {
+            const rand = Math.random();
+            if (rand < 0.5) return 'common';
+            if (rand < 0.75) return 'rare';
+            if (rand < 0.9) return 'epic';
+            return 'legendary';
         }
-        
-        function displayNews(newsList) {
-            const container = document.getElementById('newsContainer');
-            
-            if (!newsList || newsList.length === 0) {
-                container.innerHTML = '<div class="news-empty">Нет новостей</div>';
-                return;
-            }
-            
-            let html = '';
-            newsList.forEach(item => {
-                let tagClass = 'news-tag';
-                if (item.tag === 'development') tagClass += ' development';
-                else if (item.tag === 'update') tagClass += ' update';
-                else if (item.tag === 'event') tagClass += ' event';
-                
-                html += `
-                    <div class="news-item">
-                        <div class="news-header">
-                            <span class="news-title">${item.title}</span>
-                            <span class="news-date">${item.date}</span>
-                        </div>
-                        <div class="news-content">${item.content}</div>
-                        <span class="${tagClass}">${item.tag}</span>
-                        <span class="admin-news-badge">админ</span>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-        
+
         // ============================================
-        // ЗАГРУЗКА ГОЛОСОВ
+        // ЗАГРУЗКА ДАННЫХ
         // ============================================
         async function loadUserVotes() {
             if (!userIp) return;
             
             try {
-                const { data, error } = await supabaseClient
+                const { data } = await supabaseClient
                     .from('votes')
                     .select('candidate_id, created_at')
-                    .eq('ip_address', userIp);
-                
-                if (error) throw error;
-                
-                userVotes = {};
-                userVoteCount = 0;
+                    .eq('ip_address', userIp)
+                    .order('created_at', { ascending: false });
                 
                 if (data) {
+                    userVotes = {};
                     data.forEach(vote => {
                         userVotes[vote.candidate_id] = true;
-                        userVoteCount++;
                     });
+                    userVoteCount = data.length;
                     
-                    if (data.length > 0) {
-                        const sorted = data.sort((a, b) => 
-                            new Date(b.created_at) - new Date(a.created_at)
-                        );
-                        lastVoteTime = new Date(sorted[0].created_at);
+                    // Проверяем комбо
+                    if (data.length > 1) {
+                        const lastVote = new Date(data[0].created_at);
+                        const prevVote = new Date(data[1].created_at);
+                        const diff = (lastVote - prevVote) / 1000;
+                        if (diff < 60) comboCount = 2;
+                        if (data.length > 2) {
+                            const prev2Vote = new Date(data[2].created_at);
+                            const diff2 = (prevVote - prev2Vote) / 1000;
+                            if (diff2 < 60) comboCount = 3;
+                        }
                     }
+                    
+                    updateUI();
                 }
-                
-                document.getElementById('voteCountBadge').textContent = userVoteCount;
-                
             } catch (error) {
                 console.error('Ошибка загрузки голосов:', error);
             }
         }
-        
-        // ============================================
-        // ЗАГРУЗКА КАНДИДАТОВ
-        // ============================================
+
         async function loadCandidates() {
             try {
                 const { data, error } = await supabaseClient
@@ -766,25 +943,30 @@
                 
                 if (error) throw error;
                 
-                allCandidates = data || [];
+                allCandidates = (data || []).map(c => ({
+                    ...c,
+                    rarity: getRandomRarity()
+                }));
                 
                 if (allCandidates.length < 2) {
                     showMessage('Нужно минимум 2 кандидата', 'error');
-                    document.getElementById('emptyState').innerHTML = '😢 Нет кандидатов';
                     return;
                 }
                 
-                document.getElementById('emptyState').style.display = 'none';
                 document.getElementById('battleContainer').style.display = 'block';
                 document.getElementById('ratingContainer').style.display = 'block';
                 
                 updateLeaderboard();
                 selectNewPair();
+                updateUI();
             } catch (err) {
                 showMessage('Ошибка загрузки: ' + err.message, 'error');
             }
         }
-        
+
+        // ============================================
+        // ВЫБОР ПАРЫ
+        // ============================================
         function selectNewPair() {
             if (allCandidates.length < 2) return;
             
@@ -799,23 +981,23 @@
                 } while (first.id === second.id);
                 
                 currentPair = [first, second];
-            } else if (available.length === 1) {
-                const voted = allCandidates.find(c => userVotes[c.id]);
-                currentPair = [available[0], voted];
             } else {
-                showMessage('Вы проголосовали за всех!', 'info');
                 const shuffled = [...allCandidates].sort(() => 0.5 - Math.random());
                 currentPair = [shuffled[0], shuffled[1]];
             }
             
             renderBattle(currentPair);
+            updatePrediction();
         }
-        
+
+        // ============================================
+        // ОТОБРАЖЕНИЕ БИТВЫ
+        // ============================================
         function renderBattle(pair) {
             const container = document.getElementById('battleGrid');
             
             if (!pair || pair.length < 2) {
-                container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Нет кандидатов</div>';
+                container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px;">Нет кандидатов</div>';
                 return;
             }
             
@@ -826,6 +1008,7 @@
                 <div class="candidate-card ${firstVoted ? 'voted' : ''}" 
                      onclick="${!firstVoted ? 'selectCandidate(' + pair[0].id + ')' : ''}" 
                      id="card-${pair[0].id}">
+                    <span class="rarity-badge rarity-${pair[0].rarity}">${rarityNames[pair[0].rarity]}</span>
                     <img src="${pair[0].photo_url || 'https://i.pravatar.cc/300'}" 
                          class="candidate-photo" 
                          onerror="this.src='https://i.pravatar.cc/300?u=${pair[0].id}'">
@@ -835,7 +1018,6 @@
                         <div class="candidate-bio">${pair[0].bio || ''}</div>
                         <div class="rating-container">
                             <span class="rating">❤️ ${pair[0].votes || 0}</span>
-                            ${firstVoted ? '<span class="vote-badge">✓</span>' : ''}
                         </div>
                     </div>
                 </div>
@@ -845,6 +1027,7 @@
                 <div class="candidate-card ${secondVoted ? 'voted' : ''}" 
                      onclick="${!secondVoted ? 'selectCandidate(' + pair[1].id + ')' : ''}" 
                      id="card-${pair[1].id}">
+                    <span class="rarity-badge rarity-${pair[1].rarity}">${rarityNames[pair[1].rarity]}</span>
                     <img src="${pair[1].photo_url || 'https://i.pravatar.cc/300'}" 
                          class="candidate-photo" 
                          onerror="this.src='https://i.pravatar.cc/300?u=${pair[1].id}'">
@@ -854,7 +1037,6 @@
                         <div class="candidate-bio">${pair[1].bio || ''}</div>
                         <div class="rating-container">
                             <span class="rating">❤️ ${pair[1].votes || 0}</span>
-                            ${secondVoted ? '<span class="vote-badge">✓</span>' : ''}
                         </div>
                     </div>
                 </div>
@@ -863,66 +1045,52 @@
             document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
             selectedCandidateId = null;
         }
-        
+
         window.selectCandidate = function(id) {
             document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
             document.getElementById(`card-${id}`).classList.add('selected');
             selectedCandidateId = id;
         };
-        
-        function getRecommendations(excludeId) {
-            const candidates = allCandidates.filter(c => 
-                c.id !== excludeId && !userVotes[c.id]
-            );
-            return candidates.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+        // ============================================
+        // ПРЕДСКАЗАНИЯ
+        // ============================================
+        function updatePrediction() {
+            if (!currentPair || currentPair.length < 2) return;
+            
+            const totalVotes = (currentPair[0].votes || 0) + (currentPair[1].votes || 0);
+            const leftPercent = totalVotes ? Math.round((currentPair[0].votes / totalVotes) * 100) : 50;
+            const rightPercent = 100 - leftPercent;
+            
+            document.getElementById('predictionLeft').style.width = leftPercent + '%';
+            document.getElementById('predictionLeft').textContent = leftPercent + '%';
+            document.getElementById('predictionRight').style.width = rightPercent + '%';
+            document.getElementById('predictionRight').textContent = rightPercent + '%';
         }
-        
-        function showRecommendations(excludeId) {
-            const recs = getRecommendations(excludeId);
-            const container = document.getElementById('recommendationsGrid');
+
+        // ============================================
+        // ОБНОВЛЕНИЕ UI
+        // ============================================
+        function updateUI() {
+            document.getElementById('voteCountBadge').textContent = userVoteCount;
+            document.getElementById('comboCount').textContent = comboCount;
+            document.getElementById('predictionsWon').textContent = predictions.won;
+            document.getElementById('predictionsTotal').textContent = predictions.total;
             
-            if (recs.length === 0) {
-                document.getElementById('recommendations').style.display = 'none';
-                return;
-            }
+            // Достижения
+            document.getElementById('ach1Progress').textContent = userVoteCount + '/1';
+            if (userVoteCount >= 1) document.getElementById('ach1').classList.add('unlocked');
             
-            let html = '';
-            recs.forEach(c => {
-                html += `
-                    <div class="recommendation-card" onclick="selectAndScroll(${c.id})">
-                        <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" 
-                             class="recommendation-photo">
-                        <div class="recommendation-info">
-                            <div class="recommendation-name">${c.name}</div>
-                            <span class="recommendation-rating">❤️ ${c.votes || 0}</span>
-                        </div>
-                    </div>
-                `;
-            });
+            document.getElementById('ach2Progress').textContent = comboCount + '/3';
+            if (comboCount >= 3) document.getElementById('ach2').classList.add('unlocked');
             
-            container.innerHTML = html;
-            document.getElementById('recommendations').style.display = 'block';
+            document.getElementById('ach3Progress').textContent = predictions.won + '/5';
+            if (predictions.won >= 5) document.getElementById('ach3').classList.add('unlocked');
         }
-        
-        window.selectAndScroll = function(id) {
-            document.getElementById('recommendations').style.display = 'none';
-            
-            if (currentPair[0]?.id === id || currentPair[1]?.id === id) {
-                selectCandidate(id);
-                document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
-                return;
-            }
-            
-            const candidate = allCandidates.find(c => c.id === id);
-            if (!candidate) return;
-            
-            const other = currentPair[0]?.id === id ? currentPair[1] : currentPair[0];
-            currentPair = [candidate, other];
-            renderBattle(currentPair);
-            selectCandidate(id);
-            document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
-        };
-        
+
+        // ============================================
+        // ГОЛОСОВАНИЕ
+        // ============================================
         document.getElementById('voteBtn').addEventListener('click', async function() {
             if (!selectedCandidateId) {
                 showMessage('Выберите девушку', 'error');
@@ -930,7 +1098,7 @@
             }
             
             if (!userIp) {
-                showMessage('Не удалось определить IP', 'error');
+                showMessage('Ошибка идентификации', 'error');
                 return;
             }
             
@@ -942,14 +1110,15 @@
             if (!winner || !loser) return;
             
             if (userVotes[winner.id]) {
-                showMessage(`Вы уже голосовали за ${winner.name}`, 'warning');
+                showMessage('Вы уже голосовали за этого кандидата', 'error');
                 return;
             }
             
+            // Защита от быстрых голосов
             if (lastVoteTime) {
                 const secondsSinceLastVote = (new Date() - lastVoteTime) / 1000;
-                if (secondsSinceLastVote < 5) {
-                    showMessage('Слишком быстро! Подождите 5 сек', 'warning');
+                if (secondsSinceLastVote < 3) {
+                    showMessage('Слишком быстро! Подождите 3 секунды', 'error');
                     return;
                 }
             }
@@ -969,28 +1138,91 @@
                     })
                 ]);
                 
+                // Обновление данных
                 winner.votes = newWinnerVotes;
                 loser.votes = newLoserVotes;
                 userVotes[winner.id] = true;
                 userVoteCount++;
                 lastVoteTime = new Date();
                 
-                document.getElementById('voteCountBadge').textContent = userVoteCount;
+                // Проверка комбо
+                comboCount = userVoteCount % 3 === 0 ? 3 : userVoteCount % 3;
+                
+                // Обновление предсказаний
+                predictions.total++;
+                const predictedWinner = currentPair[0].votes > currentPair[1].votes ? currentPair[0].id : currentPair[1].id;
+                if (selectedCandidateId === predictedWinner) predictions.won++;
                 
                 updateLeaderboard();
+                updateUI();
                 
-                showMessage(`✅ ${winner.name} +100`, 'success');
+                showMessage(`✅ +100 ${winner.name}!`, 'success');
+                
+                // Показываем рекомендации
                 showRecommendations(winner.id);
                 
+                // Новая пара
                 selectedCandidateId = null;
                 selectNewPair();
                 
             } catch (err) {
-                console.error('Ошибка:', err);
                 showMessage('Ошибка: ' + err.message, 'error');
             }
         });
-        
+
+        // ============================================
+        // РЕКОМЕНДАЦИИ
+        // ============================================
+        function showRecommendations(excludeId) {
+            const candidates = allCandidates.filter(c => 
+                c.id !== excludeId && !userVotes[c.id]
+            ).sort(() => 0.5 - Math.random()).slice(0, 3);
+            
+            const container = document.getElementById('recommendationsGrid');
+            
+            if (candidates.length === 0) {
+                document.getElementById('recommendations').style.display = 'none';
+                return;
+            }
+            
+            let html = '';
+            candidates.forEach(c => {
+                html += `
+                    <div class="recommendation-card" onclick="selectAndScroll(${c.id})">
+                        <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="recommendation-photo">
+                        <div class="recommendation-info">
+                            <div class="recommendation-name">${c.name}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            document.getElementById('recommendations').style.display = 'block';
+        }
+
+        window.selectAndScroll = function(id) {
+            document.getElementById('recommendations').style.display = 'none';
+            
+            if (currentPair[0]?.id === id || currentPair[1]?.id === id) {
+                selectCandidate(id);
+                document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
+            const candidate = allCandidates.find(c => c.id === id);
+            if (!candidate) return;
+            
+            const other = currentPair[0]?.id === id ? currentPair[1] : currentPair[0];
+            currentPair = [candidate, other];
+            renderBattle(currentPair);
+            selectCandidate(id);
+            document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // ============================================
+        // РЕЙТИНГ
+        // ============================================
         function updateLeaderboard() {
             const sorted = [...allCandidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
             const container = document.getElementById('ratingList');
@@ -1000,8 +1232,7 @@
                 html += `
                     <div class="rating-item">
                         <div class="rating-position">${index + 1}</div>
-                        <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" 
-                             class="rating-avatar">
+                        <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="rating-avatar">
                         <div class="rating-info">
                             <div class="rating-name">${c.name}</div>
                             <div class="rating-class">${c.class || ''}</div>
@@ -1013,7 +1244,10 @@
             
             container.innerHTML = html;
         }
-        
+
+        // ============================================
+        // СООБЩЕНИЯ
+        // ============================================
         function showMessage(text, type) {
             const container = document.getElementById('messageContainer');
             const msg = document.createElement('div');
@@ -1022,15 +1256,15 @@
             container.appendChild(msg);
             setTimeout(() => msg.remove(), 3000);
         }
-        
-        async function init() {
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        async function initApp() {
             await getUserIp();
             await loadUserVotes();
             await loadCandidates();
-            await loadNews();
         }
-        
-        init();
     </script>
 </body>
 </html>
