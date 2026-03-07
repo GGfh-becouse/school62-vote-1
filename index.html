@@ -2,243 +2,236 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Битва за 8 марта</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Битва за 8 марта - VK Classic</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            font-family: -apple-system, 'Helvetica Neue', 'Arial', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: #EDEEF0;  /* Фон как в старом ВК */
             min-height: 100vh;
-            padding: 16px;
+            padding: 10px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;  /* Ограничиваем ширину для мобилок */
             margin: 0 auto;
         }
 
+        /* Шапка в стиле ВК */
         .header {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(180deg, #597DA3 0%, #2B587A 100%);  /* Знаменитый синий градиент */
+            border-radius: 8px 8px 0 0;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+            border-bottom: 1px solid #0E2F4B;
         }
 
         .header h1 {
             color: white;
-            font-size: 1.8rem;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-size: 1.4rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            font-weight: bold;
+            letter-spacing: -0.5px;
         }
 
         .header h1 span {
-            color: #ffd700;
-            display: inline-block;
-            animation: sparkle 2s infinite;
+            color: #FFED85;  /* Жёлтый как в старом лого */
         }
 
-        @keyframes sparkle {
-            0%,100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
+        /* Информация о пользователе */
         .user-info {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 12px 20px;
-            margin-bottom: 24px;
-            color: #ffd700;
+            background: white;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 12px;
+            color: #2B587A;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid rgba(255,215,0,0.3);
+            border: 1px solid #C5D0DB;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .user-ip {
             font-family: monospace;
-            background: rgba(0,0,0,0.3);
+            background: #EDEEF0;
             padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border: 1px solid #C5D0DB;
         }
 
         .vote-count-badge {
-            background: rgba(255,215,0,0.2);
+            background: #E1E7ED;
             padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border: 1px solid #C5D0DB;
         }
 
         .info-bar {
-            background: rgba(255,215,0,0.1);
-            border: 1px solid rgba(255,215,0,0.3);
-            border-radius: 16px;
-            padding: 12px 20px;
-            margin-bottom: 24px;
-            color: #ffd700;
+            background: #FFF9D7;  /* Жёлтый как в старых уведомлениях */
+            border: 1px solid #E2D5A0;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            color: #5A4A00;
             text-align: center;
             font-weight: 500;
-            backdrop-filter: blur(5px);
+            font-size: 0.95rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
+        /* Битва - адаптация под мобилки */
         .battle-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
-        @media (max-width: 768px) {
-            .battle-container {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
+        /* VS разделитель для мобилок */
+        .vs-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #2B587A;
+            background: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            margin: 0 auto;
+            border: 2px solid #C5D0DB;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
+        /* Карточки кандидатов - компактные для мобилок */
         .candidate-card {
             background: white;
-            border-radius: 32px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
             cursor: pointer;
             position: relative;
-            border: 3px solid transparent;
+            border: 2px solid #C5D0DB;
+            transition: all 0.1s ease;
         }
 
-        .candidate-card:hover:not(.voted):not(.disabled) {
-            transform: translateY(-8px);
-            box-shadow: 0 30px 50px rgba(0,0,0,0.4);
+        .candidate-card:hover {
+            border-color: #2B587A;
         }
 
         .candidate-card.selected {
-            border-color: #ffd700;
-            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+            border-color: #4A76A8;
+            box-shadow: 0 0 0 2px #8CAAC8;
         }
 
         .candidate-card.voted {
-            opacity: 0.7;
-            cursor: not-allowed;
-            filter: grayscale(0.5);
+            opacity: 0.6;
+            filter: grayscale(0.3);
         }
 
+        /* Фото - теперь компактнее */
         .candidate-photo {
             width: 100%;
-            height: 350px;
+            height: auto;
+            aspect-ratio: 1/1;  /* Квадратное фото как в старом ВК */
             object-fit: cover;
-            border-bottom: 3px solid #f0f0f0;
+            border-bottom: 2px solid #D3DCE8;
         }
 
         .candidate-info {
-            padding: 24px;
+            padding: 10px;
         }
 
         .candidate-name {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #1a1a2e;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: #2B587A;
         }
 
         .candidate-class {
-            color: #666;
-            font-size: 1.2rem;
-            margin-bottom: 16px;
-            font-weight: 500;
+            color: #656565;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
         }
 
         .candidate-bio {
-            color: #444;
-            margin-bottom: 20px;
-            line-height: 1.6;
+            color: #414141;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;  /* Обрезаем длинные описания */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .rating-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 16px;
-            border-top: 2px solid #eee;
+            padding-top: 8px;
+            border-top: 1px solid #E7E8EC;
         }
 
         .rating {
-            background: linear-gradient(135deg, #ffd700, #ffa500);
-            color: #1a1a2e;
+            background: #E1E7ED;
+            color: #2B587A;
             font-weight: bold;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 10px rgba(255,215,0,0.3);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 1rem;
+            border: 1px solid #B3C4D4;
         }
 
         .vote-badge {
-            background: #28a745;
+            background: #4A76A8;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
         }
 
-        .vs-divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 800;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255,215,0,0.5);
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto;
-            backdrop-filter: blur(5px);
-            border: 2px solid rgba(255,215,0,0.3);
+        .rating-change {
+            font-size: 0.75rem;
+            color: #656565;
         }
 
-        @media (max-width: 768px) {
-            .vs-divider {
-                width: 60px;
-                height: 60px;
-                font-size: 2rem;
-                margin: 10px auto;
-            }
-        }
-
+        /* Кнопка действия */
         .action-button {
-            background: linear-gradient(135deg, #ffd700, #ffa500);
+            background: linear-gradient(180deg, #6A8BBF 0%, #2B587A 100%);
             border: none;
-            color: #1a1a2e;
-            font-weight: 700;
-            font-size: 1.3rem;
-            padding: 16px 40px;
-            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 12px 30px;
+            border-radius: 6px;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255,215,0,0.3);
-            transition: all 0.3s;
-            margin: 0 auto 30px;
+            box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+            margin: 10px auto 20px;
             display: block;
             width: fit-content;
+            border: 1px solid #1D3F5C;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        .action-button:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 15px 35px rgba(255,215,0,0.4);
+        .action-button:active {
+            background: linear-gradient(180deg, #2B587A 0%, #1D3F5C 100%);
         }
 
         .action-button:disabled {
@@ -246,241 +239,204 @@
             cursor: not-allowed;
         }
 
+        /* Рекомендации */
         .recommendations {
             background: white;
-            border-radius: 32px;
-            padding: 24px;
-            margin-top: 30px;
-            margin-bottom: 30px;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #C5D0DB;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .recommendations h3 {
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            text-align: center;
+            color: #2B587A;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
         }
 
         .recommendations-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
         }
 
         .recommendation-card {
-            background: #f8f9fa;
-            border-radius: 20px;
+            background: #EDEEF0;
+            border-radius: 6px;
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.2s;
-            border: 2px solid transparent;
-        }
-
-        .recommendation-card:hover {
-            transform: translateY(-4px);
-            border-color: #ffd700;
+            border: 1px solid #C5D0DB;
+            text-align: center;
         }
 
         .recommendation-photo {
             width: 100%;
-            height: 150px;
+            height: auto;
+            aspect-ratio: 1/1;
             object-fit: cover;
+            border-bottom: 1px solid #C5D0DB;
         }
 
         .recommendation-info {
-            padding: 15px;
+            padding: 6px;
         }
 
         .recommendation-name {
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .recommendation-class {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2B587A;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .recommendation-rating {
-            background: rgba(255,215,0,0.2);
-            padding: 4px 10px;
-            border-radius: 20px;
+            background: #E1E7ED;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
             display: inline-block;
-            font-weight: 600;
+            margin-top: 3px;
+            border: 1px solid #B3C4D4;
         }
 
-        /* ===== НОВЫЙ БЛОК - СТЕНА НОВОСТЕЙ ===== */
+        /* Стена новостей */
         .news-wall {
             background: white;
-            border-radius: 32px;
-            padding: 24px;
-            margin: 30px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border-left: 5px solid #ffd700;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #C5D0DB;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .news-wall h2 {
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .news-wall h2:before {
-            content: "📢";
-            font-size: 2rem;
-        }
-
-        .news-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            color: #2B587A;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-bottom: 2px solid #D3DCE8;
+            padding-bottom: 8px;
         }
 
         .news-item {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 20px;
-            transition: transform 0.2s;
-            border-left: 4px solid #ffd700;
-        }
-
-        .news-item:hover {
-            transform: translateX(5px);
-            background: #f0f3f5;
+            background: #EDEEF0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2B587A;
         }
 
         .news-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 5px;
         }
 
         .news-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #1a1a2e;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #2B587A;
         }
 
         .news-date {
-            background: #ffd700;
-            color: #1a1a2e;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            background: #D3DCE8;
+            color: #2B587A;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
 
         .news-content {
-            color: #444;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            color: #414141;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
         }
 
         .news-tag {
             display: inline-block;
-            background: rgba(255,215,0,0.2);
-            color: #1a1a2e;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            background: #E1E7ED;
+            color: #2B587A;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            border: 1px solid #B3C4D4;
         }
 
-        .news-tag.development {
-            background: #17a2b8;
-            color: white;
-        }
-
-        .news-tag.update {
-            background: #28a745;
-            color: white;
-        }
-
-        .news-tag.event {
-            background: #ffc107;
-            color: #1a1a2e;
-        }
-
-        .news-empty {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-style: italic;
-        }
+        .news-tag.update { background: #C2E0FF; }
+        .news-tag.event { background: #FFE5A3; }
+        .news-tag.development { background: #D8D8D8; }
 
         .admin-news-badge {
-            background: #ffd700;
-            color: #1a1a2e;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            margin-left: 10px;
-            font-weight: normal;
+            background: #4A76A8;
+            color: white;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            margin-left: 5px;
         }
-        /* ===== КОНЕЦ НОВОГО БЛОКА ===== */
 
+        /* Рейтинг */
         .rating-table {
             background: white;
-            border-radius: 32px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #C5D0DB;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .rating-table h2 {
-            color: #1a1a2e;
-            margin-bottom: 24px;
-            font-size: 1.8rem;
+            color: #2B587A;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
             text-align: center;
         }
 
         .rating-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
         }
 
         .rating-item {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            background: #f8f9fa;
-            border-radius: 16px;
-            transition: transform 0.2s;
-        }
-
-        .rating-item:hover {
-            transform: translateX(5px);
-            background: #f0f3f5;
+            padding: 8px 12px;
+            background: #EDEEF0;
+            border-radius: 6px;
+            border: 1px solid #D3DCE8;
         }
 
         .rating-position {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: #ffd700;
-            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            background: #2B587A;
+            color: white;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            margin-right: 16px;
+            margin-right: 10px;
+            font-size: 0.9rem;
         }
 
         .rating-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
             object-fit: cover;
-            margin-right: 16px;
-            border: 2px solid #ffd700;
+            margin-right: 10px;
+            border: 2px solid #C5D0DB;
         }
 
         .rating-info {
@@ -488,36 +444,39 @@
         }
 
         .rating-name {
-            font-weight: 700;
-            color: #333;
-            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2B587A;
+            font-size: 1rem;
         }
 
         .rating-class {
-            color: #666;
-            font-size: 0.9rem;
+            color: #656565;
+            font-size: 0.8rem;
         }
 
         .rating-score {
-            font-weight: 800;
-            color: #1a1a2e;
-            background: rgba(255,215,0,0.2);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2B587A;
+            background: #E1E7ED;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 1rem;
+            border: 1px solid #B3C4D4;
         }
 
         .message {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 16px;
+            top: 10px;
+            right: 10px;
+            padding: 12px 20px;
+            border-radius: 6px;
             color: white;
             font-weight: 500;
             z-index: 1000;
-            animation: slideIn 0.3s;
-            max-width: 350px;
+            animation: slideIn 0.2s;
+            max-width: 280px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         @keyframes slideIn {
@@ -525,26 +484,28 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .message.success { background: #28a745; }
-        .message.error { background: #dc3545; }
-        .message.info { background: #17a2b8; }
-        .message.warning { background: #ffc107; color: #1a1a2e; }
+        .message.success { background: #4A76A8; }
+        .message.error { background: #A84A4A; }
+        .message.info { background: #6A8BBF; }
+        .message.warning { background: #E2A84A; color: #1D3F5C; }
 
         .empty-state {
             text-align: center;
-            padding: 60px;
-            color: white;
-            font-size: 1.2rem;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            color: #656565;
+            border: 1px solid #C5D0DB;
         }
 
         .loader {
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid #ffd700;
+            border: 3px solid #E1E7ED;
+            border-top: 3px solid #2B587A;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 15px auto;
         }
 
         @keyframes spin {
@@ -554,72 +515,102 @@
 
         .bot-link {
             text-align: center;
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
         .bot-link a {
-            color: #ffd700;
+            color: #2B587A;
             text-decoration: none;
-            background: rgba(255,215,0,0.1);
+            background: #E1E7ED;
             padding: 8px 16px;
-            border-radius: 30px;
+            border-radius: 6px;
             font-size: 0.9rem;
+            border: 1px solid #B3C4D4;
+            display: inline-block;
         }
 
         .bot-link a:hover {
-            background: rgba(255,215,0,0.2);
+            background: #D3DCE8;
+        }
+
+        /* Адаптация для очень маленьких экранов */
+        @media (max-width: 480px) {
+            .candidate-name {
+                font-size: 1rem;
+            }
+            .candidate-class, .candidate-bio {
+                font-size: 0.75rem;
+            }
+            .rating {
+                font-size: 0.9rem;
+                padding: 3px 8px;
+            }
+            .action-button {
+                font-size: 1rem;
+                padding: 10px 25px;
+            }
+            .recommendations-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 5px;
+            }
         }
     </style>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
 </head>
 <body>
     <div class="container">
+        <!-- Шапка ВК-стайл -->
         <div class="header">
-            <h1>🌸 БИТВА <span>ЗА 8 МАРТА</span> 🌸</h1>
+            <h1>БИТВА <span>ЗА 8 МАРТА</span></h1>
         </div>
 
+        <!-- Инфо-блок -->
         <div class="user-info" id="userInfo">
-            <span>🔍 Ваш IP: <span id="userIp" class="user-ip">определяется...</span></span>
-            <span class="vote-count-badge" id="voteCountBadge">0 голосов</span>
+            <span>IP: <span id="userIp" class="user-ip">опр...</span></span>
+            <span class="vote-count-badge" id="voteCountBadge">0</span>
         </div>
 
         <div id="infoBar" class="info-bar">
-            ⚔️ Выберите лучшую! Победитель +100, проигравший -50
+            ⚔️ +100 победителю / -50 проигравшему
         </div>
 
         <div id="messageContainer"></div>
 
+        <!-- Битва -->
         <div id="battleContainer" style="display: none;">
             <div class="battle-container" id="battleGrid"></div>
-            <button id="voteBtn" class="action-button">⚔️ Сделать выбор ⚔️</button>
+            <button id="voteBtn" class="action-button">ГОЛОСОВАТЬ</button>
         </div>
 
+        <!-- Рекомендации -->
         <div id="recommendations" class="recommendations" style="display: none;">
-            <h3>🌟 Возможно, вам также понравятся</h3>
+            <h3>📌 Вам也可能 понравятся</h3>
             <div id="recommendationsGrid" class="recommendations-grid"></div>
         </div>
 
-        <!-- ===== НОВЫЙ БЛОК - СТЕНА НОВОСТЕЙ ===== -->
+        <!-- Стена новостей -->
         <div class="news-wall" id="newsWall">
-            <h2> НОВОСТИ</h2>
+            <h2>📢 НОВОСТИ</h2>
             <div class="news-container" id="newsContainer">
-                <div class="news-empty">Загрузка новостей...</div>
+                <div class="news-empty">Загрузка...</div>
             </div>
         </div>
-        <!-- ===== КОНЕЦ НОВОГО БЛОКА ===== -->
 
+        <!-- Рейтинг -->
         <div id="ratingContainer" class="rating-table" style="display: none;">
-            <h2>🏆 РЕЙТИНГ ДЕВУШЕК 🏆</h2>
+            <h2>🏆 РЕЙТИНГ</h2>
             <div id="ratingList" class="rating-list"></div>
         </div>
 
+        <!-- Ссылка на бота -->
         <div class="bot-link">
-            <a href="https://t.me/school_vote_bot" target="_blank">📱 Предложить кандидата через Telegram</a>
+            <a href="https://t.me/school_vote_bot" target="_blank">📱 Предложить кандидата</a>
         </div>
 
+        <!-- Пустое состояние -->
         <div id="emptyState" class="empty-state">
             <div class="loader"></div>
-            <p>Загрузка кандидатов...</p>
+            <p>Загрузка...</p>
         </div>
     </div>
 
@@ -633,9 +624,6 @@
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // ============================================
-        // СОСТОЯНИЕ
-        // ============================================
         let allCandidates = [];
         let currentPair = [];
         let selectedCandidateId = null;
@@ -643,7 +631,6 @@
         let userVotes = {};
         let userVoteCount = 0;
         let lastVoteTime = null;
-        let news = []; // Массив для новостей
         
         // ============================================
         // ПОЛУЧЕНИЕ IP
@@ -657,7 +644,7 @@
                 return userIp;
             } catch (error) {
                 console.error('Ошибка получения IP:', error);
-                document.getElementById('userIp').textContent = 'не определен';
+                document.getElementById('userIp').textContent = '?';
                 userIp = 'unknown-' + Math.random().toString(36).substring(2);
                 return userIp;
             }
@@ -668,66 +655,50 @@
         // ============================================
         async function loadNews() {
             try {
-                // Здесь можно загружать новости из Supabase
-                // Но пока сделаем тестовые новости
-                
                 const testNews = [
                     {
                         id: 1,
-                        title: "Запуск проекта",
-                        content: "Открытие сайта. каждый может проголосовать за любимую девушку школы",
-                        date: "2026-03-06",
+                        title: "🚀 ЗАПУСК",
+                        content: "Старт голосования! Участвуйте и выбирайте лучших.",
+                        date: "07.03.2024",
                         tag: "update"
                     },
                     {
                         id: 2,
-                        title: "Обновления",
-                        content: "Будут проводиться частые обновления, в которых будет введен нормальный рейтинг, подсчет голосов недели, и многое друге. Главное голосуйте",
-                        date: "2026-03-06",
+                        title: "⚙️ РЕЙТИНГ",
+                        content: "Победитель +100, проигравший -50",
+                        date: "07.03.2024",
                         tag: "development"
                     },
                     {
                         id: 3,
-                        title: "Ваша помощь",
-                        content: "Вы можете написать о своей проблеме нашему тг-боту, если Вас чтото не устраивает. Наша поддержка работает с 7:00 до 00:00 по Караганде",
-                        date: "2026-03-06",
+                        title: "🤖 БОТ",
+                        content: "Предлагайте кандидатов через Telegram",
+                        date: "07.03.2024",
                         tag: "update"
                     }
                 ];
                 
                 displayNews(testNews);
-                
             } catch (error) {
                 console.error('Ошибка загрузки новостей:', error);
-                document.getElementById('newsContainer').innerHTML = '<div class="news-empty">😢 Не удалось загрузить новости</div>';
             }
         }
         
-        // ============================================
-        // ОТОБРАЖЕНИЕ НОВОСТЕЙ
-        // ============================================
         function displayNews(newsList) {
             const container = document.getElementById('newsContainer');
             
             if (!newsList || newsList.length === 0) {
-                container.innerHTML = '<div class="news-empty">Пока нет новостей</div>';
+                container.innerHTML = '<div class="news-empty">Нет новостей</div>';
                 return;
             }
             
             let html = '';
             newsList.forEach(item => {
-                // Определяем класс для тега
                 let tagClass = 'news-tag';
                 if (item.tag === 'development') tagClass += ' development';
                 else if (item.tag === 'update') tagClass += ' update';
                 else if (item.tag === 'event') tagClass += ' event';
-                
-                // Название тега
-                let tagName = '';
-                if (item.tag === 'development') tagName = '⚙️ Разработка';
-                else if (item.tag === 'update') tagName = '✨ Обновление';
-                else if (item.tag === 'event') tagName = '🎉 Событие';
-                else tagName = item.tag || 'Новость';
                 
                 html += `
                     <div class="news-item">
@@ -736,8 +707,8 @@
                             <span class="news-date">${item.date}</span>
                         </div>
                         <div class="news-content">${item.content}</div>
-                        <span class="${tagClass}">${tagName}</span>
-                        <span class="admin-news-badge">Админ</span>
+                        <span class="${tagClass}">${item.tag}</span>
+                        <span class="admin-news-badge">админ</span>
                     </div>
                 `;
             });
@@ -746,7 +717,7 @@
         }
         
         // ============================================
-        // ЗАГРУЗКА ГОЛОСОВ ПОЛЬЗОВАТЕЛЯ
+        // ЗАГРУЗКА ГОЛОСОВ
         // ============================================
         async function loadUserVotes() {
             if (!userIp) return;
@@ -776,19 +747,11 @@
                     }
                 }
                 
-                document.getElementById('voteCountBadge').textContent = 
-                    `${userVoteCount} ${getVoteWord(userVoteCount)}`;
+                document.getElementById('voteCountBadge').textContent = userVoteCount;
                 
-                console.log('Загружены голоса:', userVotes);
             } catch (error) {
                 console.error('Ошибка загрузки голосов:', error);
             }
-        }
-        
-        function getVoteWord(count) {
-            if (count % 10 === 1 && count % 100 !== 11) return 'голос';
-            if ([2,3,4].includes(count % 10) && ![12,13,14].includes(count % 100)) return 'голоса';
-            return 'голосов';
         }
         
         // ============================================
@@ -807,7 +770,7 @@
                 
                 if (allCandidates.length < 2) {
                     showMessage('Нужно минимум 2 кандидата', 'error');
-                    document.getElementById('emptyState').innerHTML = '😢 Недостаточно кандидатов';
+                    document.getElementById('emptyState').innerHTML = '😢 Нет кандидатов';
                     return;
                 }
                 
@@ -819,13 +782,9 @@
                 selectNewPair();
             } catch (err) {
                 showMessage('Ошибка загрузки: ' + err.message, 'error');
-                document.getElementById('emptyState').innerHTML = '😢 Ошибка загрузки';
             }
         }
         
-        // ============================================
-        // ВЫБОР ПАРЫ
-        // ============================================
         function selectNewPair() {
             if (allCandidates.length < 2) return;
             
@@ -844,7 +803,7 @@
                 const voted = allCandidates.find(c => userVotes[c.id]);
                 currentPair = [available[0], voted];
             } else {
-                showMessage('Вы проголосовали за всех! Посмотрите рейтинг', 'info');
+                showMessage('Вы проголосовали за всех!', 'info');
                 const shuffled = [...allCandidates].sort(() => 0.5 - Math.random());
                 currentPair = [shuffled[0], shuffled[1]];
             }
@@ -852,14 +811,11 @@
             renderBattle(currentPair);
         }
         
-        // ============================================
-        // ОТОБРАЖЕНИЕ БИТВЫ
-        // ============================================
         function renderBattle(pair) {
             const container = document.getElementById('battleGrid');
             
             if (!pair || pair.length < 2) {
-                container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:white; padding:40px;">Недостаточно кандидатов</div>';
+                container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Нет кандидатов</div>';
                 return;
             }
             
@@ -869,20 +825,17 @@
             container.innerHTML = `
                 <div class="candidate-card ${firstVoted ? 'voted' : ''}" 
                      onclick="${!firstVoted ? 'selectCandidate(' + pair[0].id + ')' : ''}" 
-                     id="card-${pair[0].id}" 
-                     style="${firstVoted ? 'pointer-events: none;' : ''}">
+                     id="card-${pair[0].id}">
                     <img src="${pair[0].photo_url || 'https://i.pravatar.cc/300'}" 
                          class="candidate-photo" 
                          onerror="this.src='https://i.pravatar.cc/300?u=${pair[0].id}'">
                     <div class="candidate-info">
-                        <h2 class="candidate-name">${pair[0].name}</h2>
-                        <div class="candidate-class">${pair[0].class || '??'} класс</div>
+                        <div class="candidate-name">${pair[0].name}</div>
+                        <div class="candidate-class">${pair[0].class || ''}</div>
                         <div class="candidate-bio">${pair[0].bio || ''}</div>
                         <div class="rating-container">
                             <span class="rating">❤️ ${pair[0].votes || 0}</span>
-                            ${firstVoted ? 
-                                '<span class="vote-badge">✓ Вы голосовали</span>' : 
-                                '<span class="rating-change">+100 если победит</span>'}
+                            ${firstVoted ? '<span class="vote-badge">✓</span>' : ''}
                         </div>
                     </div>
                 </div>
@@ -891,20 +844,17 @@
                 
                 <div class="candidate-card ${secondVoted ? 'voted' : ''}" 
                      onclick="${!secondVoted ? 'selectCandidate(' + pair[1].id + ')' : ''}" 
-                     id="card-${pair[1].id}" 
-                     style="${secondVoted ? 'pointer-events: none;' : ''}">
+                     id="card-${pair[1].id}">
                     <img src="${pair[1].photo_url || 'https://i.pravatar.cc/300'}" 
                          class="candidate-photo" 
                          onerror="this.src='https://i.pravatar.cc/300?u=${pair[1].id}'">
                     <div class="candidate-info">
-                        <h2 class="candidate-name">${pair[1].name}</h2>
-                        <div class="candidate-class">${pair[1].class || '??'} класс</div>
+                        <div class="candidate-name">${pair[1].name}</div>
+                        <div class="candidate-class">${pair[1].class || ''}</div>
                         <div class="candidate-bio">${pair[1].bio || ''}</div>
                         <div class="rating-container">
                             <span class="rating">❤️ ${pair[1].votes || 0}</span>
-                            ${secondVoted ? 
-                                '<span class="vote-badge">✓ Вы голосовали</span>' : 
-                                '<span class="rating-change">+100 если победит</span>'}
+                            ${secondVoted ? '<span class="vote-badge">✓</span>' : ''}
                         </div>
                     </div>
                 </div>
@@ -924,8 +874,6 @@
             const candidates = allCandidates.filter(c => 
                 c.id !== excludeId && !userVotes[c.id]
             );
-            
-            if (candidates.length === 0) return [];
             return candidates.sort(() => 0.5 - Math.random()).slice(0, 3);
         }
         
@@ -943,11 +891,9 @@
                 html += `
                     <div class="recommendation-card" onclick="selectAndScroll(${c.id})">
                         <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" 
-                             class="recommendation-photo"
-                             onerror="this.src='https://i.pravatar.cc/300?u=${c.id}'">
+                             class="recommendation-photo">
                         <div class="recommendation-info">
                             <div class="recommendation-name">${c.name}</div>
-                            <div class="recommendation-class">${c.class || '??'} класс</div>
                             <span class="recommendation-rating">❤️ ${c.votes || 0}</span>
                         </div>
                     </div>
@@ -974,7 +920,6 @@
             currentPair = [candidate, other];
             renderBattle(currentPair);
             selectCandidate(id);
-            
             document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
         };
         
@@ -1004,7 +949,7 @@
             if (lastVoteTime) {
                 const secondsSinceLastVote = (new Date() - lastVoteTime) / 1000;
                 if (secondsSinceLastVote < 5) {
-                    showMessage('Слишком быстро! Подождите 5 секунд', 'warning');
+                    showMessage('Слишком быстро! Подождите 5 сек', 'warning');
                     return;
                 }
             }
@@ -1030,12 +975,11 @@
                 userVoteCount++;
                 lastVoteTime = new Date();
                 
-                document.getElementById('voteCountBadge').textContent = 
-                    `${userVoteCount} ${getVoteWord(userVoteCount)}`;
+                document.getElementById('voteCountBadge').textContent = userVoteCount;
                 
                 updateLeaderboard();
                 
-                showMessage(`✅ Вы проголосовали за ${winner.name}!`, 'success');
+                showMessage(`✅ ${winner.name} +100`, 'success');
                 showRecommendations(winner.id);
                 
                 selectedCandidateId = null;
@@ -1052,17 +996,15 @@
             const container = document.getElementById('ratingList');
             
             let html = '';
-            sorted.forEach((c, index) => {
-                const voted = userVotes[c.id] ? '✓' : '';
+            sorted.slice(0, 10).forEach((c, index) => {
                 html += `
                     <div class="rating-item">
                         <div class="rating-position">${index + 1}</div>
                         <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" 
-                             class="rating-avatar"
-                             onerror="this.src='https://i.pravatar.cc/300?u=${c.id}'">
+                             class="rating-avatar">
                         <div class="rating-info">
-                            <div class="rating-name">${c.name} ${voted}</div>
-                            <div class="rating-class">${c.class || '??'} класс</div>
+                            <div class="rating-name">${c.name}</div>
+                            <div class="rating-class">${c.class || ''}</div>
                         </div>
                         <div class="rating-score">❤️ ${c.votes || 0}</div>
                     </div>
@@ -1078,7 +1020,6 @@
             msg.className = `message ${type}`;
             msg.textContent = text;
             container.appendChild(msg);
-            
             setTimeout(() => msg.remove(), 3000);
         }
         
@@ -1086,7 +1027,7 @@
             await getUserIp();
             await loadUserVotes();
             await loadCandidates();
-            await loadNews(); // Загружаем новости
+            await loadNews();
         }
         
         init();
