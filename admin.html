@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ-панель - Битва за 8 марта</title>
     <style>
-        /* Все стили из старой версии (они отлично работают) */
+        /* Все стили остаются без изменений - они уже правильные */
         * {
             margin: 0;
             padding: 0;
@@ -24,7 +24,6 @@
             margin: 0 auto;
         }
 
-        /* Экран входа */
         .login-screen {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
@@ -338,13 +337,19 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // ============================================
+        // КОНФИГУРАЦИЯ - ЕДИНАЯ ПЕРЕМЕННАЯ!
+        // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // Вход
+        // СОЗДАЁМ ТОЛЬКО ОДИН КЛИЕНТ - supabaseClient
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // ============================================
+        // ВХОД
+        // ============================================
         document.getElementById('loginBtn').addEventListener('click', checkPassword);
         document.getElementById('passwordInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') checkPassword();
@@ -376,7 +381,9 @@
             document.getElementById(tab + 'Panel').classList.add('active');
         };
 
-        // Загрузка всех данных
+        // ============================================
+        // ЗАГРУЗКА ДАННЫХ (ВЕЗДЕ supabaseClient)
+        // ============================================
         async function loadAllData() {
             await Promise.all([
                 loadStats(),
@@ -390,11 +397,22 @@
 
         // Статистика
         async function loadStats() {
-            const { count: votes } = await supabase.from('votes').select('*', { count: 'exact', head: true });
-            const { count: comments } = await supabase.from('comments').select('*', { count: 'exact', head: true });
-            const { count: candidates } = await supabase.from('candidates').select('*', { count: 'exact', head: true });
+            const { count: votes } = await supabaseClient
+                .from('votes')
+                .select('*', { count: 'exact', head: true });
+                
+            const { count: comments } = await supabaseClient
+                .from('comments')
+                .select('*', { count: 'exact', head: true });
+                
+            const { count: candidates } = await supabaseClient
+                .from('candidates')
+                .select('*', { count: 'exact', head: true });
             
-            const { data: ips } = await supabase.from('votes').select('ip_address');
+            const { data: ips } = await supabaseClient
+                .from('votes')
+                .select('ip_address');
+                
             const uniqueIPs = new Set(ips?.map(v => v.ip_address) || []).size;
 
             document.getElementById('totalVotes').textContent = votes || 0;
@@ -405,7 +423,11 @@
 
         // Обратная связь
         async function loadFeedback() {
-            const { data } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
+            const { data } = await supabaseClient
+                .from('feedback')
+                .select('*')
+                .order('created_at', { ascending: false });
+                
             let html = '';
             data?.forEach(f => {
                 html += `<tr>
@@ -421,7 +443,12 @@
 
         // Комментарии
         async function loadComments() {
-            const { data } = await supabase.from('comments').select('*').order('created_at', { ascending: false }).limit(50);
+            const { data } = await supabaseClient
+                .from('comments')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(50);
+                
             let html = '';
             data?.forEach(c => {
                 html += `<tr>
@@ -436,7 +463,12 @@
 
         // Голоса
         async function loadVotes() {
-            const { data } = await supabase.from('votes').select('*, candidates(name)').order('created_at', { ascending: false }).limit(100);
+            const { data } = await supabaseClient
+                .from('votes')
+                .select('*, candidates(name)')
+                .order('created_at', { ascending: false })
+                .limit(100);
+                
             let html = '';
             data?.forEach(v => {
                 html += `<tr>
@@ -450,7 +482,11 @@
 
         // Кандидаты
         async function loadCandidates() {
-            const { data } = await supabase.from('candidates').select('*').order('votes', { ascending: false });
+            const { data } = await supabaseClient
+                .from('candidates')
+                .select('*')
+                .order('votes', { ascending: false });
+                
             let html = '';
             data?.forEach(c => {
                 html += `<tr>
@@ -468,7 +504,11 @@
 
         // Предложения
         async function loadSuggestions() {
-            const { data } = await supabase.from('suggestions').select('*').order('created_at', { ascending: false });
+            const { data } = await supabaseClient
+                .from('suggestions')
+                .select('*')
+                .order('created_at', { ascending: false });
+                
             let html = '';
             data?.forEach(s => {
                 let statusBadge = '';
@@ -495,22 +535,30 @@
         // Действия с кандидатами
         window.deleteCandidate = async (id) => {
             if (confirm('Удалить кандидата?')) {
-                await supabase.from('candidates').delete().eq('id', id);
+                await supabaseClient.from('candidates').delete().eq('id', id);
                 showMessage('Кандидат удалён', 'success');
                 loadCandidates();
             }
         };
 
         window.approveSuggestion = async (id, name, description) => {
-            await supabase.from('candidates').insert({ name, bio: description, votes: 0 });
-            await supabase.from('suggestions').update({ status: 'approved' }).eq('id', id);
+            await supabaseClient.from('candidates').insert({ 
+                name: name, 
+                bio: description, 
+                votes: 0 
+            });
+            await supabaseClient.from('suggestions')
+                .update({ status: 'approved' })
+                .eq('id', id);
             showMessage('Кандидат добавлен', 'success');
             loadSuggestions();
             loadCandidates();
         };
 
         window.rejectSuggestion = async (id) => {
-            await supabase.from('suggestions').update({ status: 'rejected' }).eq('id', id);
+            await supabaseClient.from('suggestions')
+                .update({ status: 'rejected' })
+                .eq('id', id);
             showMessage('Предложение отклонено', 'info');
             loadSuggestions();
         };
@@ -535,8 +583,12 @@
                 return;
             }
 
-            await supabase.from('candidates').insert({
-                name, class: classText, photo_url: photo || 'https://i.pravatar.cc/300', bio, votes: 0
+            await supabaseClient.from('candidates').insert({
+                name: name,
+                class: classText,
+                photo_url: photo || 'https://i.pravatar.cc/300',
+                bio: bio,
+                votes: 0
             });
 
             document.getElementById('addCandidateModal').style.display = 'none';
