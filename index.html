@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>СТЕНА 62 ШКОЛЫ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Geologica', 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
@@ -423,7 +426,7 @@
             font-size: 0.95rem;
             min-height: 80px;
             resize: vertical;
-            font-family: inherit;
+            font-family: 'Geologica', inherit;
         }
 
         .comment-textarea:focus {
@@ -466,11 +469,6 @@
             transition: all 0.2s;
         }
 
-        .comment-item.verified-comment {
-            border-left: 4px solid #ffd700;
-            background: #fff9e6;
-        }
-
         .comment-header {
             display: flex;
             justify-content: space-between;
@@ -492,9 +490,17 @@
             gap: 5px;
         }
 
-        .verified-badge img {
-    display: none;
-}
+        .prime-badge {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 4px;
+        }
+        
+        .prime-badge img {
+            width: 14px;
+            height: 14px;
+            display: block;
+        }
 
         .comment-date {
             color: #7f8c8d;
@@ -793,26 +799,6 @@
             margin-left: 10px;
             font-size: 0.85rem;
         }
-
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #4a6fa5;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            margin-left: 8px;
-        }
-
-        .official-icon {
-            width: 16px;
-            height: 16px;
-            display: inline-block;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -955,7 +941,7 @@
         // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
         // СОГЛАШЕНИЕ
@@ -1005,7 +991,8 @@
 
         // Имена для случайных комментаторов
         const randomNames = [
-            'Анон ученик'
+            'Анон ученик', 'Ученик 10А', 'Ученица 11Б', 'Спортсмен', 
+            'Отличница', 'Выпускник', 'Активист', 'Художник', 'Музыкант'
         ];
 
         // ============================================
@@ -1043,7 +1030,7 @@
             }
             
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('verified_users')
                     .select('*')
                     .eq('username', username)
@@ -1061,7 +1048,7 @@
                 
                 const statusDiv = document.getElementById('verifyStatus');
                 const statusText = document.getElementById('verifyStatusText');
-                statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img "verified.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
+                statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
                 statusDiv.classList.add('active');
                 
                 document.getElementById('verifyUsername').value = '';
@@ -1089,7 +1076,7 @@
         // ============================================
         async function loadComments() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('comments')
                     .select('*')
                     .order('created_at', { ascending: false })
@@ -1117,16 +1104,15 @@
                     day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
                 });
                 
-                const commentClass = comment.is_verified ? 'comment-item verified-comment' : 'comment-item';
-                const verifiedBadge = comment.is_verified ? 
-                    '<span class="verified-badge"><img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="12" height="12" style="filter: brightness(100);"> PRIME</span>' : '';
+                const primeBadge = comment.is_verified ? 
+                    '<span class="prime-badge"><img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="14" height="14"></span>' : '';
                 
                 html += `
-                    <div class="${commentClass}">
+                    <div class="comment-item">
                         <div class="comment-header">
                             <span class="comment-name">
                                 ${escapeHtml(comment.name || 'Аноним')}
-                                ${verifiedBadge}
+                                ${primeBadge}
                             </span>
                             <span class="comment-date">${date}</span>
                         </div>
@@ -1158,7 +1144,7 @@
             // Проверка на подделку галочки
             if (message.includes('✅') || message.includes('✔️') || message.includes('✓') || message.includes('👑')) {
                 if (!verifiedUser) {
-                    showMessage('Нельзя использовать символы галочки без PRIME', 'error');
+                    showMessage('Нельзя использовать символы галочки без PREMIUM', 'error');
                     return;
                 }
             }
@@ -1194,14 +1180,14 @@
                     verified_as: verifiedUser
                 };
 
-                const { error } = await supabaseClient
+                const { error } = await supabase
                     .from('comments')
                     .insert(commentData);
 
                 if (error) throw error;
 
                 // Отправляем в обратную связь (для админки)
-                await supabaseClient
+                await supabase
                     .from('feedback')
                     .insert({
                         type: 'comment',
@@ -1229,7 +1215,7 @@
         // ============================================
         async function loadCandidates() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('candidates')
                     .select('*')
                     .order('votes', { ascending: false });
@@ -1273,7 +1259,7 @@
             if (!userIp) return;
             
             try {
-                const { data } = await supabaseClient
+                const { data } = await supabase
                     .from('votes')
                     .select('candidate_id')
                     .eq('ip_address', userIp);
@@ -1398,9 +1384,9 @@
                 const newLoserVotes = Math.max(0, (loser.votes || 0) - 50);
 
                 await Promise.all([
-                    supabaseClient.from('candidates').update({ votes: newWinnerVotes }).eq('id', winner.id),
-                    supabaseClient.from('candidates').update({ votes: newLoserVotes }).eq('id', loser.id),
-                    supabaseClient.from('votes').insert({
+                    supabase.from('candidates').update({ votes: newWinnerVotes }).eq('id', winner.id),
+                    supabase.from('candidates').update({ votes: newLoserVotes }).eq('id', loser.id),
+                    supabase.from('votes').insert({
                         candidate_id: winner.id,
                         ip_address: userIp,
                         user_agent: navigator.userAgent
