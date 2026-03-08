@@ -1141,51 +1141,22 @@
                 <h3>🏆 ТОП-10 ШКОЛЫ №62</h3>
                 <div id="ratingList" class="rating-list"></div>
             </div>
-        </div>
+
+            <!-- БЛОК ОБРАТНОЙ СВЯЗИ - КОМПАКТНЫЙ -->
+<div class="feedback-simple" onclick="openFeedbackModal()">
+    <div class="feedback-simple-icon">📨</div>
+    <div class="feedback-simple-text">
+        <strong>Связь с администрацией</strong>
+        <span>Напишите нам - предложите кандидата, сообщите об ошибке или идее</span>
     </div>
-     <!-- БЛОК ОБРАТНОЙ СВЯЗИ -->
-<div class="feedback-section">
-    <div class="feedback-header">
-        <h3>📨 СВЯЗЬ С АДМИНИСТРАЦИЕЙ</h3>
-        <p>Напишите нам - мы ответим в ближайшее время</p>
-    </div>
-    
-    <div class="feedback-grid">
-        <!-- Карточка предложения кандидата -->
-        <div class="feedback-card" onclick="openFeedbackModal('candidate')">
-            <div class="feedback-icon">👤</div>
-            <div class="feedback-title">Предложить кандидата</div>
-            <div class="feedback-desc">Добавьте нового участника в голосование</div>
-        </div>
-        
-        <!-- Карточка идеи -->
-        <div class="feedback-card" onclick="openFeedbackModal('idea')">
-            <div class="feedback-icon">💡</div>
-            <div class="feedback-title">Предложить идею</div>
-            <div class="feedback-desc">Как улучшить сайт? Ждём ваши идеи</div>
-        </div>
-        
-        <!-- Карточка ошибки -->
-        <div class="feedback-card" onclick="openFeedbackModal('bug')">
-            <div class="feedback-icon">🐛</div>
-            <div class="feedback-title">Сообщить об ошибке</div>
-            <div class="feedback-desc">Нашли баг? Напишите нам</div>
-        </div>
-        
-        <!-- Карточка поддержки -->
-        <div class="feedback-card" onclick="openFeedbackModal('support')">
-            <div class="feedback-icon">❤️</div>
-            <div class="feedback-title">Поддержать проект</div>
-            <div class="feedback-desc">Сказать спасибо или поддержать</div>
-        </div>
-    </div>
+    <div class="feedback-simple-arrow">→</div>
 </div>
 
 <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОБРАТНОЙ СВЯЗИ -->
 <div class="feedback-modal" id="feedbackModal">
     <div class="feedback-modal-content">
         <span class="feedback-modal-close" onclick="closeFeedbackModal()">&times;</span>
-        <h3 id="feedbackModalTitle">📨 Написать сообщение</h3>
+        <h3 id="feedbackModalTitle">📨 Написать администрации</h3>
         
         <div class="feedback-form-group">
             <label for="feedbackName">Ваше имя (необязательно)</label>
@@ -1193,15 +1164,18 @@
         </div>
         
         <div class="feedback-form-group">
-            <label for="feedbackMessage">Сообщение <span style="color: #ff6b6b;">*</span></label>
-            <textarea id="feedbackMessage" class="feedback-textarea" rows="5" placeholder="Напишите что хотите сказать..." maxlength="500"></textarea>
-            <div class="feedback-counter">
-                <span id="feedbackCharCount">0</span>/500
-            </div>
+            <label for="feedbackType">Тема сообщения</label>
+            <select id="feedbackType" class="feedback-input">
+                <option value="candidate">👤 Предложить кандидата</option>
+                <option value="idea">💡 Предложить идею</option>
+                <option value="bug">🐛 Сообщить об ошибке</option>
+                <option value="support">❤️ Поддержать проект</option>
+                <option value="other">📝 Другое</option>
+            </select>
         </div>
         
         <div class="feedback-form-group" id="candidateFields" style="display: none;">
-            <label for="candidateName">Имя кандидата</label>
+            <label for="candidateName">Имя кандидата <span style="color: #ff6b6b;">*</span></label>
             <input type="text" id="candidateName" class="feedback-input" placeholder="Например: Анна Смирнова">
             
             <label for="candidateClass">Класс (необязательно)</label>
@@ -1211,9 +1185,20 @@
             <textarea id="candidateBio" class="feedback-textarea" rows="3" placeholder="Чем занимается, увлечения..."></textarea>
         </div>
         
+        <div class="feedback-form-group">
+            <label for="feedbackMessage">Сообщение <span style="color: #ff6b6b;">*</span></label>
+            <textarea id="feedbackMessage" class="feedback-textarea" rows="4" placeholder="Напишите что хотите сказать..." maxlength="500"></textarea>
+            <div class="feedback-counter">
+                <span id="feedbackCharCount">0</span>/500
+            </div>
+        </div>
+        
         <button class="feedback-submit" id="submitFeedback">📤 Отправить</button>
     </div>
 </div>
+
+    
+     
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1856,37 +1841,12 @@
             await loadCandidates();
             await loadComments();
         }
-                // ============================================
-// ОБРАТНАЯ СВЯЗЬ - В НИЗУ СТРАНИЦЫ
-// ============================================
-let currentFeedbackType = '';
 
-function openFeedbackModal(type) {
-    currentFeedbackType = type;
-    const modal = document.getElementById('feedbackModal');
-    const title = document.getElementById('feedbackModalTitle');
-    const candidateFields = document.getElementById('candidateFields');
-    
-    switch(type) {
-        case 'candidate':
-            title.innerHTML = '👤 Предложить кандидата';
-            candidateFields.style.display = 'block';
-            break;
-        case 'idea':
-            title.innerHTML = '💡 Предложить идею';
-            candidateFields.style.display = 'none';
-            break;
-        case 'bug':
-            title.innerHTML = '🐛 Сообщить об ошибке';
-            candidateFields.style.display = 'none';
-            break;
-        case 'support':
-            title.innerHTML = '❤️ Поддержать проект';
-            candidateFields.style.display = 'none';
-            break;
-    }
-    
-    modal.style.display = 'flex';
+        // ============================================
+// ОБРАТНАЯ СВЯЗЬ - УПРОЩЁННАЯ
+// ============================================
+function openFeedbackModal() {
+    document.getElementById('feedbackModal').style.display = 'flex';
 }
 
 function closeFeedbackModal() {
@@ -1898,20 +1858,30 @@ function closeFeedbackModal() {
     document.getElementById('candidateClass').value = '';
     document.getElementById('candidateBio').value = '';
     document.getElementById('feedbackCharCount').textContent = '0';
+    document.getElementById('feedbackType').value = 'candidate';
+    document.getElementById('candidateFields').style.display = 'none';
 }
 
+// Показывать/скрывать поля для кандидата
+document.getElementById('feedbackType').addEventListener('change', function() {
+    const candidateFields = document.getElementById('candidateFields');
+    if (this.value === 'candidate') {
+        candidateFields.style.display = 'block';
+    } else {
+        candidateFields.style.display = 'none';
+    }
+});
+
 // Счетчик символов
-const messageInput = document.getElementById('feedbackMessage');
-if (messageInput) {
-    messageInput.addEventListener('input', function() {
-        const count = this.value.length;
-        document.getElementById('feedbackCharCount').textContent = count;
-    });
-}
+document.getElementById('feedbackMessage').addEventListener('input', function() {
+    const count = this.value.length;
+    document.getElementById('feedbackCharCount').textContent = count;
+});
 
 // Отправка формы
 document.getElementById('submitFeedback').addEventListener('click', async function() {
     const name = document.getElementById('feedbackName').value.trim() || 'Аноним';
+    const type = document.getElementById('feedbackType').value;
     const message = document.getElementById('feedbackMessage').value.trim();
     
     if (!message) {
@@ -1920,23 +1890,26 @@ document.getElementById('submitFeedback').addEventListener('click', async functi
     }
     
     let details = {};
+    let finalMessage = message;
     
-    if (currentFeedbackType === 'candidate') {
+    if (type === 'candidate') {
         const candidateName = document.getElementById('candidateName').value.trim();
-        const candidateClass = document.getElementById('candidateClass').value.trim();
-        const candidateBio = document.getElementById('candidateBio').value.trim();
         
         if (!candidateName) {
             showMessage('Введите имя кандидата', 'error');
             return;
         }
         
+        const candidateClass = document.getElementById('candidateClass').value.trim();
+        const candidateBio = document.getElementById('candidateBio').value.trim();
+        
         details = {
             candidateName,
             candidateClass,
-            candidateBio,
-            type: 'candidate_suggestion'
+            candidateBio
         };
+        
+        finalMessage = `Предложение кандидата: ${candidateName} (${candidateClass || 'класс не указан'})\n${candidateBio || 'без описания'}\n\nКомментарий: ${message}`;
         
         // Сохраняем в таблицу suggestions
         await supabaseClient
@@ -1953,9 +1926,9 @@ document.getElementById('submitFeedback').addEventListener('click', async functi
     await supabaseClient
         .from('feedback')
         .insert({
-            type: currentFeedbackType,
+            type: type,
             name: name,
-            message: message,
+            message: finalMessage,
             details: details,
             ip_address: userIp,
             user_agent: navigator.userAgent
