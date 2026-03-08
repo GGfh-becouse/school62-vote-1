@@ -939,11 +939,21 @@
     </script>
     <script>
         // ============================================
-        // SUPABASE КОНФИГ
-        // ============================================
-        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// SUPABASE КОНФИГ - ИСПРАВЛЕНО!
+// ============================================
+const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+
+// Глобальная переменная для Supabase
+let supabase = null;
+
+// Инициализация Supabase - ИСПРАВЛЕНО!
+try {
+    supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase инициализирован', supabase ? 'да' : 'нет');
+} catch (e) {
+    console.error('❌ Ошибка инициализации Supabase:', e);
+}
 
         // ============================================
         // СОГЛАШЕНИЕ
