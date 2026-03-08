@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Все стили остаются без изменений - они правильные */
         * {
             margin: 0;
             padding: 0;
@@ -938,15 +937,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-    // SUPABASE КОНФИГ - ИСПРАВЛЕНО!    
-    // ============================================
-    const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        // SUPABASE КОНФИГ - ТОЛЬКО ОДНА ПЕРЕМЕННАЯ!
+        // ============================================
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
 
-    // Инициализация Supabase - ПРАВИЛЬНО!
-    const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log('✅ Supabase инициализирован');
+        // СОЗДАЁМ ТОЛЬКО ОДИН КЛИЕНТ - КАК В АДМИНКЕ
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log('✅ Supabase инициализирован');
 
         // ============================================
         // СОГЛАШЕНИЕ
@@ -1020,10 +1018,17 @@
         // ============================================
 
         // Обработчик кнопки верификации
-        document.getElementById('verifyBtn').addEventListener('click', verifyUser);
-        document.getElementById('verifyPassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') verifyUser();
-        });
+        const verifyBtn = document.getElementById('verifyBtn');
+        if (verifyBtn) {
+            verifyBtn.addEventListener('click', verifyUser);
+        }
+
+        const verifyPassword = document.getElementById('verifyPassword');
+        if (verifyPassword) {
+            verifyPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') verifyUser();
+            });
+        }
 
         async function verifyUser() {
             const username = document.getElementById('verifyUsername').value.trim();
@@ -1071,7 +1076,10 @@
             verifiedUser = null;
             verifiedUserName = null;
             verifiedUserData = null;
-            document.getElementById('verifyStatus').classList.remove('active');
+            const statusDiv = document.getElementById('verifyStatus');
+            if (statusDiv) {
+                statusDiv.classList.remove('active');
+            }
             showMessage('Вы вышли из системы', 'info');
             loadComments();
         }
@@ -1137,7 +1145,10 @@
         // ============================================
         // ОТПРАВКА КОММЕНТАРИЯ
         // ============================================
-        document.getElementById('submitComment').addEventListener('click', submitComment);
+        const submitCommentBtn = document.getElementById('submitComment');
+        if (submitCommentBtn) {
+            submitCommentBtn.addEventListener('click', submitComment);
+        }
 
         async function submitComment() {
             const nameInput = document.getElementById('commentName');
@@ -1208,7 +1219,7 @@
                 messageInput.value = '';
                 
                 showMessage('Комментарий добавлен!', 'success');
-                await loadComments(); // Перезагружаем комментарии
+                await loadComments();
                 
             } catch (error) {
                 showMessage('Ошибка: ' + error.message, 'error');
@@ -1342,18 +1353,20 @@
 
         window.selectCandidate = function(id) {
             document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById(`card-${id}`).classList.add('selected');
+            const card = document.getElementById(`card-${id}`);
+            if (card) card.classList.add('selected');
             selectedCandidateId = id;
         };
 
         function updatePrediction() {
-            if (!currentPair || currentPair.length < 2) return;
+            const predictionBars = document.getElementById('predictionBars');
+            if (!predictionBars || !currentPair || currentPair.length < 2) return;
             
             const total = (currentPair[0].votes || 0) + (currentPair[1].votes || 0);
             const left = total ? Math.round((currentPair[0].votes / total) * 100) : 50;
             const right = 100 - left;
             
-            document.getElementById('predictionBars').innerHTML = `
+            predictionBars.innerHTML = `
                 <div class="prediction-bar">
                     <div class="prediction-fill" style="width: ${left}%;">${left}%</div>
                 </div>
@@ -1366,59 +1379,63 @@
         // ============================================
         // ГОЛОСОВАНИЕ
         // ============================================
-        document.getElementById('voteBtn').addEventListener('click', async function() {
-            if (!selectedCandidateId) {
-                showMessage('Выберите девушку', 'error');
-                return;
-            }
-            
-            if (!currentPair || currentPair.length !== 2) return;
-            
-            const winner = currentPair.find(c => c.id === selectedCandidateId);
-            const loser = currentPair.find(c => c.id !== selectedCandidateId);
-            
-            if (!winner || !loser) return;
-            
-            if (userVotes[winner.id]) {
-                showMessage('Вы уже голосовали за этого кандидата', 'error');
-                return;
-            }
+        const voteBtn = document.getElementById('voteBtn');
+        if (voteBtn) {
+            voteBtn.addEventListener('click', async function() {
+                if (!selectedCandidateId) {
+                    showMessage('Выберите девушку', 'error');
+                    return;
+                }
+                
+                if (!currentPair || currentPair.length !== 2) return;
+                
+                const winner = currentPair.find(c => c.id === selectedCandidateId);
+                const loser = currentPair.find(c => c.id !== selectedCandidateId);
+                
+                if (!winner || !loser) return;
+                
+                if (userVotes[winner.id]) {
+                    showMessage('Вы уже голосовали за этого кандидата', 'error');
+                    return;
+                }
 
-            try {
-                const newWinnerVotes = (winner.votes || 0) + 100;
-                const newLoserVotes = Math.max(0, (loser.votes || 0) - 50);
+                try {
+                    const newWinnerVotes = (winner.votes || 0) + 100;
+                    const newLoserVotes = Math.max(0, (loser.votes || 0) - 50);
 
-                await Promise.all([
-                    supabase.from('candidates').update({ votes: newWinnerVotes }).eq('id', winner.id),
-                    supabase.from('candidates').update({ votes: newLoserVotes }).eq('id', loser.id),
-                    supabase.from('votes').insert({
-                        candidate_id: winner.id,
-                        ip_address: userIp,
-                        user_agent: navigator.userAgent
-                    })
-                ]);
+                    await Promise.all([
+                        supabase.from('candidates').update({ votes: newWinnerVotes }).eq('id', winner.id),
+                        supabase.from('candidates').update({ votes: newLoserVotes }).eq('id', loser.id),
+                        supabase.from('votes').insert({
+                            candidate_id: winner.id,
+                            ip_address: userIp,
+                            user_agent: navigator.userAgent
+                        })
+                    ]);
 
-                winner.votes = newWinnerVotes;
-                loser.votes = newLoserVotes;
-                userVotes[winner.id] = true;
-                userVoteCount++;
-                
-                document.getElementById('voteCountBadge').textContent = userVoteCount;
-                
-                // Достижения
-                if (userVoteCount >= 1) document.getElementById('ach1').classList.add('unlocked');
-                
-                updateLeaderboard();
-                showMessage(`✅ +100 ${winner.name}!`, 'success');
-                showRecommendations(winner.id);
-                
-                selectedCandidateId = null;
-                selectNewPair();
-                
-            } catch (err) {
-                showMessage('Ошибка: ' + err.message, 'error');
-            }
-        });
+                    winner.votes = newWinnerVotes;
+                    loser.votes = newLoserVotes;
+                    userVotes[winner.id] = true;
+                    userVoteCount++;
+                    
+                    document.getElementById('voteCountBadge').textContent = userVoteCount;
+                    
+                    // Достижения
+                    const ach1 = document.getElementById('ach1');
+                    if (ach1 && userVoteCount >= 1) ach1.classList.add('unlocked');
+                    
+                    updateLeaderboard();
+                    showMessage(`✅ +100 ${winner.name}!`, 'success');
+                    showRecommendations(winner.id);
+                    
+                    selectedCandidateId = null;
+                    selectNewPair();
+                    
+                } catch (err) {
+                    showMessage('Ошибка: ' + err.message, 'error');
+                }
+            });
+        }
 
         // ============================================
         // РЕКОМЕНДАЦИИ
@@ -1429,9 +1446,12 @@
             ).sort(() => 0.5 - Math.random()).slice(0, 3);
             
             const container = document.getElementById('recommendationsGrid');
+            const recDiv = document.getElementById('recommendations');
+            
+            if (!container || !recDiv) return;
             
             if (candidates.length === 0) {
-                document.getElementById('recommendations').style.display = 'none';
+                recDiv.style.display = 'none';
                 return;
             }
             
@@ -1448,7 +1468,7 @@
             });
             
             container.innerHTML = html;
-            document.getElementById('recommendations').style.display = 'block';
+            recDiv.style.display = 'block';
         }
 
         window.selectAndScroll = function(id) {
