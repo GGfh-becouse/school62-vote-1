@@ -1009,6 +1009,46 @@
         ];
 
         // ============================================
+// ЗАПРЕЩЁННЫЕ СЛОВА (бан-лист)
+// ============================================
+const bannedWords = [
+    // Русский мат и оскорбления
+    'порно', 'секс', 'еблан', 'еблан', 'дебил', 'дурак', 'идиот',
+    'хуй', 'пизда', 'блядь', 'сука', 'гандон', 'шлюха', 'проститутка',
+    'расист', 'нацист', 'фашист', 'террорист',
+    'убийца', 'смерть', 'убью', 'зарежу',
+    
+    // Английские аналоги
+    'porn', 'sex', 'fuck', 'shit', 'bitch', 'whore', 'slut',
+    'nigger', 'faggot', 'rape', 'kill', 'murder',
+    
+    // Телефонные спам-слова
+    'сайт', 'заработок', 'деньги', 'крипта', 'биткоин',
+    'казино', 'вулкан', 'play', 'casino', 'bet',
+    
+    // Специфичные для школы
+    'училка', 'директор', 'завуч', 'физрук'  // чтобы не писали про учителей
+];
+
+// Функция проверки на запрещённые слова
+function checkBannedWords(text, type = 'message') {
+    if (!text) return { hasBanned: false, word: null };
+    
+    const lowerText = text.toLowerCase();
+    
+    for (const word of bannedWords) {
+        if (lowerText.includes(word.toLowerCase())) {
+            return {
+                hasBanned: true,
+                word: word
+            };
+        }
+    }
+    
+    return { hasBanned: false, word: null };
+}
+
+        // ============================================
         // ПОЛУЧЕНИЕ IP
         // ============================================
         async function getUserIp() {
@@ -1143,86 +1183,105 @@
             return div.innerHTML;
         }
 
-        // ============================================
-        // ОТПРАВКА КОММЕНТАРИЯ
-        // ============================================
-        document.getElementById('submitComment').addEventListener('click', submitComment);
+// ============================================
+// ОТПРАВКА КОММЕНТАРИЯ (С ЗАЩИТОЙ)
+// ============================================
+async function submitComment() {
+    if (!currentUser || !currentUserCode) {
+        showMessage('Сначала создайте или войдите в аккаунт', 'error');
+        return;
+    }
+    
+    const messageInput = document.getElementById('commentMessage');
+    let message = messageInput.value.trim();
 
-        async function submitComment() {
-            const nameInput = document.getElementById('commentName');
-            const messageInput = document.getElementById('commentMessage');
-            
-            let name = nameInput.value.trim();
-            let message = messageInput.value.trim();
+    if (!message) {
+        showMessage('Напишите комментарий', 'error');
+        return;
+    }
 
-            // Проверка на подделку галочки
-            if (message.includes('✅') || message.includes('✔️') || message.includes('✓') || message.includes('👑')) {
-                if (!verifiedUser) {
-                    showMessage('Нельзя использовать символы галочки без PRIME', 'error');
-                    return;
-                }
-            }
+    if (message.length > 200) {
+        showMessage('Максимум 200 символов', 'error');
+        return;
+    }
 
-            // Случайное имя, если не ввели
-            if (!name) {
-                name = randomNames[Math.floor(Math.random() * randomNames.length)];
-            }
+    // ПРОВЕРКА НА ЗАПРЕЩЁННЫЕ СЛОВА В СООБЩЕНИИ
+    const bannedCheck = checkBannedWords(message);
+    if (bannedCheck.hasBanned) {
+        showMessage('Сообщение содержит запрещённые слова', 'error');
+        
+        // Отправляем в админку
+        await reportSuspiciousActivity('banned_words_message', {
+            word: bannedCheck.word,
+            message: message,
+            user: currentUser,
+            userCode: currentUserCode
+        });
+        return;
+    }
 
-            if (!message) {
-                showMessage('Напишите комментарий', 'error');
-                return;
-            }
+    // ПРОВЕРКА НА ЗАПРЕЩЁННЫЕ СЛОВА В ИМЕНИ (если имя кастомное)
+    if (checkBannedWords(currentUser).hasBanned) {
+        showMessage('Ваш ник содержит запрещённые слова', 'error');
+        
+        await reportSuspiciousActivity('banned_words_username', {
+            username: currentUser,
+            userCode: currentUserCode
+        });
+        return;
+    }
 
-            if (message.length > 200) {
-                showMessage('Максимум 200 символов', 'error');
-                return;
-            }
+    // ПРОВЕРКА НА 5 СЕКУНД
+    if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
+        showMessage('Слишком часто! Подождите 5 секунд', 'error');
+        
+        await reportSuspiciousActivity('spam_comment', {
+            user: currentUser,
+            userCode: currentUserCode,
+            message: message
+        });
+        return;
+    }
 
-            // Проверка на 5 секунд
-            if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
-                showMessage('Слишком часто! Подождите 5 секунд', 'error');
-                return;
-            }
+    try {
+        const commentData = {
+            name: currentUser,
+            message: message,
+            ip_address: userIp,
+            user_code: currentUserCode,
+            is_verified: !!verifiedUser,
+            verified_as: verifiedUser
+        };
 
-            try {
-                // Сохраняем комментарий
-                const commentData = {
-                    name: name,
-                    message: message,
-                    ip_address: userIp,
-                    is_verified: !!verifiedUser,
-                    verified_as: verifiedUser
-                };
+        const { error } = await supabase
+            .from('comments')
+            .insert(commentData);
 
-                const { error } = await supabaseClient
-                    .from('comments')
-                    .insert(commentData);
+        if (error) throw error;
 
-                if (error) throw error;
+        await supabase
+            .from('feedback')
+            .insert({
+                type: 'comment',
+                name: currentUser,
+                message: message,
+                ip_address: userIp,
+                user_agent: navigator.userAgent,
+                user_code: currentUserCode,
+                is_verified: !!verifiedUser
+            });
 
-                // Отправляем в обратную связь (для админки)
-                await supabaseClient
-                    .from('feedback')
-                    .insert({
-                        type: 'comment',
-                        name: name,
-                        message: message,
-                        ip_address: userIp,
-                        user_agent: navigator.userAgent,
-                        is_verified: !!verifiedUser
-                    });
-
-                lastCommentTime = Date.now();
-                nameInput.value = '';
-                messageInput.value = '';
-                
-                showMessage('Комментарий добавлен!', 'success');
-                await loadComments(); // Перезагружаем комментарии
-                
-            } catch (error) {
-                showMessage('Ошибка: ' + error.message, 'error');
-            }
-        }
+        lastCommentTime = Date.now();
+        messageInput.value = '';
+        
+        showMessage('Комментарий добавлен!', 'success');
+        await loadComments();
+        
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+}
 
         // ============================================
         // ЗАГРУЗКА КАНДИДАТОВ
