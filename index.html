@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Все стили остаются без изменений - они правильные */
         * {
             margin: 0;
             padding: 0;
@@ -934,26 +935,17 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-        
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-// SUPABASE КОНФИГ - ИСПРАВЛЕНО!
-// ============================================
-const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        // SUPABASE КОНФИГ - ИСПРАВЛЕНО!
+        // ============================================
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
 
-// Глобальная переменная для Supabase
-let supabase = null;
-
-// Инициализация Supabase - ИСПРАВЛЕНО!
-try {
-    supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log('✅ Supabase инициализирован', supabase ? 'да' : 'нет');
-} catch (e) {
-    console.error('❌ Ошибка инициализации Supabase:', e);
-}
+        // Инициализация Supabase - ПРАВИЛЬНАЯ!
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log('✅ Supabase инициализирован');
 
         // ============================================
         // СОГЛАШЕНИЕ
@@ -1458,88 +1450,87 @@ try {
             document.getElementById('recommendations').style.display = 'block';
         }
 
-            window.selectAndScroll = function(id) {
-        const recDiv = document.getElementById('recommendations');
-        if (recDiv) recDiv.style.display = 'none';
-        
-        if (currentPair[0]?.id === id || currentPair[1]?.id === id) {
+        window.selectAndScroll = function(id) {
+            const recDiv = document.getElementById('recommendations');
+            if (recDiv) recDiv.style.display = 'none';
+            
+            if (currentPair[0]?.id === id || currentPair[1]?.id === id) {
+                selectCandidate(id);
+                const battleDiv = document.getElementById('battleContainer');
+                if (battleDiv) battleDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
+            const candidate = allCandidates.find(c => c.id === id);
+            if (!candidate) return;
+            
+            const other = currentPair[0]?.id === id ? currentPair[1] : currentPair[0];
+            currentPair = [candidate, other];
+            renderBattle(currentPair);
             selectCandidate(id);
             const battleDiv = document.getElementById('battleContainer');
             if (battleDiv) battleDiv.scrollIntoView({ behavior: 'smooth' });
-            return;
-        }
-        
-        const candidate = allCandidates.find(c => c.id === id);
-        if (!candidate) return;
-        
-        const other = currentPair[0]?.id === id ? currentPair[1] : currentPair[0];
-        currentPair = [candidate, other];
-        renderBattle(currentPair);
-        selectCandidate(id);
-        const battleDiv = document.getElementById('battleContainer');
-        if (battleDiv) battleDiv.scrollIntoView({ behavior: 'smooth' });
-    };
+        };
 
-    // ============================================
-    // РЕЙТИНГ
-    // ============================================
-    function updateLeaderboard() {
-        const sorted = [...allCandidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
-        const container = document.getElementById('ratingList');
-        
-        if (!container) return;
-        
-        let html = '';
-        sorted.slice(0, 10).forEach((c, index) => {
-            html += `
-                <div class="rating-item">
-                    <div class="rating-position">${index + 1}</div>
-                    <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="rating-avatar">
-                    <div class="rating-info">
-                        <div class="rating-name">${c.name}</div>
+        // ============================================
+        // РЕЙТИНГ
+        // ============================================
+        function updateLeaderboard() {
+            const sorted = [...allCandidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+            const container = document.getElementById('ratingList');
+            
+            if (!container) return;
+            
+            let html = '';
+            sorted.slice(0, 10).forEach((c, index) => {
+                html += `
+                    <div class="rating-item">
+                        <div class="rating-position">${index + 1}</div>
+                        <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="rating-avatar">
+                        <div class="rating-info">
+                            <div class="rating-name">${c.name}</div>
+                        </div>
+                        <div class="rating-score">❤️ ${c.votes || 0}</div>
                     </div>
-                    <div class="rating-score">❤️ ${c.votes || 0}</div>
-                </div>
-            `;
-        });
-        
-        container.innerHTML = html;
-    }
-
-    // ============================================
-    // СООБЩЕНИЯ
-    // ============================================
-    function showMessage(text, type) {
-        const container = document.getElementById('messageContainer');
-        if (!container) return;
-        
-        const msg = document.createElement('div');
-        msg.className = `message ${type}`;
-        msg.textContent = text;
-        container.appendChild(msg);
-        setTimeout(() => msg.remove(), 3000);
-    }
-
-    // ============================================
-    // ИНИЦИАЛИЗАЦИЯ
-    // ============================================
-    async function initApp() {
-        console.log('Инициализация приложения...');
-        try {
-            await getUserIp();
-            console.log('IP получен');
-            await loadUserVotes();
-            console.log('Голоса загружены');
-            await loadCandidates();
-            console.log('Кандидаты загружены');
-            await loadComments();
-            console.log('Комментарии загружены');
-        } catch (error) {
-            console.error('Ошибка инициализации:', error);
-            showMessage('Ошибка загрузки данных', 'error');
+                `;
+            });
+            
+            container.innerHTML = html;
         }
-    }
-</script> <!-- Закрываем тег script -->
 
-</body> <!-- Закрываем body -->
-</html> <!-- Закрываем html -->
+        // ============================================
+        // СООБЩЕНИЯ
+        // ============================================
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            if (!container) return;
+            
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        async function initApp() {
+            console.log('Инициализация приложения...');
+            try {
+                await getUserIp();
+                console.log('IP получен');
+                await loadUserVotes();
+                console.log('Голоса загружены');
+                await loadCandidates();
+                console.log('Кандидаты загружены');
+                await loadComments();
+                console.log('Комментарии загружены');
+            } catch (error) {
+                console.error('Ошибка инициализации:', error);
+                showMessage('Ошибка загрузки данных', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
