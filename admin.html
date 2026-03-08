@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Geologica', 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
         }
 
         body {
@@ -151,6 +151,52 @@
             display: block;
         }
 
+        .warning-banner {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .warning-banner.warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .warning-banner.danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .warning-banner button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #1a1a2e;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -167,6 +213,14 @@
             border-bottom: 1px solid #eee;
         }
 
+        tr.duplicate {
+            background: #fff3cd;
+        }
+
+        tr.duplicate:hover {
+            background: #ffe69c;
+        }
+
         .badge {
             padding: 4px 8px;
             border-radius: 12px;
@@ -176,7 +230,7 @@
         .badge.warning { background: #ffc107; }
         .badge.success { background: #28a745; color: white; }
         .badge.danger { background: #dc3545; color: white; }
-        .badge.verified { background: #4a6fa5; color: white; }
+        .badge.duplicate { background: #ffc107; color: #1a1a2e; }
 
         .btn {
             padding: 8px 16px;
@@ -185,19 +239,10 @@
             cursor: pointer;
         }
 
-        .btn-primary {
-            background: #ffd700;
-            color: #1a1a2e;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
         .btn-sm {
             padding: 4px 10px;
             font-size: 0.8rem;
+            margin: 0 2px;
         }
 
         .message {
@@ -212,32 +257,8 @@
 
         .message.success { background: #28a745; }
         .message.error { background: #dc3545; }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .input-group input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .prime-icon {
-            width: 14px;
-            height: 14px;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
+        .message.warning { background: #ffc107; color: #1a1a2e; }
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -278,20 +299,59 @@
                     <h3>👑 PREMIUM</h3>
                     <div class="stat-number" id="totalVerified">-</div>
                 </div>
+                <div class="stat-card">
+                    <h3>🔄 Дубликатов</h3>
+                    <div class="stat-number" id="totalDuplicates">0</div>
+                </div>
             </div>
 
             <!-- Вкладки -->
             <div class="tabs">
-                <div class="tab active" onclick="switchTab('feedback')">📨 Обратная связь</div>
-                <div class="tab" onclick="switchTab('comments')">💬 Комментарии</div>
+                <div class="tab active" onclick="switchTab('comments')">💬 Комментарии</div>
+                <div class="tab" onclick="switchTab('duplicates')">🔄 Дубликаты</div>
+                <div class="tab" onclick="switchTab('feedback')">📨 Обратная связь</div>
                 <div class="tab" onclick="switchTab('verified')">👑 PREMIUM</div>
                 <div class="tab" onclick="switchTab('votes')">🗳️ Голоса</div>
                 <div class="tab" onclick="switchTab('candidates')">👩 Кандидаты</div>
                 <div class="tab" onclick="switchTab('suggestions')">📝 Предложения</div>
+                <div class="tab" onclick="switchTab('suspicious')">⚠️ Подозрения</div>
+            </div>
+
+            <!-- Панель комментариев -->
+            <div id="commentsPanel" class="panel active">
+                <h2>💬 Комментарии</h2>
+                <div class="warning-banner" id="duplicateWarning" style="display: none;">
+                    <span>🔍 Обнаружены повторяющиеся комментарии!</span>
+                    <div>
+                        <button class="btn-warning" onclick="showDuplicates()">Просмотреть дубликаты</button>
+                        <button class="btn-danger" onclick="deleteAllDuplicates()">Удалить все дубликаты</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Имя</th><th>Сообщение</th><th>IP</th><th>Время</th><th>Действия</th></tr>
+                    </thead>
+                    <tbody id="commentsBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Панель дубликатов -->
+            <div id="duplicatesPanel" class="panel">
+                <h2>🔄 Повторяющиеся комментарии</h2>
+                <div class="warning-banner danger">
+                    <span>⚠️ Эти комментарии отправлены с одного IP и содержат одинаковый текст</span>
+                    <button class="btn-danger" onclick="deleteAllDuplicates()">Удалить все дубликаты</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Выбрать</th><th>Имя</th><th>Сообщение</th><th>IP</th><th>Кол-во</th><th>Время</th><th>Действия</th></tr>
+                    </thead>
+                    <tbody id="duplicatesBody"></tbody>
+                </table>
             </div>
 
             <!-- Панель обратной связи -->
-            <div id="feedbackPanel" class="panel active">
+            <div id="feedbackPanel" class="panel">
                 <h2>📨 Обратная связь</h2>
                 <table>
                     <thead>
@@ -301,18 +361,7 @@
                 </table>
             </div>
 
-            <!-- Панель комментариев -->
-            <div id="commentsPanel" class="panel">
-                <h2>💬 Комментарии</h2>
-                <table>
-                    <thead>
-                        <tr><th>Имя</th><th>Сообщение</th><th>PREMIUM</th><th>IP</th><th>Дата</th></tr>
-                    </thead>
-                    <tbody id="commentsBody"></tbody>
-                </table>
-            </div>
-
-            <!-- Панель верификации -->
+            <!-- Панель PREMIUM -->
             <div id="verifiedPanel" class="panel">
                 <h2>👑 PREMIUM-пользователи</h2>
                 <table>
@@ -321,11 +370,10 @@
                     </thead>
                     <tbody id="verifiedBody"></tbody>
                 </table>
-                
                 <h3 style="margin-top:30px;">➕ Добавить PREMIUM</h3>
-                <div class="input-group">
-                    <input type="text" id="newVerifiedUser" placeholder="Ник">
-                    <input type="text" id="newVerifiedPass" placeholder="Пароль">
+                <div class="input-group" style="display: flex; gap: 10px; margin-top: 10px;">
+                    <input type="text" id="newVerifiedUser" placeholder="Ник" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; flex: 1;">
+                    <input type="text" id="newVerifiedPass" placeholder="Пароль" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; flex: 1;">
                     <button class="btn btn-primary" onclick="addVerifiedUser()">Добавить</button>
                 </div>
             </div>
@@ -363,20 +411,16 @@
                     <tbody id="suggestionsBody"></tbody>
                 </table>
             </div>
-        </div>
-    </div>
 
-    <!-- Модальное окно добавления кандидата -->
-    <div id="addCandidateModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;">
-        <div style="background:white; border-radius:24px; padding:30px; max-width:500px; width:90%;">
-            <h2>➕ Добавить кандидата</h2>
-            <input type="text" id="newName" placeholder="Имя" style="width:100%; padding:12px; margin:10px 0; border:1px solid #ddd; border-radius:12px;">
-            <input type="text" id="newClass" placeholder="Класс" style="width:100%; padding:12px; margin:10px 0; border:1px solid #ddd; border-radius:12px;">
-            <input type="text" id="newPhoto" placeholder="URL фото" style="width:100%; padding:12px; margin:10px 0; border:1px solid #ddd; border-radius:12px;">
-            <textarea id="newBio" placeholder="Описание" style="width:100%; padding:12px; margin:10px 0; border:1px solid #ddd; border-radius:12px; min-height:100px;"></textarea>
-            <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button class="btn" id="cancelAdd" style="background:#ccc;">Отмена</button>
-                <button class="btn btn-primary" id="saveAdd">Сохранить</button>
+            <!-- Панель подозрений -->
+            <div id="suspiciousPanel" class="panel">
+                <h2>⚠️ Подозрительная активность</h2>
+                <table>
+                    <thead>
+                        <tr><th>Тип</th><th>Детали</th><th>IP</th><th>Время</th></tr>
+                    </thead>
+                    <tbody id="suspiciousBody"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -385,15 +429,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================
-        // КОНФИГУРАЦИЯ - ТОЛЬКО ОДНА ПЕРЕМЕННАЯ
-        // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8';
         
-        // СОЗДАЁМ ТОЛЬКО ОДИН КЛИЕНТ
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
         // ВХОД
@@ -413,56 +453,64 @@
             }
         }
 
-        // Выход
         document.getElementById('logoutBtn').addEventListener('click', () => {
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('adminPanel').style.display = 'none';
         });
 
-        // Переключение вкладок
+        // ============================================
+        // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+        // ============================================
         window.switchTab = (tab) => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             
-            const tabs = ['feedback', 'comments', 'verified', 'votes', 'candidates', 'suggestions'];
+            const tabs = ['comments', 'duplicates', 'feedback', 'verified', 'votes', 'candidates', 'suggestions', 'suspicious'];
             const index = tabs.indexOf(tab);
             document.querySelectorAll('.tab')[index].classList.add('active');
             document.getElementById(tab + 'Panel').classList.add('active');
+            
+            if (tab === 'duplicates') loadDuplicates();
         };
 
         // ============================================
-        // ЗАГРУЗКА ДАННЫХ
+        // ЗАГРУЗКА ВСЕХ ДАННЫХ
         // ============================================
         async function loadAllData() {
             await Promise.all([
                 loadStats(),
-                loadFeedback(),
                 loadComments(),
+                loadFeedback(),
                 loadVerified(),
                 loadVotes(),
                 loadCandidates(),
-                loadSuggestions()
+                loadSuggestions(),
+                loadSuspicious(),
+                checkDuplicates()
             ]);
         }
 
+        // ============================================
+        // СТАТИСТИКА
+        // ============================================
         async function loadStats() {
-            const { count: votes } = await supabaseClient
+            const { count: votes } = await supabase
                 .from('votes')
                 .select('*', { count: 'exact', head: true });
                 
-            const { count: comments } = await supabaseClient
+            const { count: comments } = await supabase
                 .from('comments')
                 .select('*', { count: 'exact', head: true });
                 
-            const { count: candidates } = await supabaseClient
+            const { count: candidates } = await supabase
                 .from('candidates')
                 .select('*', { count: 'exact', head: true });
                 
-            const { count: verified } = await supabaseClient
+            const { count: verified } = await supabase
                 .from('verified_users')
                 .select('*', { count: 'exact', head: true });
             
-            const { data: ips } = await supabaseClient
+            const { data: ips } = await supabase
                 .from('votes')
                 .select('ip_address');
                 
@@ -475,8 +523,183 @@
             document.getElementById('totalVerified').textContent = verified || 0;
         }
 
+        // ============================================
+        // ПРОВЕРКА ДУБЛИКАТОВ
+        // ============================================
+        let duplicates = [];
+
+        async function checkDuplicates() {
+            try {
+                const { data, error } = await supabase
+                    .from('comments')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Группируем по IP и сообщению
+                const groups = {};
+                data?.forEach(comment => {
+                    const key = `${comment.ip_address}_${comment.message}`;
+                    if (!groups[key]) {
+                        groups[key] = [];
+                    }
+                    groups[key].push(comment);
+                });
+
+                // Оставляем только группы с более чем 1 комментарием
+                duplicates = Object.values(groups).filter(group => group.length > 1);
+                
+                document.getElementById('totalDuplicates').textContent = duplicates.length;
+                
+                if (duplicates.length > 0) {
+                    document.getElementById('duplicateWarning').style.display = 'flex';
+                } else {
+                    document.getElementById('duplicateWarning').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Ошибка проверки дубликатов:', error);
+            }
+        }
+
+        // ============================================
+        // ЗАГРУЗКА КОММЕНТАРИЕВ
+        // ============================================
+        async function loadComments() {
+            const { data } = await supabase
+                .from('comments')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(100);
+            
+            // Отмечаем дубликаты
+            const duplicateIds = new Set();
+            duplicates.forEach(group => {
+                group.forEach(c => duplicateIds.add(c.id));
+            });
+            
+            let html = '';
+            data?.forEach(c => {
+                const isDuplicate = duplicateIds.has(c.id);
+                html += `<tr class="${isDuplicate ? 'duplicate' : ''}">
+                    <td>${c.id}</td>
+                    <td>${c.name} ${c.is_verified ? '👑' : ''}</td>
+                    <td>${c.message}</td>
+                    <td>${c.ip_address}</td>
+                    <td>${new Date(c.created_at).toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteComment(${c.id})">🗑️</button>
+                        ${isDuplicate ? '<span class="badge duplicate">🔄 Дубль</span>' : ''}
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('commentsBody').innerHTML = html || '<tr><td colspan="6">Нет данных</td></tr>';
+        }
+
+        // ============================================
+        // ЗАГРУЗКА ДУБЛИКАТОВ
+        // ============================================
+        function loadDuplicates() {
+            let html = '';
+            duplicates.forEach((group, index) => {
+                const firstComment = group[0];
+                html += `<tr>
+                    <td><input type="checkbox" class="duplicate-check" data-group="${index}"></td>
+                    <td>${firstComment.name}</td>
+                    <td>${firstComment.message}</td>
+                    <td>${firstComment.ip_address}</td>
+                    <td>${group.length}</td>
+                    <td>${new Date(firstComment.created_at).toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="keepOne(${index})">💾 Оставить один</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteGroup(${index})">🗑️ Удалить все</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('duplicatesBody').innerHTML = html || '<tr><td colspan="7">Нет дубликатов</td></tr>';
+        }
+
+        // ============================================
+        // УДАЛЕНИЕ КОММЕНТАРИЕВ
+        // ============================================
+        window.deleteComment = async (id) => {
+            if (confirm('Удалить комментарий?')) {
+                await supabase
+                    .from('comments')
+                    .delete()
+                    .eq('id', id);
+                    
+                showMessage('Комментарий удалён', 'success');
+                await loadComments();
+                await checkDuplicates();
+                if (document.getElementById('duplicatesPanel').classList.contains('active')) {
+                    loadDuplicates();
+                }
+            }
+        };
+
+        window.deleteGroup = async (index) => {
+            if (confirm('Удалить все комментарии из этой группы?')) {
+                const group = duplicates[index];
+                for (const comment of group) {
+                    await supabase
+                        .from('comments')
+                        .delete()
+                        .eq('id', comment.id);
+                }
+                showMessage('Группа удалена', 'success');
+                await checkDuplicates();
+                await loadComments();
+                loadDuplicates();
+            }
+        };
+
+        window.deleteAllDuplicates = async () => {
+            if (confirm('Удалить ВСЕ повторяющиеся комментарии?')) {
+                let deletedCount = 0;
+                for (const group of duplicates) {
+                    // Оставляем первый комментарий, удаляем остальные
+                    for (let i = 1; i < group.length; i++) {
+                        await supabase
+                            .from('comments')
+                            .delete()
+                            .eq('id', group[i].id);
+                        deletedCount++;
+                    }
+                }
+                showMessage(`Удалено ${deletedCount} дубликатов`, 'success');
+                await checkDuplicates();
+                await loadComments();
+                if (document.getElementById('duplicatesPanel').classList.contains('active')) {
+                    loadDuplicates();
+                }
+            }
+        };
+
+        window.keepOne = async (index) => {
+            const group = duplicates[index];
+            // Удаляем все, кроме первого
+            for (let i = 1; i < group.length; i++) {
+                await supabase
+                    .from('comments')
+                    .delete()
+                    .eq('id', group[i].id);
+            }
+            showMessage('Оставлен один комментарий', 'success');
+            await checkDuplicates();
+            await loadComments();
+            loadDuplicates();
+        };
+
+        window.showDuplicates = () => {
+            switchTab('duplicates');
+        };
+
+        // ============================================
+        // ОСТАЛЬНЫЕ ФУНКЦИИ (FEEDBACK, VERIFIED, VOTES, CANDIDATES, SUGGESTIONS)
+        // ============================================
         async function loadFeedback() {
-            const { data } = await supabaseClient
+            const { data } = await supabase
                 .from('feedback')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -494,30 +717,8 @@
             document.getElementById('feedbackBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
         }
 
-        async function loadComments() {
-            const { data } = await supabaseClient
-                .from('comments')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(100);
-            
-            let html = '';
-            data?.forEach(c => {
-                const primeBadge = c.is_verified ? '✅' : '-';
-                
-                html += `<tr>
-                    <td>${c.name}</td>
-                    <td>${c.message}</td>
-                    <td>${primeBadge}</td>
-                    <td>${c.ip_address}</td>
-                    <td>${new Date(c.created_at).toLocaleString()}</td>
-                </tr>`;
-            });
-            document.getElementById('commentsBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
-        }
-
         async function loadVerified() {
-            const { data } = await supabaseClient
+            const { data } = await supabase
                 .from('verified_users')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -537,7 +738,7 @@
         }
 
         async function loadVotes() {
-            const { data } = await supabaseClient
+            const { data } = await supabase
                 .from('votes')
                 .select('*, candidates(name)')
                 .order('created_at', { ascending: false })
@@ -555,7 +756,7 @@
         }
 
         async function loadCandidates() {
-            const { data } = await supabaseClient
+            const { data } = await supabase
                 .from('candidates')
                 .select('*')
                 .order('votes', { ascending: false });
@@ -576,7 +777,7 @@
         }
 
         async function loadSuggestions() {
-            const { data } = await supabaseClient
+            const { data } = await supabase
                 .from('suggestions')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -604,6 +805,26 @@
             document.getElementById('suggestionsBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
         }
 
+        async function loadSuspicious() {
+            const { data } = await supabase
+                .from('suspicious_activity')
+                .select('*')
+                .order('timestamp', { ascending: false })
+                .limit(50);
+            
+            let html = '';
+            data?.forEach(s => {
+                const details = typeof s.details === 'object' ? JSON.stringify(s.details) : s.details;
+                html += `<tr>
+                    <td><span class="badge warning">${s.type}</span></td>
+                    <td>${details}</td>
+                    <td>${s.ip_address}</td>
+                    <td>${new Date(s.timestamp).toLocaleString()}</td>
+                </tr>`;
+            });
+            document.getElementById('suspiciousBody').innerHTML = html || '<tr><td colspan="4">Нет данных</td></tr>';
+        }
+
         // ============================================
         // УПРАВЛЕНИЕ PREMIUM
         // ============================================
@@ -616,7 +837,7 @@
                 return;
             }
             
-            await supabaseClient
+            await supabase
                 .from('verified_users')
                 .insert({ username, password });
                 
@@ -628,7 +849,7 @@
 
         window.deleteVerified = async (id) => {
             if (confirm('Удалить PREMIUM-пользователя?')) {
-                await supabaseClient
+                await supabase
                     .from('verified_users')
                     .delete()
                     .eq('id', id);
@@ -638,12 +859,9 @@
             }
         };
 
-        // ============================================
-        // УПРАВЛЕНИЕ КАНДИДАТАМИ
-        // ============================================
         window.deleteCandidate = async (id) => {
             if (confirm('Удалить кандидата?')) {
-                await supabaseClient
+                await supabase
                     .from('candidates')
                     .delete()
                     .eq('id', id);
@@ -654,7 +872,7 @@
         };
 
         window.approveSuggestion = async (id, name, description) => {
-            await supabaseClient
+            await supabase
                 .from('candidates')
                 .insert({ 
                     name: name, 
@@ -662,7 +880,7 @@
                     votes: 0 
                 });
                 
-            await supabaseClient
+            await supabase
                 .from('suggestions')
                 .update({ status: 'approved' })
                 .eq('id', id);
@@ -673,7 +891,7 @@
         };
 
         window.rejectSuggestion = async (id) => {
-            await supabaseClient
+            await supabase
                 .from('suggestions')
                 .update({ status: 'rejected' })
                 .eq('id', id);
@@ -681,43 +899,6 @@
             showMessage('Предложение отклонено', 'info');
             loadSuggestions();
         };
-
-        // ============================================
-        // МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ КАНДИДАТА
-        // ============================================
-        document.getElementById('addCandidateBtn').addEventListener('click', () => {
-            document.getElementById('addCandidateModal').style.display = 'flex';
-        });
-
-        document.getElementById('cancelAdd').addEventListener('click', () => {
-            document.getElementById('addCandidateModal').style.display = 'none';
-        });
-
-        document.getElementById('saveAdd').addEventListener('click', async () => {
-            const name = document.getElementById('newName').value;
-            const classText = document.getElementById('newClass').value;
-            const photo = document.getElementById('newPhoto').value;
-            const bio = document.getElementById('newBio').value;
-
-            if (!name) {
-                showMessage('Введите имя', 'error');
-                return;
-            }
-
-            await supabaseClient
-                .from('candidates')
-                .insert({
-                    name: name,
-                    class: classText,
-                    photo_url: photo || 'https://i.pravatar.cc/300',
-                    bio: bio,
-                    votes: 0
-                });
-
-            document.getElementById('addCandidateModal').style.display = 'none';
-            showMessage('Кандидат добавлен', 'success');
-            loadCandidates();
-        });
 
         // ============================================
         // СООБЩЕНИЯ
