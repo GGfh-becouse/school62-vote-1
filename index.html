@@ -806,6 +806,207 @@
             cursor: pointer;
             margin-left: 10px;
             font-size: 0.85rem;
+
+            /* БЛОК ОБРАТНОЙ СВЯЗИ */
+.feedback-section {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 24px;
+    padding: 24px;
+    margin: 25px 0;
+    border: 2px solid #4a6fa5;
+    box-shadow: 0 4px 0 #2c3e50;
+}
+
+.feedback-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.feedback-header h3 {
+    color: #2c3e50;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.feedback-header p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.feedback-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .feedback-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .feedback-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.feedback-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    transition: all 0.2s;
+    box-shadow: 0 4px 0 #c0c0c0;
+}
+
+.feedback-card:hover {
+    transform: translateY(-4px);
+    border-color: #4a6fa5;
+    box-shadow: 0 6px 0 #2c3e50;
+}
+
+.feedback-card:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #2c3e50;
+}
+
+.feedback-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.feedback-title {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.feedback-desc {
+    color: #666;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+/* МОДАЛЬНОЕ ОКНО */
+.feedback-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.feedback-modal-content {
+    background: white;
+    border-radius: 32px;
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    border: 3px solid #4a6fa5;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.feedback-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.feedback-modal-close:hover {
+    color: #dc3545;
+}
+
+.feedback-modal h3 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    padding-right: 30px;
+}
+
+.feedback-form-group {
+    margin-bottom: 20px;
+}
+
+.feedback-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.feedback-input, .feedback-textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 16px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.feedback-input:focus, .feedback-textarea:focus {
+    border-color: #4a6fa5;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+}
+
+.feedback-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.feedback-counter {
+    text-align: right;
+    color: #666;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.feedback-submit {
+    background: #4a6fa5;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 16px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 40px;
+    cursor: pointer;
+    border-bottom: 4px solid #2c3e50;
+    transition: all 0.1s;
+}
+
+.feedback-submit:hover {
+    background: #3a5a8a;
+}
+
+.feedback-submit:active {
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+}
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -909,6 +1110,77 @@
                 </div>
             </div>
 
+            <!-- БЛОК ОБРАТНОЙ СВЯЗИ -->
+<div class="feedback-section">
+    <div class="feedback-header">
+        <h3>📨 СВЯЗЬ С АДМИНИСТРАЦИЕЙ</h3>
+        <p>Напишите нам - мы ответим в ближайшее время</p>
+    </div>
+    
+    <div class="feedback-grid">
+        <!-- Карточка предложения кандидата -->
+        <div class="feedback-card" onclick="openFeedbackModal('candidate')">
+            <div class="feedback-icon">👤</div>
+            <div class="feedback-title">Предложить кандидата</div>
+            <div class="feedback-desc">Добавьте нового участника в голосование</div>
+        </div>
+        
+        <!-- Карточка идеи -->
+        <div class="feedback-card" onclick="openFeedbackModal('idea')">
+            <div class="feedback-icon">💡</div>
+            <div class="feedback-title">Предложить идею</div>
+            <div class="feedback-desc">Как улучшить сайт? Ждём ваши идеи</div>
+        </div>
+        
+        <!-- Карточка ошибки -->
+        <div class="feedback-card" onclick="openFeedbackModal('bug')">
+            <div class="feedback-icon">🐛</div>
+            <div class="feedback-title">Сообщить об ошибке</div>
+            <div class="feedback-desc">Нашли баг? Напишите нам</div>
+        </div>
+        
+        <!-- Карточка поддержки -->
+        <div class="feedback-card" onclick="openFeedbackModal('support')">
+            <div class="feedback-icon">❤️</div>
+            <div class="feedback-title">Поддержать проект</div>
+            <div class="feedback-desc">Сказать спасибо или поддержать</div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОБРАТНОЙ СВЯЗИ -->
+<div class="feedback-modal" id="feedbackModal">
+    <div class="feedback-modal-content">
+        <span class="feedback-modal-close" onclick="closeFeedbackModal()">&times;</span>
+        <h3 id="feedbackModalTitle">📨 Написать сообщение</h3>
+        
+        <div class="feedback-form-group">
+            <label for="feedbackName">Ваше имя (необязательно)</label>
+            <input type="text" id="feedbackName" class="feedback-input" placeholder="Аноним">
+        </div>
+        
+        <div class="feedback-form-group">
+            <label for="feedbackMessage">Сообщение <span style="color: #ff6b6b;">*</span></label>
+            <textarea id="feedbackMessage" class="feedback-textarea" rows="5" placeholder="Напишите что хотите сказать..." maxlength="500"></textarea>
+            <div class="feedback-counter">
+                <span id="feedbackCharCount">0</span>/500
+            </div>
+        </div>
+        
+        <div class="feedback-form-group" id="candidateFields" style="display: none;">
+            <label for="candidateName">Имя кандидата</label>
+            <input type="text" id="candidateName" class="feedback-input" placeholder="Например: Анна Смирнова">
+            
+            <label for="candidateClass">Класс (необязательно)</label>
+            <input type="text" id="candidateClass" class="feedback-input" placeholder="Например: 10А">
+            
+            <label for="candidateBio">Описание</label>
+            <textarea id="candidateBio" class="feedback-textarea" rows="3" placeholder="Чем занимается, увлечения..."></textarea>
+        </div>
+        
+        <button class="feedback-submit" id="submitFeedback">📤 Отправить</button>
+    </div>
+</div>
             <!-- БЛОК КОММЕНТАРИЕВ -->
             <div class="comments-section">
                 <h3>💬 КОММЕНТАРИИ ШКОЛЫ №62</h3>
@@ -1573,7 +1845,120 @@
             container.appendChild(msg);
             setTimeout(() => msg.remove(), 3000);
         }
+// ============================================
+// ОБРАТНАЯ СВЯЗЬ
+// ============================================
+let currentFeedbackType = '';
 
+function openFeedbackModal(type) {
+    currentFeedbackType = type;
+    const modal = document.getElementById('feedbackModal');
+    const title = document.getElementById('feedbackModalTitle');
+    const candidateFields = document.getElementById('candidateFields');
+    
+    // Настройка заголовка и полей в зависимости от типа
+    switch(type) {
+        case 'candidate':
+            title.innerHTML = '👤 Предложить кандидата';
+            candidateFields.style.display = 'block';
+            break;
+        case 'idea':
+            title.innerHTML = '💡 Предложить идею';
+            candidateFields.style.display = 'none';
+            break;
+        case 'bug':
+            title.innerHTML = '🐛 Сообщить об ошибке';
+            candidateFields.style.display = 'none';
+            break;
+        case 'support':
+            title.innerHTML = '❤️ Поддержать проект';
+            candidateFields.style.display = 'none';
+            break;
+    }
+    
+    modal.style.display = 'flex';
+}
+
+function closeFeedbackModal() {
+    document.getElementById('feedbackModal').style.display = 'none';
+    // Очищаем поля
+    document.getElementById('feedbackName').value = '';
+    document.getElementById('feedbackMessage').value = '';
+    document.getElementById('candidateName').value = '';
+    document.getElementById('candidateClass').value = '';
+    document.getElementById('candidateBio').value = '';
+    document.getElementById('feedbackCharCount').textContent = '0';
+}
+
+// Счетчик символов
+document.getElementById('feedbackMessage').addEventListener('input', function() {
+    const count = this.value.length;
+    document.getElementById('feedbackCharCount').textContent = count;
+});
+
+// Отправка формы
+document.getElementById('submitFeedback').addEventListener('click', async function() {
+    const name = document.getElementById('feedbackName').value.trim() || 'Аноним';
+    const message = document.getElementById('feedbackMessage').value.trim();
+    
+    if (!message) {
+        showMessage('Напишите сообщение', 'error');
+        return;
+    }
+    
+    let details = {};
+    
+    if (currentFeedbackType === 'candidate') {
+        const candidateName = document.getElementById('candidateName').value.trim();
+        const candidateClass = document.getElementById('candidateClass').value.trim();
+        const candidateBio = document.getElementById('candidateBio').value.trim();
+        
+        if (!candidateName) {
+            showMessage('Введите имя кандидата', 'error');
+            return;
+        }
+        
+        details = {
+            candidateName,
+            candidateClass,
+            candidateBio,
+            type: 'candidate_suggestion'
+        };
+        
+        // Сохраняем в таблицу suggestions
+        await supabaseClient
+            .from('suggestions')
+            .insert({
+                name: candidateName,
+                description: candidateBio,
+                class: candidateClass,
+                status: 'pending'
+            });
+    }
+    
+    // Сохраняем в feedback
+    await supabaseClient
+        .from('feedback')
+        .insert({
+            type: currentFeedbackType,
+            name: name,
+            message: message,
+            details: details,
+            ip_address: userIp,
+            user_agent: navigator.userAgent
+        });
+    
+    showMessage('Сообщение отправлено! Спасибо!', 'success');
+    closeFeedbackModal();
+});
+
+// Закрытие по клику вне модалки
+window.onclick = function(event) {
+    const modal = document.getElementById('feedbackModal');
+    if (event.target === modal) {
+        closeFeedbackModal();
+    }
+}
         // ============================================
         // ИНИЦИАЛИЗАЦИЯ
         // ============================================
