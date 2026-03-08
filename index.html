@@ -1006,13 +1006,27 @@
         const enterBtn = document.getElementById('enterSiteBtn');
 
         // Функция для входа на сайт
-        function enterSite() {
-            console.log('Вход на сайт');
-            localStorage.setItem('agreement62', 'accepted');
-            agreementScreen.style.display = 'none';
-            mainContent.style.display = 'block';
-            initApp();
-        }
+function enterSite() {
+    console.log('Вход на сайт');
+    localStorage.setItem('agreement62', 'accepted');
+    
+    // ПРИНУДИТЕЛЬНОЕ СКРЫТИЕ ЧЕРЕЗ STYLE
+    const agreementScreen = document.getElementById('agreementScreen');
+    const mainContent = document.getElementById('mainContent');
+    
+    if (agreementScreen) {
+        agreementScreen.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important;';
+    }
+    
+    if (mainContent) {
+        mainContent.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important;';
+    }
+    
+    // Дополнительно удаляем классы, которые могут мешать
+    agreementScreen.classList.remove('active', 'show');
+    
+    initApp();
+}
 
         // Проверка при загрузке
         if (localStorage.getItem('agreement62') === 'accepted') {
