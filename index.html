@@ -4,93 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>СТЕНА 62 ШКОЛЫ</title>
+    <!-- Подключаем шрифт как в ВК -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        *
-        /* ПРИНУДИТЕЛЬНОЕ СКРЫТИЕ/ПОКАЗ */
-#agreementScreen {
-    display: flex !important;
-}
-
-#agreementScreen[style*="display: none"] {
-    display: none !important;
-}
-
-#mainContent {
-    display: none !important;
-}
-
-#mainContent[style*="display: block"] {
-    display: block !important;
-}
-        /* ИСПРАВЛЕНИЕ ВИДИМОСТИ */
-.agreement-screen {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: rgba(0, 0, 0, 0.85) !important;
-    z-index: 10000 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-.agreement-card {
-    background: white !important;
-    padding: 30px !important;
-    border-radius: 24px !important;
-    max-width: 500px !important;
-    width: 90% !important;
-    max-height: 90vh !important;
-    overflow-y: auto !important;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
-}
-
-.agreement-card h2,
-.agreement-card p,
-.agreement-card ul,
-.agreement-card li,
-.agreement-card div {
-    color: #2c3e50 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.checkbox-container {
-    background: #f0f0f0 !important;
-    padding: 15px !important;
-    border-radius: 12px !important;
-    margin: 20px 0 !important;
-}
-
-.checkbox-container label {
-    color: #2c3e50 !important;
-    font-weight: 600 !important;
-}
-
-.agreement-button {
-    background: #4a6fa5 !important;
-    color: white !important;
-    padding: 15px !important;
-    width: 100% !important;
-    border: none !important;
-    border-radius: 40px !important;
-    font-size: 1.2rem !important;
-    font-weight: 700 !important;
-    cursor: pointer !important;
-    border-bottom: 4px solid #2c3e50 !important;
-}
-
-.agreement-button:disabled {
-    background: #ccc !important;
-    cursor: not-allowed !important;
-}
-        {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
         }
 
         body {
@@ -112,115 +35,122 @@
             position: relative;
         }
 
-        /* ЭКРАН СОГЛАШЕНИЯ */
+        /* ЭКРАН СОГЛАШЕНИЯ - улучшенная видимость */
         .agreement-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.9) !important;
             backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            padding: 16px;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 10000 !important;
+            padding: 16px !important;
         }
 
         .agreement-card {
-            background: white;
-            border-radius: 32px;
-            max-width: 520px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 28px 24px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-            border: 2px solid #4a6fa5;
+            background: white !important;
+            border-radius: 32px !important;
+            max-width: 520px !important;
+            width: 100% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            padding: 28px 24px !important;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4) !important;
+            border: 2px solid #4a6fa5 !important;
         }
 
         .agreement-card h2 {
-            font-size: 1.6rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid #4a6fa5;
-            font-weight: 700;
+            font-size: 1.6rem !important;
+            color: #2c3e50 !important;
+            margin-bottom: 20px !important;
+            padding-bottom: 12px !important;
+            border-bottom: 3px solid #4a6fa5 !important;
+            font-weight: 700 !important;
+            font-family: 'Roboto', sans-serif !important;
         }
 
         .agreement-card h2 span {
-            background: #4a6fa5;
-            color: white;
-            font-size: 0.9rem;
-            padding: 4px 12px;
-            border-radius: 30px;
-            margin-left: 10px;
+            background: #4a6fa5 !important;
+            color: white !important;
+            font-size: 0.9rem !important;
+            padding: 4px 12px !important;
+            border-radius: 30px !important;
+            margin-left: 10px !important;
         }
 
         .agreement-text {
-            color: #34495e;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
+            color: #34495e !important;
+            line-height: 1.6 !important;
+            margin-bottom: 20px !important;
+            font-size: 0.95rem !important;
+            font-family: 'Roboto', sans-serif !important;
         }
 
-        .agreement-highlight {
-            background: #eef2f7;
-            padding: 16px;
-            border-radius: 16px;
-            border-left: 5px solid #4a6fa5;
-            margin: 20px 0;
+        .agreement-text p {
+            margin-bottom: 8px !important;
+            color: #34495e !important;
+        }
+
+        .agreement-text strong {
+            color: #2c3e50 !important;
+            font-weight: 700 !important;
         }
 
         .checkbox-container {
-            background: #f8f9fa;
-            padding: 18px;
-            border-radius: 16px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
+            background: #f8f9fa !important;
+            padding: 18px !important;
+            border-radius: 16px !important;
+            margin: 20px 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            cursor: pointer !important;
         }
 
         .checkbox-container input {
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-            accent-color: #4a6fa5;
+            width: 22px !important;
+            height: 22px !important;
+            cursor: pointer !important;
+            accent-color: #4a6fa5 !important;
         }
 
         .checkbox-container label {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            cursor: pointer;
-            flex: 1;
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            color: #2c3e50 !important;
+            cursor: pointer !important;
+            flex: 1 !important;
+            font-family: 'Roboto', sans-serif !important;
         }
 
         .agreement-button {
-            background: #4a6fa5;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-bottom: 4px solid #2c3e50;
+            background: #4a6fa5 !important;
+            color: white !important;
+            border: none !important;
+            width: 100% !important;
+            padding: 16px !important;
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            border-radius: 40px !important;
+            cursor: pointer !important;
+            transition: all 0.2s !important;
+            border-bottom: 4px solid #2c3e50 !important;
+            font-family: 'Roboto', sans-serif !important;
         }
 
         .agreement-button:hover {
-            background: #3a5a8a;
+            background: #3a5a8a !important;
         }
 
         .agreement-button:disabled {
-            background: #ccc;
-            border-bottom-color: #999;
-            cursor: not-allowed;
+            background: #ccc !important;
+            border-bottom-color: #999 !important;
+            cursor: not-allowed !important;
+            opacity: 0.7 !important;
         }
 
         /* ОСНОВНОЙ КОНТЕНТ */
@@ -893,62 +823,62 @@
 </head>
 <body>
     <!-- ЭКРАН СОГЛАШЕНИЯ -->
-<div class="agreement-screen" id="agreementScreen">
-    <div class="agreement-card">
-        <h2>ДОГОВОР СООБЩЕСТВА <span>Школа №62</span></h2>
-        
-        <div class="agreement-text">
-            <p><strong>Статья 1. Общие положения</strong></p>
-            <p>1.1 Сайт является независимой онлайн-площадкой для общения учащихся и не связан с администрацией школы.</p>
-            <p>1.2 Публикуя сообщения на сайте, пользователь автоматически соглашается с настоящими правилами.</p>
-            <p>1.3 Пользователь несёт личную ответственность за публикуемый контент.</p>
-            <p>1.4 Администрация имеет право модерировать контент для поддержания безопасной среды общения.</p>
+    <div class="agreement-screen" id="agreementScreen">
+        <div class="agreement-card">
+            <h2>ДОГОВОР СООБЩЕСТВА <span>Школа №62</span></h2>
             
-            <p><strong style="margin-top:15px; display:block;">Статья 2. Разрешённый контент</strong></p>
-            <p>На сайте допускается свободное общение при соблюдении следующих условий.</p>
-            <p>2.1 Пользователи могут публиковать сообщения анонимно или под выбранным никнеймом.</p>
-            <p>2.2 Допускается обсуждение школьных событий, учеников, мероприятий и новостей.</p>
-            <p>2.3 Допускаются юмор, шутки, мемы и неформальное общение.</p>
-            <p>2.4 Разрешается критика и выражение мнений, если она не превращается в целенаправленную травлю.</p>
-            <p>2.5 Допускается умеренная нецензурная лексика, если она не направлена на конкретного человека и не используется для систематических оскорблений.</p>
+            <div class="agreement-text">
+                <p><strong>Статья 1. Общие положения</strong></p>
+                <p>1.1 Сайт является независимой онлайн-площадкой для общения учащихся и не связан с администрацией школы.</p>
+                <p>1.2 Публикуя сообщения на сайте, пользователь автоматически соглашается с настоящими правилами.</p>
+                <p>1.3 Пользователь несёт личную ответственность за публикуемый контент.</p>
+                <p>1.4 Администрация имеет право модерировать контент для поддержания безопасной среды общения.</p>
+                
+                <p><strong style="margin-top:15px; display:block;">Статья 2. Разрешённый контент</strong></p>
+                <p>На сайте допускается свободное общение при соблюдении следующих условий.</p>
+                <p>2.1 Пользователи могут публиковать сообщения анонимно или под выбранным никнеймом.</p>
+                <p>2.2 Допускается обсуждение школьных событий, учеников, мероприятий и новостей.</p>
+                <p>2.3 Допускаются юмор, шутки, мемы и неформальное общение.</p>
+                <p>2.4 Разрешается критика и выражение мнений, если она не превращается в целенаправленную травлю.</p>
+                <p>2.5 Допускается умеренная нецензурная лексика, если она не направлена на конкретного человека и не используется для систематических оскорблений.</p>
+                
+                <p><strong style="margin-top:15px; display:block;">Статья 3. Запрещённый контент</strong></p>
+                <p>Следующие действия запрещены на сайте.</p>
+                <p>3.1 Организованная травля или систематические оскорбления конкретного человека.</p>
+                <p>3.2 Публикация личной информации без согласия человека, включая: номер телефона, адрес, личные фотографии, ссылки на личные аккаунты.</p>
+                <p>3.3 Призывы к насилию или угрозы.</p>
+                <p>3.4 Распространение ложных обвинений, клеветы или провокаций.</p>
+                <p>3.5 Массовый спам или повторяющиеся сообщения.</p>
+                <p>3.6 Использование сайта для распространения незаконного контента.</p>
+                <p>3.7 Попытки нарушить работу сайта или обход ограничений.</p>
+                
+                <p><strong style="margin-top:15px; display:block;">Статья 4. Прайм-статус</strong></p>
+                <p>4.1 Прайм-статус является платной функцией сайта.</p>
+                <p>4.2 Прайм-статус позволяет выделять сообщения пользователя и использовать уникальный никнейм.</p>
+                <p>4.3 Прайм-статус не освобождает пользователя от соблюдения правил сообщества.</p>
+                <p>4.4 Администрация имеет право временно ограничить или полностью удалить Прайм-статус при нарушении правил.</p>
+                
+                <p><strong style="margin-top:15px; display:block;">Статья 5. Модерация</strong></p>
+                <p>5.1 Администрация имеет право удалять сообщения, нарушающие правила сайта.</p>
+                <p>5.2 Администрация может ограничивать публикацию сообщений или доступ к сайту.</p>
+                <p>5.3 Решения модерации принимаются по усмотрению администрации.</p>
+                
+                <p><strong style="margin-top:15px; display:block;">Статья 6. Санкции</strong></p>
+                <p>За нарушение правил могут применяться следующие меры:</p>
+                <p>6.1 Удаление сообщения.</p>
+                <p>6.2 Временное ограничение публикации сообщений.</p>
+                <p>6.3 Временная блокировка аккаунта.</p>
+                <p>6.4 Постоянная блокировка аккаунта.</p>
+            </div>
             
-            <p><strong style="margin-top:15px; display:block;">Статья 3. Запрещённый контент</strong></p>
-            <p>Следующие действия запрещены на сайте.</p>
-            <p>3.1 Организованная травля или систематические оскорбления конкретного человека.</p>
-            <p>3.2 Публикация личной информации без согласия человека, включая: номер телефона, адрес, личные фотографии, ссылки на личные аккаунты.</p>
-            <p>3.3 Призывы к насилию или угрозы.</p>
-            <p>3.4 Распространение ложных обвинений, клеветы или провокаций.</p>
-            <p>3.5 Массовый спам или повторяющиеся сообщения.</p>
-            <p>3.6 Использование сайта для распространения незаконного контента.</p>
-            <p>3.7 Попытки нарушить работу сайта или обход ограничений.</p>
+            <div class="checkbox-container" id="agreementCheckbox">
+                <input type="checkbox" id="schoolCheckbox">
+                <label for="schoolCheckbox">✅ Я принимаю условия Договора сообщества</label>
+            </div>
             
-            <p><strong style="margin-top:15px; display:block;">Статья 4. Прайм-статус</strong></p>
-            <p>4.1 Прайм-статус является платной функцией сайта.</p>
-            <p>4.2 Прайм-статус позволяет выделять сообщения пользователя и использовать уникальный никнейм.</p>
-            <p>4.3 Прайм-статус не освобождает пользователя от соблюдения правил сообщества.</p>
-            <p>4.4 Администрация имеет право временно ограничить или полностью удалить Прайм-статус при нарушении правил.</p>
-            
-            <p><strong style="margin-top:15px; display:block;">Статья 5. Модерация</strong></p>
-            <p>5.1 Администрация имеет право удалять сообщения, нарушающие правила сайта.</p>
-            <p>5.2 Администрация может ограничивать публикацию сообщений или доступ к сайту.</p>
-            <p>5.3 Решения модерации принимаются по усмотрению администрации.</p>
-            
-            <p><strong style="margin-top:15px; display:block;">Статья 6. Санкции</strong></p>
-            <p>За нарушение правил могут применяться следующие меры:</p>
-            <p>6.1 Удаление сообщения.</p>
-            <p>6.2 Временное ограничение публикации сообщений.</p>
-            <p>6.3 Временная блокировка аккаунта.</p>
-            <p>6.4 Постоянная блокировка аккаунта.</p>
+            <button class="agreement-button" id="enterSiteBtn" disabled>Войти на стену</button>
         </div>
-        
-        <div class="checkbox-container" id="agreementCheckbox">
-            <input type="checkbox" id="schoolCheckbox">
-            <label for="schoolCheckbox">✅ Я принимаю условия Договора сообщества</label>
-        </div>
-        
-        <button class="agreement-button" id="enterSiteBtn" disabled>Войти на стену</button>
     </div>
-</div>
 
     <!-- ОСНОВНОЙ КОНТЕНТ -->
     <div class="container">
@@ -1068,31 +998,48 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
-        // СОГЛАШЕНИЕ
+        // СОГЛАШЕНИЕ - УСИЛЕННАЯ ВЕРСИЯ
         // ============================================
         const agreementScreen = document.getElementById('agreementScreen');
         const mainContent = document.getElementById('mainContent');
         const schoolCheckbox = document.getElementById('schoolCheckbox');
         const enterBtn = document.getElementById('enterSiteBtn');
 
-        if (localStorage.getItem('agreement62') === 'accepted') {
+        // Функция для входа на сайт
+        function enterSite() {
+            console.log('Вход на сайт');
+            localStorage.setItem('agreement62', 'accepted');
             agreementScreen.style.display = 'none';
             mainContent.style.display = 'block';
             initApp();
         }
 
-        schoolCheckbox.addEventListener('change', function() {
-            enterBtn.disabled = !this.checked;
-        });
+        // Проверка при загрузке
+        if (localStorage.getItem('agreement62') === 'accepted') {
+            console.log('Уже был вход, показываем контент');
+            agreementScreen.style.display = 'none';
+            mainContent.style.display = 'block';
+            initApp();
+        }
 
-        enterBtn.addEventListener('click', function() {
-            if (schoolCheckbox.checked) {
-                localStorage.setItem('agreement62', 'accepted');
-                agreementScreen.style.display = 'none';
-                mainContent.style.display = 'block';
-                initApp();
-            }
-        });
+        // Обработчик чекбокса
+        if (schoolCheckbox) {
+            schoolCheckbox.addEventListener('change', function() {
+                enterBtn.disabled = !this.checked;
+                console.log('Чекбокс изменен, кнопка:', enterBtn.disabled ? 'заблокирована' : 'активна');
+            });
+        }
+
+        // Обработчик кнопки
+        if (enterBtn) {
+            enterBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Кнопка нажата');
+                if (schoolCheckbox && schoolCheckbox.checked) {
+                    enterSite();
+                }
+            });
+        }
 
         // ============================================
         // СОСТОЯНИЕ
@@ -1266,7 +1213,7 @@
                 
                 const commentClass = comment.is_verified ? 'comment-item verified-comment' : 'comment-item';
                 const verifiedBadge = comment.is_verified ? 
-    '<span class="verified-badge"><img src="verified.png" width="12" height="12"> PREMIUM</span>' : '';
+                    '<span class="verified-badge"><img src="verified.png" width="12" height="12"> PREMIUM</span>' : '';
                 
                 html += `
                     <div class="${commentClass}">
@@ -1291,7 +1238,7 @@
         }
 
         // ============================================
-        // ОТПРАВКА КОММЕНТАРИЯ (БЕЗ АККАУНТОВ)
+        // ОТПРАВКА КОММЕНТАРИЯ
         // ============================================
         document.getElementById('submitComment').addEventListener('click', submitComment);
 
