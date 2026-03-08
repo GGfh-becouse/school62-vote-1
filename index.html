@@ -934,17 +934,16 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+        
+    </script>
     <script>
         // ============================================
-        // SUPABASE КОНФИГ - ТОЛЬКО ОДНА ПЕРЕМЕННАЯ!
+        // SUPABASE КОНФИГ
         // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
-
-        // СОЗДАЁМ ТОЛЬКО ОДИН КЛИЕНТ - КАК В АДМИНКЕ
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        console.log('✅ Supabase инициализирован');
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
         // СОГЛАШЕНИЕ
@@ -1018,17 +1017,10 @@
         // ============================================
 
         // Обработчик кнопки верификации
-        const verifyBtn = document.getElementById('verifyBtn');
-        if (verifyBtn) {
-            verifyBtn.addEventListener('click', verifyUser);
-        }
-
-        const verifyPassword = document.getElementById('verifyPassword');
-        if (verifyPassword) {
-            verifyPassword.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') verifyUser();
-            });
-        }
+        document.getElementById('verifyBtn').addEventListener('click', verifyUser);
+        document.getElementById('verifyPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyUser();
+        });
 
         async function verifyUser() {
             const username = document.getElementById('verifyUsername').value.trim();
@@ -1076,10 +1068,7 @@
             verifiedUser = null;
             verifiedUserName = null;
             verifiedUserData = null;
-            const statusDiv = document.getElementById('verifyStatus');
-            if (statusDiv) {
-                statusDiv.classList.remove('active');
-            }
+            document.getElementById('verifyStatus').classList.remove('active');
             showMessage('Вы вышли из системы', 'info');
             loadComments();
         }
@@ -1145,10 +1134,7 @@
         // ============================================
         // ОТПРАВКА КОММЕНТАРИЯ
         // ============================================
-        const submitCommentBtn = document.getElementById('submitComment');
-        if (submitCommentBtn) {
-            submitCommentBtn.addEventListener('click', submitComment);
-        }
+        document.getElementById('submitComment').addEventListener('click', submitComment);
 
         async function submitComment() {
             const nameInput = document.getElementById('commentName');
@@ -1219,7 +1205,7 @@
                 messageInput.value = '';
                 
                 showMessage('Комментарий добавлен!', 'success');
-                await loadComments();
+                await loadComments(); // Перезагружаем комментарии
                 
             } catch (error) {
                 showMessage('Ошибка: ' + error.message, 'error');
@@ -1353,20 +1339,18 @@
 
         window.selectCandidate = function(id) {
             document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
-            const card = document.getElementById(`card-${id}`);
-            if (card) card.classList.add('selected');
+            document.getElementById(`card-${id}`).classList.add('selected');
             selectedCandidateId = id;
         };
 
         function updatePrediction() {
-            const predictionBars = document.getElementById('predictionBars');
-            if (!predictionBars || !currentPair || currentPair.length < 2) return;
+            if (!currentPair || currentPair.length < 2) return;
             
             const total = (currentPair[0].votes || 0) + (currentPair[1].votes || 0);
             const left = total ? Math.round((currentPair[0].votes / total) * 100) : 50;
             const right = 100 - left;
             
-            predictionBars.innerHTML = `
+            document.getElementById('predictionBars').innerHTML = `
                 <div class="prediction-bar">
                     <div class="prediction-fill" style="width: ${left}%;">${left}%</div>
                 </div>
@@ -1379,63 +1363,59 @@
         // ============================================
         // ГОЛОСОВАНИЕ
         // ============================================
-        const voteBtn = document.getElementById('voteBtn');
-        if (voteBtn) {
-            voteBtn.addEventListener('click', async function() {
-                if (!selectedCandidateId) {
-                    showMessage('Выберите девушку', 'error');
-                    return;
-                }
-                
-                if (!currentPair || currentPair.length !== 2) return;
-                
-                const winner = currentPair.find(c => c.id === selectedCandidateId);
-                const loser = currentPair.find(c => c.id !== selectedCandidateId);
-                
-                if (!winner || !loser) return;
-                
-                if (userVotes[winner.id]) {
-                    showMessage('Вы уже голосовали за этого кандидата', 'error');
-                    return;
-                }
+        document.getElementById('voteBtn').addEventListener('click', async function() {
+            if (!selectedCandidateId) {
+                showMessage('Выберите девушку', 'error');
+                return;
+            }
+            
+            if (!currentPair || currentPair.length !== 2) return;
+            
+            const winner = currentPair.find(c => c.id === selectedCandidateId);
+            const loser = currentPair.find(c => c.id !== selectedCandidateId);
+            
+            if (!winner || !loser) return;
+            
+            if (userVotes[winner.id]) {
+                showMessage('Вы уже голосовали за этого кандидата', 'error');
+                return;
+            }
 
-                try {
-                    const newWinnerVotes = (winner.votes || 0) + 100;
-                    const newLoserVotes = Math.max(0, (loser.votes || 0) - 50);
+            try {
+                const newWinnerVotes = (winner.votes || 0) + 100;
+                const newLoserVotes = Math.max(0, (loser.votes || 0) - 50);
 
-                    await Promise.all([
-                        supabase.from('candidates').update({ votes: newWinnerVotes }).eq('id', winner.id),
-                        supabase.from('candidates').update({ votes: newLoserVotes }).eq('id', loser.id),
-                        supabase.from('votes').insert({
-                            candidate_id: winner.id,
-                            ip_address: userIp,
-                            user_agent: navigator.userAgent
-                        })
-                    ]);
+                await Promise.all([
+                    supabase.from('candidates').update({ votes: newWinnerVotes }).eq('id', winner.id),
+                    supabase.from('candidates').update({ votes: newLoserVotes }).eq('id', loser.id),
+                    supabase.from('votes').insert({
+                        candidate_id: winner.id,
+                        ip_address: userIp,
+                        user_agent: navigator.userAgent
+                    })
+                ]);
 
-                    winner.votes = newWinnerVotes;
-                    loser.votes = newLoserVotes;
-                    userVotes[winner.id] = true;
-                    userVoteCount++;
-                    
-                    document.getElementById('voteCountBadge').textContent = userVoteCount;
-                    
-                    // Достижения
-                    const ach1 = document.getElementById('ach1');
-                    if (ach1 && userVoteCount >= 1) ach1.classList.add('unlocked');
-                    
-                    updateLeaderboard();
-                    showMessage(`✅ +100 ${winner.name}!`, 'success');
-                    showRecommendations(winner.id);
-                    
-                    selectedCandidateId = null;
-                    selectNewPair();
-                    
-                } catch (err) {
-                    showMessage('Ошибка: ' + err.message, 'error');
-                }
-            });
-        }
+                winner.votes = newWinnerVotes;
+                loser.votes = newLoserVotes;
+                userVotes[winner.id] = true;
+                userVoteCount++;
+                
+                document.getElementById('voteCountBadge').textContent = userVoteCount;
+                
+                // Достижения
+                if (userVoteCount >= 1) document.getElementById('ach1').classList.add('unlocked');
+                
+                updateLeaderboard();
+                showMessage(`✅ +100 ${winner.name}!`, 'success');
+                showRecommendations(winner.id);
+                
+                selectedCandidateId = null;
+                selectNewPair();
+                
+            } catch (err) {
+                showMessage('Ошибка: ' + err.message, 'error');
+            }
+        });
 
         // ============================================
         // РЕКОМЕНДАЦИИ
@@ -1446,12 +1426,9 @@
             ).sort(() => 0.5 - Math.random()).slice(0, 3);
             
             const container = document.getElementById('recommendationsGrid');
-            const recDiv = document.getElementById('recommendations');
-            
-            if (!container || !recDiv) return;
             
             if (candidates.length === 0) {
-                recDiv.style.display = 'none';
+                document.getElementById('recommendations').style.display = 'none';
                 return;
             }
             
@@ -1468,17 +1445,15 @@
             });
             
             container.innerHTML = html;
-            recDiv.style.display = 'block';
+            document.getElementById('recommendations').style.display = 'block';
         }
 
         window.selectAndScroll = function(id) {
-            const recDiv = document.getElementById('recommendations');
-            if (recDiv) recDiv.style.display = 'none';
+            document.getElementById('recommendations').style.display = 'none';
             
             if (currentPair[0]?.id === id || currentPair[1]?.id === id) {
                 selectCandidate(id);
-                const battleDiv = document.getElementById('battleContainer');
-                if (battleDiv) battleDiv.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
                 return;
             }
             
@@ -1489,8 +1464,7 @@
             currentPair = [candidate, other];
             renderBattle(currentPair);
             selectCandidate(id);
-            const battleDiv = document.getElementById('battleContainer');
-            if (battleDiv) battleDiv.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
         };
 
         // ============================================
@@ -1499,8 +1473,6 @@
         function updateLeaderboard() {
             const sorted = [...allCandidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
             const container = document.getElementById('ratingList');
-            
-            if (!container) return;
             
             let html = '';
             sorted.slice(0, 10).forEach((c, index) => {
@@ -1524,8 +1496,6 @@
         // ============================================
         function showMessage(text, type) {
             const container = document.getElementById('messageContainer');
-            if (!container) return;
-            
             const msg = document.createElement('div');
             msg.className = `message ${type}`;
             msg.textContent = text;
@@ -1537,20 +1507,10 @@
         // ИНИЦИАЛИЗАЦИЯ
         // ============================================
         async function initApp() {
-            console.log('Инициализация приложения...');
-            try {
-                await getUserIp();
-                console.log('IP получен');
-                await loadUserVotes();
-                console.log('Голоса загружены');
-                await loadCandidates();
-                console.log('Кандидаты загружены');
-                await loadComments();
-                console.log('Комментарии загружены');
-            } catch (error) {
-                console.error('Ошибка инициализации:', error);
-                showMessage('Ошибка загрузки данных', 'error');
-            }
+            await getUserIp();
+            await loadUserVotes();
+            await loadCandidates();
+            await loadComments();
         }
     </script>
 </body>
