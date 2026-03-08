@@ -492,9 +492,23 @@
             gap: 5px;
         }
 
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #4a6fa5;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+        
         .verified-badge img {
-    display: none;
-}
+            width: 12px;
+            height: 12px;
+            filter: brightness(100);
+        }
 
         .comment-date {
             color: #7f8c8d;
@@ -793,26 +807,6 @@
             margin-left: 10px;
             font-size: 0.85rem;
         }
-
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #4a6fa5;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            margin-left: 8px;
-        }
-
-        .official-icon {
-            width: 16px;
-            height: 16px;
-            display: inline-block;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -901,7 +895,7 @@
 
             <!-- БЛОК ВЕРИФИКАЦИИ -->
             <div class="verification-box" id="verificationBox">
-                <h3>👑 ВХОД В PREMIUM (чуть позже вы сможете приобрести данную услугу)</h3>
+                <h3>👑 ВХОД В PREMIUM</h3>
                 <div class="verification-input-group">
                     <input type="text" id="verifyUsername" class="verification-input" placeholder="Ваш ник" maxlength="30">
                     <input type="password" id="verifyPassword" class="verification-input" placeholder="Пароль" maxlength="50">
@@ -922,7 +916,7 @@
                 <!-- Форма комментария -->
                 <div class="comment-form">
                     <div class="comment-input-group">
-                        <input type="text" id="commentName" class="comment-input" placeholder="Ваше имя (например: Ученик 10А)" maxlength="30">
+                        <input type="text" id="commentName" class="comment-input" placeholder="Ваше имя" maxlength="30">
                         <textarea id="commentMessage" class="comment-textarea" placeholder="Напишите что-нибудь..." maxlength="200"></textarea>
                     </div>
                     <button class="comment-submit" id="submitComment">📝 ОТПРАВИТЬ</button>
@@ -1005,48 +999,46 @@
 
         // Имена для случайных комментаторов
         const randomNames = [
-            'Анон ученик'
+            'Ученик', 'Ученица', 'Спортсмен', 'Отличница', 
+            'Выпускник', 'Активист', 'Художник', 'Музыкант', 'Аноним'
         ];
 
         // ============================================
-// ЗАПРЕЩЁННЫЕ СЛОВА (бан-лист)
-// ============================================
-const bannedWords = [
-    // Русский мат и оскорбления
-    'порно', 'секс', 'еблан', 'еблан', 'дебил', 'дурак', 'идиот',
-    'хуй', 'пизда', 'блядь', 'сука', 'гандон', 'шлюха', 'проститутка',
-    'расист', 'нацист', 'фашист', 'террорист',
-    'убийца', 'смерть', 'убью', 'зарежу',
-    
-    // Английские аналоги
-    'porn', 'sex', 'fuck', 'shit', 'bitch', 'whore', 'slut',
-    'nigger', 'faggot', 'rape', 'kill', 'murder',
-    
-    // Телефонные спам-слова
-    'сайт', 'заработок', 'деньги', 'крипта', 'биткоин',
-    'казино', 'вулкан', 'play', 'casino', 'bet',
-    
-    // Специфичные для школы
-    'училка', 'директор', 'завуч', 'физрук'  // чтобы не писали про учителей
-];
+        // ЗАПРЕЩЁННЫЕ СЛОВА
+        // ============================================
+        const bannedWords = [
+            'порно', 'секс', 'еблан', 'дебил', 'дурак', 'идиот',
+            'хуй', 'пизда', 'блядь', 'сука', 'гандон', 'шлюха', 'проститутка',
+            'porn', 'sex', 'fuck', 'shit', 'bitch',
+            'сайт', 'заработок', 'деньги', 'крипта', 'биткоин',
+            'казино', 'вулкан', 'casino', 'bet',
+            'училка', 'директор', 'завуч', 'физрук'
+        ];
 
-// Функция проверки на запрещённые слова
-function checkBannedWords(text, type = 'message') {
-    if (!text) return { hasBanned: false, word: null };
-    
-    const lowerText = text.toLowerCase();
-    
-    for (const word of bannedWords) {
-        if (lowerText.includes(word.toLowerCase())) {
-            return {
-                hasBanned: true,
-                word: word
-            };
+        function checkBannedWords(text) {
+            if (!text) return false;
+            const lowerText = text.toLowerCase();
+            return bannedWords.some(word => lowerText.includes(word));
         }
-    }
-    
-    return { hasBanned: false, word: null };
-}
+
+        // ============================================
+        // ОТПРАВКА ПОДОЗРЕНИЙ В АДМИНКУ
+        // ============================================
+        async function reportSuspiciousActivity(type, details) {
+            try {
+                await supabaseClient
+                    .from('suspicious_activity')
+                    .insert({
+                        type: type,
+                        details: details,
+                        ip_address: userIp,
+                        user_agent: navigator.userAgent,
+                        timestamp: new Date()
+                    });
+            } catch (error) {
+                console.error('Ошибка отправки в админку:', error);
+            }
+        }
 
         // ============================================
         // ПОЛУЧЕНИЕ IP
@@ -1101,7 +1093,7 @@ function checkBannedWords(text, type = 'message') {
                 
                 const statusDiv = document.getElementById('verifyStatus');
                 const statusText = document.getElementById('verifyStatusText');
-                statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img "verified.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
+                statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
                 statusDiv.classList.add('active');
                 
                 document.getElementById('verifyUsername').value = '';
@@ -1159,7 +1151,7 @@ function checkBannedWords(text, type = 'message') {
                 
                 const commentClass = comment.is_verified ? 'comment-item verified-comment' : 'comment-item';
                 const verifiedBadge = comment.is_verified ? 
-                    '<span class="verified-badge"><img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="12" height="12" style="filter: brightness(100);"> PRIME</span>' : '';
+                    '<span class="verified-badge"><img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="12" height="12"> PREMIUM</span>' : '';
                 
                 html += `
                     <div class="${commentClass}">
@@ -1183,105 +1175,113 @@ function checkBannedWords(text, type = 'message') {
             return div.innerHTML;
         }
 
-// ============================================
-// ОТПРАВКА КОММЕНТАРИЯ (С ЗАЩИТОЙ)
-// ============================================
-async function submitComment() {
-    if (!currentUser || !currentUserCode) {
-        showMessage('Сначала создайте или войдите в аккаунт', 'error');
-        return;
-    }
-    
-    const messageInput = document.getElementById('commentMessage');
-    let message = messageInput.value.trim();
+        // ============================================
+        // ОТПРАВКА КОММЕНТАРИЯ (БЕЗ АККАУНТОВ)
+        // ============================================
+        document.getElementById('submitComment').addEventListener('click', submitComment);
 
-    if (!message) {
-        showMessage('Напишите комментарий', 'error');
-        return;
-    }
+        async function submitComment() {
+            const nameInput = document.getElementById('commentName');
+            const messageInput = document.getElementById('commentMessage');
+            
+            let name = nameInput.value.trim();
+            let message = messageInput.value.trim();
 
-    if (message.length > 200) {
-        showMessage('Максимум 200 символов', 'error');
-        return;
-    }
+            // Проверка на 5 секунд
+            if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
+                showMessage('Слишком часто! Подождите 5 секунд', 'error');
+                
+                await reportSuspiciousActivity('spam_comment', {
+                    message: message,
+                    ip: userIp
+                });
+                return;
+            }
 
-    // ПРОВЕРКА НА ЗАПРЕЩЁННЫЕ СЛОВА В СООБЩЕНИИ
-    const bannedCheck = checkBannedWords(message);
-    if (bannedCheck.hasBanned) {
-        showMessage('Сообщение содержит запрещённые слова', 'error');
-        
-        // Отправляем в админку
-        await reportSuspiciousActivity('banned_words_message', {
-            word: bannedCheck.word,
-            message: message,
-            user: currentUser,
-            userCode: currentUserCode
-        });
-        return;
-    }
+            // Проверка на запрещённые слова в сообщении
+            if (checkBannedWords(message)) {
+                showMessage('Сообщение содержит запрещённые слова', 'error');
+                
+                await reportSuspiciousActivity('banned_words_message', {
+                    message: message,
+                    ip: userIp
+                });
+                return;
+            }
 
-    // ПРОВЕРКА НА ЗАПРЕЩЁННЫЕ СЛОВА В ИМЕНИ (если имя кастомное)
-    if (checkBannedWords(currentUser).hasBanned) {
-        showMessage('Ваш ник содержит запрещённые слова', 'error');
-        
-        await reportSuspiciousActivity('banned_words_username', {
-            username: currentUser,
-            userCode: currentUserCode
-        });
-        return;
-    }
+            // Проверка на запрещённые слова в имени
+            if (checkBannedWords(name)) {
+                showMessage('Имя содержит запрещённые слова', 'error');
+                
+                await reportSuspiciousActivity('banned_words_name', {
+                    name: name,
+                    ip: userIp
+                });
+                return;
+            }
 
-    // ПРОВЕРКА НА 5 СЕКУНД
-    if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
-        showMessage('Слишком часто! Подождите 5 секунд', 'error');
-        
-        await reportSuspiciousActivity('spam_comment', {
-            user: currentUser,
-            userCode: currentUserCode,
-            message: message
-        });
-        return;
-    }
+            // Случайное имя, если не ввели
+            if (!name) {
+                name = randomNames[Math.floor(Math.random() * randomNames.length)];
+            }
 
-    try {
-        const commentData = {
-            name: currentUser,
-            message: message,
-            ip_address: userIp,
-            user_code: currentUserCode,
-            is_verified: !!verifiedUser,
-            verified_as: verifiedUser
-        };
+            if (!message) {
+                showMessage('Напишите комментарий', 'error');
+                return;
+            }
 
-        const { error } = await supabase
-            .from('comments')
-            .insert(commentData);
+            if (message.length > 200) {
+                showMessage('Максимум 200 символов', 'error');
+                return;
+            }
 
-        if (error) throw error;
+            // Проверка на подделку галочки
+            if (message.includes('✅') || message.includes('✔️') || message.includes('✓') || message.includes('👑')) {
+                if (!verifiedUser) {
+                    showMessage('Нельзя использовать символы галочки без PREMIUM', 'error');
+                    return;
+                }
+            }
 
-        await supabase
-            .from('feedback')
-            .insert({
-                type: 'comment',
-                name: currentUser,
-                message: message,
-                ip_address: userIp,
-                user_agent: navigator.userAgent,
-                user_code: currentUserCode,
-                is_verified: !!verifiedUser
-            });
+            try {
+                // Сохраняем комментарий
+                const commentData = {
+                    name: name,
+                    message: message,
+                    ip_address: userIp,
+                    is_verified: !!verifiedUser,
+                    verified_as: verifiedUser
+                };
 
-        lastCommentTime = Date.now();
-        messageInput.value = '';
-        
-        showMessage('Комментарий добавлен!', 'success');
-        await loadComments();
-        
-    } catch (error) {
-        console.error('Ошибка:', error);
-        showMessage('Ошибка: ' + error.message, 'error');
-    }
-}
+                const { error } = await supabaseClient
+                    .from('comments')
+                    .insert(commentData);
+
+                if (error) throw error;
+
+                // Отправляем в обратную связь (для админки)
+                await supabaseClient
+                    .from('feedback')
+                    .insert({
+                        type: 'comment',
+                        name: name,
+                        message: message,
+                        ip_address: userIp,
+                        user_agent: navigator.userAgent,
+                        is_verified: !!verifiedUser
+                    });
+
+                lastCommentTime = Date.now();
+                nameInput.value = '';
+                messageInput.value = '';
+                
+                showMessage('Комментарий добавлен!', 'success');
+                await loadComments();
+                
+            } catch (error) {
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        }
 
         // ============================================
         // ЗАГРУЗКА КАНДИДАТОВ
