@@ -183,6 +183,7 @@
             height: 16px;
             margin-left: 5px;
             vertical-align: middle;
+            filter: brightness(0) invert(1);
         }
 
         .btn {
@@ -311,10 +312,10 @@
 
             <!-- Панель верификации -->
             <div id="verifiedPanel" class="panel">
-                <h2>👑 PRIME-пользователи</h2>
+                <h2>👑 Верифицированные пользователи</h2>
                 <table>
                     <thead>
-                        <tr><th>ID</th><th>Ник</th><th>Пароль</th><th>Дата</th><th>Действия</th></tr>
+                        <tr><th>ID</th><th>Ник</th><th>Дата</th><th>Действия</th></tr>
                     </thead>
                     <tbody id="verifiedBody"></tbody>
                 </table>
@@ -382,13 +383,19 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // ============================================
+        // КОНФИГУРАЦИЯ - ЕДИНАЯ ПЕРЕМЕННАЯ
+        // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8';
         
+        // СОЗДАЁМ ТОЛЬКО ОДНУ ПЕРЕМЕННУЮ
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Вход
+        // ============================================
+        // ВХОД
+        // ============================================
         document.getElementById('loginBtn').addEventListener('click', checkPassword);
         document.getElementById('passwordInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') checkPassword();
@@ -421,6 +428,9 @@
             document.getElementById(tab + 'Panel').classList.add('active');
         };
 
+        // ============================================
+        // ЗАГРУЗКА ДАННЫХ (ВЕЗДЕ supabase)
+        // ============================================
         async function loadAllData() {
             await Promise.all([
                 loadStats(),
@@ -434,12 +444,26 @@
         }
 
         async function loadStats() {
-            const { count: votes } = await supabase.from('votes').select('*', { count: 'exact', head: true });
-            const { count: comments } = await supabase.from('comments').select('*', { count: 'exact', head: true });
-            const { count: candidates } = await supabase.from('candidates').select('*', { count: 'exact', head: true });
-            const { count: verified } = await supabase.from('verified_users').select('*', { count: 'exact', head: true });
+            const { count: votes } = await supabase
+                .from('votes')
+                .select('*', { count: 'exact', head: true });
+                
+            const { count: comments } = await supabase
+                .from('comments')
+                .select('*', { count: 'exact', head: true });
+                
+            const { count: candidates } = await supabase
+                .from('candidates')
+                .select('*', { count: 'exact', head: true });
+                
+            const { count: verified } = await supabase
+                .from('verified_users')
+                .select('*', { count: 'exact', head: true });
             
-            const { data: ips } = await supabase.from('votes').select('ip_address');
+            const { data: ips } = await supabase
+                .from('votes')
+                .select('ip_address');
+                
             const uniqueIPs = new Set(ips?.map(v => v.ip_address) || []).size;
 
             document.getElementById('totalVotes').textContent = votes || 0;
@@ -450,7 +474,11 @@
         }
 
         async function loadFeedback() {
-            const { data } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
+            const { data } = await supabase
+                .from('feedback')
+                .select('*')
+                .order('created_at', { ascending: false });
+                
             let html = '';
             data?.forEach(f => {
                 html += `<tr>
@@ -498,14 +526,13 @@
                 html += `<tr>
                     <td>${v.id}</td>
                     <td>${v.username} 👑</td>
-                    <td>••••••••</td>
                     <td>${new Date(v.created_at).toLocaleString()}</td>
                     <td>
                         <button class="btn btn-sm btn-danger" onclick="deleteVerified(${v.id})">🗑️</button>
                     </td>
                 </tr>`;
             });
-            document.getElementById('verifiedBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
+            document.getElementById('verifiedBody').innerHTML = html || '<tr><td colspan="4">Нет данных</td></tr>';
         }
 
         async function loadVotes() {
@@ -576,7 +603,9 @@
             document.getElementById('suggestionsBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
         }
 
-        // Управление верифицированными
+        // ============================================
+        // УПРАВЛЕНИЕ ВЕРИФИЦИРОВАННЫМИ
+        // ============================================
         window.addVerifiedUser = async function() {
             const username = document.getElementById('newVerifiedUser').value.trim();
             const password = document.getElementById('newVerifiedPass').value.trim();
@@ -586,7 +615,10 @@
                 return;
             }
             
-            await supabase.from('verified_users').insert({ username, password });
+            await supabase
+                .from('verified_users')
+                .insert({ username, password });
+                
             showMessage('Пользователь добавлен', 'success');
             document.getElementById('newVerifiedUser').value = '';
             document.getElementById('newVerifiedPass').value = '';
@@ -595,35 +627,63 @@
 
         window.deleteVerified = async (id) => {
             if (confirm('Удалить верифицированного пользователя?')) {
-                await supabase.from('verified_users').delete().eq('id', id);
+                await supabase
+                    .from('verified_users')
+                    .delete()
+                    .eq('id', id);
+                    
                 showMessage('Удалено', 'success');
                 loadVerified();
             }
         };
 
+        // ============================================
+        // УПРАВЛЕНИЕ КАНДИДАТАМИ
+        // ============================================
         window.deleteCandidate = async (id) => {
             if (confirm('Удалить кандидата?')) {
-                await supabase.from('candidates').delete().eq('id', id);
+                await supabase
+                    .from('candidates')
+                    .delete()
+                    .eq('id', id);
+                    
                 showMessage('Кандидат удалён', 'success');
                 loadCandidates();
             }
         };
 
         window.approveSuggestion = async (id, name, description) => {
-            await supabase.from('candidates').insert({ name, bio: description, votes: 0 });
-            await supabase.from('suggestions').update({ status: 'approved' }).eq('id', id);
+            await supabase
+                .from('candidates')
+                .insert({ 
+                    name: name, 
+                    bio: description, 
+                    votes: 0 
+                });
+                
+            await supabase
+                .from('suggestions')
+                .update({ status: 'approved' })
+                .eq('id', id);
+                
             showMessage('Кандидат добавлен', 'success');
             loadSuggestions();
             loadCandidates();
         };
 
         window.rejectSuggestion = async (id) => {
-            await supabase.from('suggestions').update({ status: 'rejected' }).eq('id', id);
+            await supabase
+                .from('suggestions')
+                .update({ status: 'rejected' })
+                .eq('id', id);
+                
             showMessage('Предложение отклонено', 'info');
             loadSuggestions();
         };
 
-        // Модальное окно добавления кандидата
+        // ============================================
+        // МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ КАНДИДАТА
+        // ============================================
         document.getElementById('addCandidateBtn').addEventListener('click', () => {
             document.getElementById('addCandidateModal').style.display = 'flex';
         });
@@ -643,20 +703,30 @@
                 return;
             }
 
-            await supabase.from('candidates').insert({
-                name, class: classText, photo_url: photo || 'https://i.pravatar.cc/300', bio, votes: 0
-            });
+            await supabase
+                .from('candidates')
+                .insert({
+                    name: name,
+                    class: classText,
+                    photo_url: photo || 'https://i.pravatar.cc/300',
+                    bio: bio,
+                    votes: 0
+                });
 
             document.getElementById('addCandidateModal').style.display = 'none';
             showMessage('Кандидат добавлен', 'success');
             loadCandidates();
         });
 
+        // ============================================
+        // СООБЩЕНИЯ
+        // ============================================
         function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
             const msg = document.createElement('div');
             msg.className = `message ${type}`;
             msg.textContent = text;
-            document.getElementById('messageContainer').appendChild(msg);
+            container.appendChild(msg);
             setTimeout(() => msg.remove(), 3000);
         }
     </script>
