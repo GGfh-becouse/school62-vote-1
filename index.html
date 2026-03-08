@@ -1069,7 +1069,7 @@
                 
                 const statusDiv = document.getElementById('verifyStatus');
                 const statusText = document.getElementById('verifyStatusText');
-                statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
+                statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img "verified.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
                 statusDiv.classList.add('active');
                 
                 document.getElementById('verifyUsername').value = '';
@@ -1127,7 +1127,7 @@
                 
                 const commentClass = comment.is_verified ? 'comment-item verified-comment' : 'comment-item';
                 const verifiedBadge = comment.is_verified ? 
-                    '<span class="verified-badge"><img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="12" height="12" style="filter: brightness(100);"> Админ</span>' : '';
+                    '<span class="verified-badge"><img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="12" height="12" style="filter: brightness(100);"> PRIME</span>' : '';
                 
                 html += `
                     <div class="${commentClass}">
@@ -1166,7 +1166,7 @@
             // Проверка на подделку галочки
             if (message.includes('✅') || message.includes('✔️') || message.includes('✓') || message.includes('👑')) {
                 if (!verifiedUser) {
-                    showMessage('Нельзя использовать символы галочки без верификации', 'error');
+                    showMessage('Нельзя использовать символы галочки без PRIME', 'error');
                     return;
                 }
             }
