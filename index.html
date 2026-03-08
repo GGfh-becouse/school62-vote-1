@@ -1448,70 +1448,88 @@
             document.getElementById('recommendations').style.display = 'block';
         }
 
-        window.selectAndScroll = function(id) {
-            document.getElementById('recommendations').style.display = 'none';
-            
-            if (currentPair[0]?.id === id || currentPair[1]?.id === id) {
-                selectCandidate(id);
-                document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
-                return;
-            }
-            
-            const candidate = allCandidates.find(c => c.id === id);
-            if (!candidate) return;
-            
-            const other = currentPair[0]?.id === id ? currentPair[1] : currentPair[0];
-            currentPair = [candidate, other];
-            renderBattle(currentPair);
+            window.selectAndScroll = function(id) {
+        const recDiv = document.getElementById('recommendations');
+        if (recDiv) recDiv.style.display = 'none';
+        
+        if (currentPair[0]?.id === id || currentPair[1]?.id === id) {
             selectCandidate(id);
-            document.getElementById('battleContainer').scrollIntoView({ behavior: 'smooth' });
-        };
+            const battleDiv = document.getElementById('battleContainer');
+            if (battleDiv) battleDiv.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+        
+        const candidate = allCandidates.find(c => c.id === id);
+        if (!candidate) return;
+        
+        const other = currentPair[0]?.id === id ? currentPair[1] : currentPair[0];
+        currentPair = [candidate, other];
+        renderBattle(currentPair);
+        selectCandidate(id);
+        const battleDiv = document.getElementById('battleContainer');
+        if (battleDiv) battleDiv.scrollIntoView({ behavior: 'smooth' });
+    };
 
-        // ============================================
-        // РЕЙТИНГ
-        // ============================================
-        function updateLeaderboard() {
-            const sorted = [...allCandidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
-            const container = document.getElementById('ratingList');
-            
-            let html = '';
-            sorted.slice(0, 10).forEach((c, index) => {
-                html += `
-                    <div class="rating-item">
-                        <div class="rating-position">${index + 1}</div>
-                        <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="rating-avatar">
-                        <div class="rating-info">
-                            <div class="rating-name">${c.name}</div>
-                        </div>
-                        <div class="rating-score">❤️ ${c.votes || 0}</div>
+    // ============================================
+    // РЕЙТИНГ
+    // ============================================
+    function updateLeaderboard() {
+        const sorted = [...allCandidates].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+        const container = document.getElementById('ratingList');
+        
+        if (!container) return;
+        
+        let html = '';
+        sorted.slice(0, 10).forEach((c, index) => {
+            html += `
+                <div class="rating-item">
+                    <div class="rating-position">${index + 1}</div>
+                    <img src="${c.photo_url || 'https://i.pravatar.cc/300'}" class="rating-avatar">
+                    <div class="rating-info">
+                        <div class="rating-name">${c.name}</div>
                     </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
+                    <div class="rating-score">❤️ ${c.votes || 0}</div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
 
-        // ============================================
-        // СООБЩЕНИЯ
-        // ============================================
-        function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            const msg = document.createElement('div');
-            msg.className = `message ${type}`;
-            msg.textContent = text;
-            container.appendChild(msg);
-            setTimeout(() => msg.remove(), 3000);
-        }
+    // ============================================
+    // СООБЩЕНИЯ
+    // ============================================
+    function showMessage(text, type) {
+        const container = document.getElementById('messageContainer');
+        if (!container) return;
+        
+        const msg = document.createElement('div');
+        msg.className = `message ${type}`;
+        msg.textContent = text;
+        container.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+    }
 
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================
-        async function initApp() {
+    // ============================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ============================================
+    async function initApp() {
+        console.log('Инициализация приложения...');
+        try {
             await getUserIp();
+            console.log('IP получен');
             await loadUserVotes();
+            console.log('Голоса загружены');
             await loadCandidates();
+            console.log('Кандидаты загружены');
             await loadComments();
+            console.log('Комментарии загружены');
+        } catch (error) {
+            console.error('Ошибка инициализации:', error);
+            showMessage('Ошибка загрузки данных', 'error');
         }
-    </script>
-</body>
-</html>
+    }
+</script> <!-- Закрываем тег script -->
+
+</body> <!-- Закрываем body -->
+</html> <!-- Закрываем html -->
