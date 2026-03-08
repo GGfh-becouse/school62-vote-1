@@ -463,6 +463,12 @@
             border-radius: 16px;
             padding: 14px;
             border-left: 4px solid #4a6fa5;
+            transition: all 0.2s;
+        }
+
+        .comment-item.verified-comment {
+            border-left: 4px solid #ffd700;
+            background: #fff9e6;
         }
 
         .comment-header {
@@ -481,6 +487,21 @@
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #4a6fa5;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 5px;
         }
 
         .comment-date {
@@ -687,7 +708,121 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Стили для системы верификации */
+        .verification-box {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 25px 0;
+            border: 2px solid #4a6fa5;
+            box-shadow: 0 4px 0 #2c3e50;
+        }
+
+        .verification-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verification-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .verification-input {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 15px;
+            border: 2px solid #ced4da;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .verification-input:focus {
+            border-color: #4a6fa5;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+        }
+
+        .verification-button {
+            background: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid #2c3e50;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verification-button:hover {
+            background: #3a5a8a;
+        }
+
+        .verification-button:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
+
+        .verification-status {
+            margin-top: 12px;
+            padding: 10px 15px;
+            background: #d4edda;
+            border-radius: 12px;
+            color: #155724;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            flex-wrap: wrap;
+        }
+
+        .verification-status.active {
+            display: flex;
+        }
+
+        .verification-status button {
+            background: transparent;
+            border: none;
+            color: #155724;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.85rem;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #4a6fa5;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+
+        .official-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- ЭКРАН СОГЛАШЕНИЯ -->
@@ -734,24 +869,24 @@
             <div id="messageContainer"></div>
 
             <!-- Битва -->
-<div id="battleContainer" style="display: none;">
-    <!-- Праздничная приписка -->
-    <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: linear-gradient(145deg, #ffd966, #ffb347); border-radius: 40px; color: #1a1a2e; font-weight: bold;">
-        🌸 С 8 марта, девочки! 🌸
-    </div>
-    
-    <!-- Карточки кандидатов -->
-    <div class="battle-container" id="battleGrid"></div>
-    
-    <!-- КНОПКА ГОЛОСОВАНИЯ (вернули!) -->
-    <button class="vote-button" id="voteBtn">⚡ ГОЛОСОВАТЬ ⚡</button>
-    
-    <!-- Предсказания -->
-    <div class="prediction-box" id="predictionBox">
-        <h3>🔮 Шансы на победу</h3>
-        <div class="prediction-bars" id="predictionBars"></div>
-    </div>
-</div>
+            <div id="battleContainer" style="display: none;">
+                <!-- Праздничная приписка -->
+                <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: linear-gradient(145deg, #ffd966, #ffb347); border-radius: 40px; color: #1a1a2e; font-weight: bold;">
+                    🌸 С 8 марта, девочки! 🌸
+                </div>
+                
+                <!-- Карточки кандидатов -->
+                <div class="battle-container" id="battleGrid"></div>
+                
+                <!-- КНОПКА ГОЛОСОВАНИЯ -->
+                <button class="vote-button" id="voteBtn">⚡ ГОЛОСОВАТЬ ⚡</button>
+                
+                <!-- Предсказания -->
+                <div class="prediction-box" id="predictionBox">
+                    <h3>🔮 Шансы на победу</h3>
+                    <div class="prediction-bars" id="predictionBars"></div>
+                </div>
+            </div>
 
             <!-- Достижения -->
             <div class="achievements">
@@ -769,6 +904,22 @@
                         <div class="achievement-icon">⭐</div>
                         <div class="achievement-title">Предсказатель</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- БЛОК ВЕРИФИКАЦИИ -->
+            <div class="verification-box" id="verificationBox">
+                <h3>👑 ВЕРИФИКАЦИЯ АДМИНИСТРАЦИИ</h3>
+                <div class="verification-input-group">
+                    <input type="text" id="verifyUsername" class="verification-input" placeholder="Ваш ник" maxlength="30">
+                    <input type="password" id="verifyPassword" class="verification-input" placeholder="Пароль" maxlength="50">
+                    <button class="verification-button" id="verifyBtn">
+                        <span>✅</span> Войти
+                    </button>
+                </div>
+                <div class="verification-status" id="verifyStatus">
+                    <span>✅</span> <span id="verifyStatusText"></span>
+                    <button onclick="logoutVerification()">(выйти)</button>
                 </div>
             </div>
 
@@ -852,12 +1003,18 @@
         let userVoteCount = 0;
         let comboCount = 0;
         let lastVoteTime = null;
-        let lastCommentTime = null; // для проверки 4 часов
+        let lastCommentTime = null;
         let comments = [];
+
+        // Переменные для верификации
+        let verifiedUser = null;
+        let verifiedUserName = null;
+        let verifiedUserData = null;
 
         // Имена для случайных комментаторов
         const randomNames = [
-            'Анон ученик'
+            'Анон ученик', 'Ученик 10А', 'Ученица 11Б', 'Спортсмен', 
+            'Отличница', 'Выпускник', 'Активист', 'Художник', 'Музыкант'
         ];
 
         // ============================================
@@ -873,6 +1030,67 @@
                 userIp = 'user-' + Math.random().toString(36).substring(2, 10);
                 return userIp;
             }
+        }
+
+        // ============================================
+        // СИСТЕМА ВЕРИФИКАЦИИ
+        // ============================================
+
+        // Обработчик кнопки верификации
+        document.getElementById('verifyBtn').addEventListener('click', verifyUser);
+        document.getElementById('verifyPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyUser();
+        });
+
+        async function verifyUser() {
+            const username = document.getElementById('verifyUsername').value.trim();
+            const password = document.getElementById('verifyPassword').value.trim();
+            
+            if (!username || !password) {
+                showMessage('Введите ник и пароль', 'error');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('verified_users')
+                    .select('*')
+                    .eq('username', username)
+                    .eq('password', password)
+                    .single();
+                
+                if (error || !data) {
+                    showMessage('Неверный ник или пароль', 'error');
+                    return;
+                }
+                
+                verifiedUser = username;
+                verifiedUserName = username;
+                verifiedUserData = data;
+                
+                const statusDiv = document.getElementById('verifyStatus');
+                const statusText = document.getElementById('verifyStatusText');
+                statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
+                statusDiv.classList.add('active');
+                
+                document.getElementById('verifyUsername').value = '';
+                document.getElementById('verifyPassword').value = '';
+                
+                showMessage('Верификация успешна!', 'success');
+                await loadComments();
+                
+            } catch (error) {
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        }
+
+        window.logoutVerification = function() {
+            verifiedUser = null;
+            verifiedUserName = null;
+            verifiedUserData = null;
+            document.getElementById('verifyStatus').classList.remove('active');
+            showMessage('Вы вышли из системы', 'info');
+            loadComments();
         }
 
         // ============================================
@@ -907,10 +1125,18 @@
                 const date = new Date(comment.created_at).toLocaleString('ru', {
                     day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
                 });
+                
+                const commentClass = comment.is_verified ? 'comment-item verified-comment' : 'comment-item';
+                const verifiedBadge = comment.is_verified ? 
+                    '<span class="verified-badge"><img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="12" height="12" style="filter: brightness(100);"> Админ</span>' : '';
+                
                 html += `
-                    <div class="comment-item">
+                    <div class="${commentClass}">
                         <div class="comment-header">
-                            <span class="comment-name">${escapeHtml(comment.name || 'Аноним')}</span>
+                            <span class="comment-name">
+                                ${escapeHtml(comment.name || 'Аноним')}
+                                ${verifiedBadge}
+                            </span>
                             <span class="comment-date">${date}</span>
                         </div>
                         <div class="comment-message">${escapeHtml(comment.message)}</div>
@@ -929,12 +1155,22 @@
         // ============================================
         // ОТПРАВКА КОММЕНТАРИЯ
         // ============================================
-        document.getElementById('submitComment').addEventListener('click', async function() {
+        document.getElementById('submitComment').addEventListener('click', submitComment);
+
+        async function submitComment() {
             const nameInput = document.getElementById('commentName');
             const messageInput = document.getElementById('commentMessage');
             
             let name = nameInput.value.trim();
-            const message = messageInput.value.trim();
+            let message = messageInput.value.trim();
+
+            // Проверка на подделку галочки
+            if (message.includes('✅') || message.includes('✔️') || message.includes('✓') || message.includes('👑')) {
+                if (!verifiedUser) {
+                    showMessage('Нельзя использовать символы галочки без верификации', 'error');
+                    return;
+                }
+            }
 
             // Случайное имя, если не ввели
             if (!name) {
@@ -951,21 +1187,25 @@
                 return;
             }
 
-           // Проверка на 5 секунд
-if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
-    showMessage('Слишком часто! Подождите 5 секунд', 'error');
-    return;
-}
+            // Проверка на 5 секунд
+            if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
+                showMessage('Слишком часто! Подождите 5 секунд', 'error');
+                return;
+            }
 
             try {
                 // Сохраняем комментарий
+                const commentData = {
+                    name: name,
+                    message: message,
+                    ip_address: userIp,
+                    is_verified: !!verifiedUser,
+                    verified_as: verifiedUser
+                };
+
                 const { error } = await supabaseClient
                     .from('comments')
-                    .insert({
-                        name: name,
-                        message: message,
-                        ip_address: userIp
-                    });
+                    .insert(commentData);
 
                 if (error) throw error;
 
@@ -977,7 +1217,8 @@ if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
                         name: name,
                         message: message,
                         ip_address: userIp,
-                        user_agent: navigator.userAgent
+                        user_agent: navigator.userAgent,
+                        is_verified: !!verifiedUser
                     });
 
                 lastCommentTime = Date.now();
@@ -990,7 +1231,7 @@ if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
             } catch (error) {
                 showMessage('Ошибка: ' + error.message, 'error');
             }
-        });
+        }
 
         // ============================================
         // ЗАГРУЗКА КАНДИДАТОВ
@@ -1290,7 +1531,7 @@ if (lastCommentTime && (Date.now() - lastCommentTime) < 5 * 1000) {
             await getUserIp();
             await loadUserVotes();
             await loadCandidates();
-            await loadComments(); // Загружаем комментарии
+            await loadComments();
         }
     </script>
 </body>
