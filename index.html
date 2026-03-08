@@ -5,7 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>СТЕНА 62 ШКОЛЫ</title>
     <style>
-        * /* ИСПРАВЛЕНИЕ ВИДИМОСТИ */
+        *
+        /* ПРИНУДИТЕЛЬНОЕ СКРЫТИЕ/ПОКАЗ */
+#agreementScreen {
+    display: flex !important;
+}
+
+#agreementScreen[style*="display: none"] {
+    display: none !important;
+}
+
+#mainContent {
+    display: none !important;
+}
+
+#mainContent[style*="display: block"] {
+    display: block !important;
+}
+        /* ИСПРАВЛЕНИЕ ВИДИМОСТИ */
 .agreement-screen {
     position: fixed !important;
     top: 0 !important;
