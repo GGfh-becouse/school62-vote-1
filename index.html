@@ -1110,7 +1110,40 @@
                 </div>
             </div>
 
-            <!-- БЛОК ОБРАТНОЙ СВЯЗИ -->
+           
+            <!-- БЛОК КОММЕНТАРИЕВ -->
+            <div class="comments-section">
+                <h3>💬 КОММЕНТАРИИ ШКОЛЫ №62</h3>
+                
+                <!-- Форма комментария -->
+                <div class="comment-form">
+                    <div class="comment-input-group">
+                        <input type="text" id="commentName" class="comment-input" placeholder="Ваше имя" maxlength="30">
+                        <textarea id="commentMessage" class="comment-textarea" placeholder="Напишите что-нибудь..." maxlength="200"></textarea>
+                    </div>
+                    <button class="comment-submit" id="submitComment">📝 ОТПРАВИТЬ</button>
+                </div>
+
+                <!-- Список комментариев -->
+                <div class="comments-list" id="commentsList">
+                    <div class="comment-loading">Загрузка комментариев...</div>
+                </div>
+            </div>
+
+            <!-- Рекомендации -->
+            <div id="recommendations" class="recommendations" style="display: none;">
+                <h3>🎯 Вам также могут понравиться</h3>
+                <div id="recommendationsGrid" class="recommendations-grid"></div>
+            </div>
+
+            <!-- Рейтинг -->
+            <div id="ratingContainer" class="rating-table" style="display: none;">
+                <h3>🏆 ТОП-10 ШКОЛЫ №62</h3>
+                <div id="ratingList" class="rating-list"></div>
+            </div>
+        </div>
+    </div>
+     <!-- БЛОК ОБРАТНОЙ СВЯЗИ -->
 <div class="feedback-section">
     <div class="feedback-header">
         <h3>📨 СВЯЗЬ С АДМИНИСТРАЦИЕЙ</h3>
@@ -1181,38 +1214,6 @@
         <button class="feedback-submit" id="submitFeedback">📤 Отправить</button>
     </div>
 </div>
-            <!-- БЛОК КОММЕНТАРИЕВ -->
-            <div class="comments-section">
-                <h3>💬 КОММЕНТАРИИ ШКОЛЫ №62</h3>
-                
-                <!-- Форма комментария -->
-                <div class="comment-form">
-                    <div class="comment-input-group">
-                        <input type="text" id="commentName" class="comment-input" placeholder="Ваше имя" maxlength="30">
-                        <textarea id="commentMessage" class="comment-textarea" placeholder="Напишите что-нибудь..." maxlength="200"></textarea>
-                    </div>
-                    <button class="comment-submit" id="submitComment">📝 ОТПРАВИТЬ</button>
-                </div>
-
-                <!-- Список комментариев -->
-                <div class="comments-list" id="commentsList">
-                    <div class="comment-loading">Загрузка комментариев...</div>
-                </div>
-            </div>
-
-            <!-- Рекомендации -->
-            <div id="recommendations" class="recommendations" style="display: none;">
-                <h3>🎯 Вам также могут понравиться</h3>
-                <div id="recommendationsGrid" class="recommendations-grid"></div>
-            </div>
-
-            <!-- Рейтинг -->
-            <div id="ratingContainer" class="rating-table" style="display: none;">
-                <h3>🏆 ТОП-10 ШКОЛЫ №62</h3>
-                <div id="ratingList" class="rating-list"></div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1845,8 +1846,18 @@
             container.appendChild(msg);
             setTimeout(() => msg.remove(), 3000);
         }
-// ============================================
-// ОБРАТНАЯ СВЯЗЬ
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        async function initApp() {
+            await getUserIp();
+            await loadUserVotes();
+            await loadCandidates();
+            await loadComments();
+        }
+                // ============================================
+// ОБРАТНАЯ СВЯЗЬ - В НИЗУ СТРАНИЦЫ
 // ============================================
 let currentFeedbackType = '';
 
@@ -1856,7 +1867,6 @@ function openFeedbackModal(type) {
     const title = document.getElementById('feedbackModalTitle');
     const candidateFields = document.getElementById('candidateFields');
     
-    // Настройка заголовка и полей в зависимости от типа
     switch(type) {
         case 'candidate':
             title.innerHTML = '👤 Предложить кандидата';
@@ -1891,10 +1901,13 @@ function closeFeedbackModal() {
 }
 
 // Счетчик символов
-document.getElementById('feedbackMessage').addEventListener('input', function() {
-    const count = this.value.length;
-    document.getElementById('feedbackCharCount').textContent = count;
-});
+const messageInput = document.getElementById('feedbackMessage');
+if (messageInput) {
+    messageInput.addEventListener('input', function() {
+        const count = this.value.length;
+        document.getElementById('feedbackCharCount').textContent = count;
+    });
+}
 
 // Отправка формы
 document.getElementById('submitFeedback').addEventListener('click', async function() {
@@ -1959,15 +1972,6 @@ window.onclick = function(event) {
         closeFeedbackModal();
     }
 }
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================
-        async function initApp() {
-            await getUserIp();
-            await loadUserVotes();
-            await loadCandidates();
-            await loadComments();
-        }
     </script>
 </body>
 </html>
