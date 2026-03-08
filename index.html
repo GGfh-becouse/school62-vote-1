@@ -938,14 +938,15 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-        // SUPABASE КОНФИГ - ИСПРАВЛЕНО!
-        // ============================================
-        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+    // SUPABASE КОНФИГ - ИСПРАВЛЕНО!    
+    // ============================================
+    const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
 
-        // Инициализация Supabase - ПРАВИЛЬНАЯ!
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        console.log('✅ Supabase инициализирован');
+    // Инициализация Supabase - ПРАВИЛЬНО!
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase инициализирован');
 
         // ============================================
         // СОГЛАШЕНИЕ
