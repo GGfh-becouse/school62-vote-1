@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            font-family: 'Geologica', 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
@@ -178,14 +178,6 @@
         .badge.danger { background: #dc3545; color: white; }
         .badge.verified { background: #4a6fa5; color: white; }
 
-        .verified-icon {
-            width: 16px;
-            height: 16px;
-            margin-left: 5px;
-            vertical-align: middle;
-            filter: brightness(0) invert(1);
-        }
-
         .btn {
             padding: 8px 16px;
             border: none;
@@ -235,7 +227,17 @@
             flex: 1;
             min-width: 150px;
         }
+
+        .prime-icon {
+            width: 14px;
+            height: 14px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -273,7 +275,7 @@
                     <div class="stat-number" id="totalCandidates">-</div>
                 </div>
                 <div class="stat-card">
-                    <h3>👑 Верифицировано</h3>
+                    <h3>👑 PREMIUM</h3>
                     <div class="stat-number" id="totalVerified">-</div>
                 </div>
             </div>
@@ -282,7 +284,7 @@
             <div class="tabs">
                 <div class="tab active" onclick="switchTab('feedback')">📨 Обратная связь</div>
                 <div class="tab" onclick="switchTab('comments')">💬 Комментарии</div>
-                <div class="tab" onclick="switchTab('verified')">👑 Верификация</div>
+                <div class="tab" onclick="switchTab('verified')">👑 PREMIUM</div>
                 <div class="tab" onclick="switchTab('votes')">🗳️ Голоса</div>
                 <div class="tab" onclick="switchTab('candidates')">👩 Кандидаты</div>
                 <div class="tab" onclick="switchTab('suggestions')">📝 Предложения</div>
@@ -301,10 +303,10 @@
 
             <!-- Панель комментариев -->
             <div id="commentsPanel" class="panel">
-                <h2>💬 Комментарии (с верификацией)</h2>
+                <h2>💬 Комментарии</h2>
                 <table>
                     <thead>
-                        <tr><th>Имя</th><th>Сообщение</th><th>Вериф.</th><th>IP</th><th>Дата</th></tr>
+                        <tr><th>Имя</th><th>Сообщение</th><th>PREMIUM</th><th>IP</th><th>Дата</th></tr>
                     </thead>
                     <tbody id="commentsBody"></tbody>
                 </table>
@@ -312,7 +314,7 @@
 
             <!-- Панель верификации -->
             <div id="verifiedPanel" class="panel">
-                <h2>👑 Верифицированные пользователи</h2>
+                <h2>👑 PREMIUM-пользователи</h2>
                 <table>
                     <thead>
                         <tr><th>ID</th><th>Ник</th><th>Дата</th><th>Действия</th></tr>
@@ -320,7 +322,7 @@
                     <tbody id="verifiedBody"></tbody>
                 </table>
                 
-                <h3 style="margin-top:30px;">➕ Добавить верифицированного</h3>
+                <h3 style="margin-top:30px;">➕ Добавить PREMIUM</h3>
                 <div class="input-group">
                     <input type="text" id="newVerifiedUser" placeholder="Ник">
                     <input type="text" id="newVerifiedPass" placeholder="Пароль">
@@ -384,14 +386,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-        // КОНФИГУРАЦИЯ - ЕДИНАЯ ПЕРЕМЕННАЯ
+        // КОНФИГУРАЦИЯ - ТОЛЬКО ОДНА ПЕРЕМЕННАЯ
         // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8';
         
-        // СОЗДАЁМ ТОЛЬКО ОДНУ ПЕРЕМЕННУЮ
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // СОЗДАЁМ ТОЛЬКО ОДИН КЛИЕНТ
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
         // ВХОД
@@ -429,7 +431,7 @@
         };
 
         // ============================================
-        // ЗАГРУЗКА ДАННЫХ (ВЕЗДЕ supabase)
+        // ЗАГРУЗКА ДАННЫХ
         // ============================================
         async function loadAllData() {
             await Promise.all([
@@ -444,23 +446,23 @@
         }
 
         async function loadStats() {
-            const { count: votes } = await supabase
+            const { count: votes } = await supabaseClient
                 .from('votes')
                 .select('*', { count: 'exact', head: true });
                 
-            const { count: comments } = await supabase
+            const { count: comments } = await supabaseClient
                 .from('comments')
                 .select('*', { count: 'exact', head: true });
                 
-            const { count: candidates } = await supabase
+            const { count: candidates } = await supabaseClient
                 .from('candidates')
                 .select('*', { count: 'exact', head: true });
                 
-            const { count: verified } = await supabase
+            const { count: verified } = await supabaseClient
                 .from('verified_users')
                 .select('*', { count: 'exact', head: true });
             
-            const { data: ips } = await supabase
+            const { data: ips } = await supabaseClient
                 .from('votes')
                 .select('ip_address');
                 
@@ -474,7 +476,7 @@
         }
 
         async function loadFeedback() {
-            const { data } = await supabase
+            const { data } = await supabaseClient
                 .from('feedback')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -493,7 +495,7 @@
         }
 
         async function loadComments() {
-            const { data } = await supabase
+            const { data } = await supabaseClient
                 .from('comments')
                 .select('*')
                 .order('created_at', { ascending: false })
@@ -501,13 +503,12 @@
             
             let html = '';
             data?.forEach(c => {
-                const verifiedBadge = c.is_verified ? 
-                    '<span class="badge verified">✅ Верифицирован</span>' : '-';
+                const primeBadge = c.is_verified ? '✅' : '-';
                 
                 html += `<tr>
-                    <td>${c.name} ${c.is_verified ? '👑' : ''}</td>
+                    <td>${c.name}</td>
                     <td>${c.message}</td>
-                    <td>${verifiedBadge}</td>
+                    <td>${primeBadge}</td>
                     <td>${c.ip_address}</td>
                     <td>${new Date(c.created_at).toLocaleString()}</td>
                 </tr>`;
@@ -516,7 +517,7 @@
         }
 
         async function loadVerified() {
-            const { data } = await supabase
+            const { data } = await supabaseClient
                 .from('verified_users')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -536,7 +537,7 @@
         }
 
         async function loadVotes() {
-            const { data } = await supabase
+            const { data } = await supabaseClient
                 .from('votes')
                 .select('*, candidates(name)')
                 .order('created_at', { ascending: false })
@@ -554,7 +555,7 @@
         }
 
         async function loadCandidates() {
-            const { data } = await supabase
+            const { data } = await supabaseClient
                 .from('candidates')
                 .select('*')
                 .order('votes', { ascending: false });
@@ -575,7 +576,7 @@
         }
 
         async function loadSuggestions() {
-            const { data } = await supabase
+            const { data } = await supabaseClient
                 .from('suggestions')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -604,7 +605,7 @@
         }
 
         // ============================================
-        // УПРАВЛЕНИЕ ВЕРИФИЦИРОВАННЫМИ
+        // УПРАВЛЕНИЕ PREMIUM
         // ============================================
         window.addVerifiedUser = async function() {
             const username = document.getElementById('newVerifiedUser').value.trim();
@@ -615,7 +616,7 @@
                 return;
             }
             
-            await supabase
+            await supabaseClient
                 .from('verified_users')
                 .insert({ username, password });
                 
@@ -626,8 +627,8 @@
         };
 
         window.deleteVerified = async (id) => {
-            if (confirm('Удалить верифицированного пользователя?')) {
-                await supabase
+            if (confirm('Удалить PREMIUM-пользователя?')) {
+                await supabaseClient
                     .from('verified_users')
                     .delete()
                     .eq('id', id);
@@ -642,7 +643,7 @@
         // ============================================
         window.deleteCandidate = async (id) => {
             if (confirm('Удалить кандидата?')) {
-                await supabase
+                await supabaseClient
                     .from('candidates')
                     .delete()
                     .eq('id', id);
@@ -653,7 +654,7 @@
         };
 
         window.approveSuggestion = async (id, name, description) => {
-            await supabase
+            await supabaseClient
                 .from('candidates')
                 .insert({ 
                     name: name, 
@@ -661,7 +662,7 @@
                     votes: 0 
                 });
                 
-            await supabase
+            await supabaseClient
                 .from('suggestions')
                 .update({ status: 'approved' })
                 .eq('id', id);
@@ -672,7 +673,7 @@
         };
 
         window.rejectSuggestion = async (id) => {
-            await supabase
+            await supabaseClient
                 .from('suggestions')
                 .update({ status: 'rejected' })
                 .eq('id', id);
@@ -703,7 +704,7 @@
                 return;
             }
 
-            await supabase
+            await supabaseClient
                 .from('candidates')
                 .insert({
                     name: name,
