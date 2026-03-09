@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* Стили (оставьте как есть) */
         * {
             margin: 0;
             padding: 0;
@@ -367,6 +368,12 @@
             border-bottom: 2px solid #2c3e50;
         }
 
+        .badge.info {
+            background: #3498db;
+            color: white;
+            border-bottom: 2px solid #2980b9;
+        }
+
         /* Кнопки */
         .btn {
             padding: 8px 16px;
@@ -647,13 +654,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-        // SUPABASE КОНФИГ - ТОЛЬКО ОДНО ОБЪЯВЛЕНИЕ!
+        // SUPABASE КОНФИГ
         // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
-        const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8'; // Ваш пароль
+        const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8';
         
-        // СОЗДАЕМ КЛИЕНТ ТОЛЬКО ОДИН РАЗ
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
@@ -701,7 +707,9 @@
             document.querySelectorAll('.tab')[index].classList.add('active');
             document.getElementById(tab + 'Panel').classList.add('active');
             
-            if (tab === 'duplicates') loadDuplicates();
+            if (tab === 'duplicates') {
+                loadDuplicates();
+            }
         };
 
         // ============================================
@@ -709,17 +717,15 @@
         // ============================================
         async function loadAllData() {
             try {
-                await Promise.all([
-                    loadStats(),
-                    loadComments(),
-                    loadFeedback(),
-                    loadVerified(),
-                    loadVotes(),
-                    loadCandidates(),
-                    loadSuggestions(),
-                    loadSuspicious(),
-                    checkDuplicates()
-                ]);
+                await loadStats();
+                await loadComments();
+                await loadFeedback();
+                await loadVerified();
+                await loadVotes();
+                await loadCandidates();
+                await loadSuggestions();
+                await loadSuspicious();
+                await checkDuplicates();
             } catch (error) {
                 console.error('Ошибка загрузки данных:', error);
             }
@@ -775,11 +781,15 @@
                     .order('created_at', { ascending: false });
 
                 const groups = {};
-                data?.forEach(comment => {
-                    const key = `${comment.ip_address}_${comment.message}`;
-                    if (!groups[key]) groups[key] = [];
-                    groups[key].push(comment);
-                });
+                if (data) {
+                    data.forEach(comment => {
+                        const key = `${comment.ip_address}_${comment.message}`;
+                        if (!groups[key]) {
+                            groups[key] = [];
+                        }
+                        groups[key].push(comment);
+                    });
+                }
 
                 duplicates = Object.values(groups).filter(group => group.length > 1);
                 
@@ -807,23 +817,26 @@
                 });
                 
                 let html = '';
-                data?.forEach(c => {
-                    const isDuplicate = duplicateIds.has(c.id);
-                    html += `<tr class="${isDuplicate ? 'duplicate' : ''}">
-                        <td>${c.id}</td>
-                        <td>${escapeHtml(c.name || 'Аноним')} ${c.is_verified ? '<span class="badge verified">PREMIUM</span>' : ''}</td>
-                        <td>${escapeHtml(c.message)}</td>
-                        <td>${c.ip_address || '-'}</td>
-                        <td>${c.created_at ? new Date(c.created_at).toLocaleString() : '-'}</td>
-                        <td>
-                            <button class="btn btn-sm btn-danger" onclick="deleteComment(${c.id})">🗑️</button>
-                            ${isDuplicate ? '<span class="badge duplicate">Дубль</span>' : ''}
-                        </td>
-                    </tr>`;
-                });
+                if (data) {
+                    data.forEach(c => {
+                        const isDuplicate = duplicateIds.has(c.id);
+                        html += `<tr class="${isDuplicate ? 'duplicate' : ''}">
+                            <td>${c.id}</td>
+                            <td>${escapeHtml(c.name || 'Аноним')} ${c.is_verified ? '<span class="badge verified">PREMIUM</span>' : ''}</td>
+                            <td>${escapeHtml(c.message)}</td>
+                            <td>${c.ip_address || '-'}</td>
+                            <td>${c.created_at ? new Date(c.created_at).toLocaleString() : '-'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteComment(${c.id})">🗑️</button>
+                                ${isDuplicate ? '<span class="badge duplicate">Дубль</span>' : ''}
+                            </td>
+                        </tr>`;
+                    });
+                }
                 document.getElementById('commentsBody').innerHTML = html || '<tr><td colspan="6">Нет комментариев</td></tr>';
             } catch (error) {
                 console.error('Ошибка загрузки комментариев:', error);
+                document.getElementById('commentsBody').innerHTML = '<tr><td colspan="6">Ошибка загрузки</td></tr>';
             }
         }
 
@@ -871,44 +884,56 @@
 
         window.deleteGroup = async (index) => {
             if (confirm('Удалить все комментарии из этой группы?')) {
-                const group = duplicates[index];
-                for (const comment of group) {
-                    await supabaseClient.from('comments').delete().eq('id', comment.id);
+                try {
+                    const group = duplicates[index];
+                    for (const comment of group) {
+                        await supabaseClient.from('comments').delete().eq('id', comment.id);
+                    }
+                    showMessage('Группа удалена', 'success');
+                    await checkDuplicates();
+                    await loadComments();
+                    loadDuplicates();
+                } catch (error) {
+                    showMessage('Ошибка: ' + error.message, 'error');
                 }
-                showMessage('Группа удалена', 'success');
-                await checkDuplicates();
-                await loadComments();
-                loadDuplicates();
             }
         };
 
         window.deleteAllDuplicates = async () => {
             if (confirm('Удалить ВСЕ повторяющиеся комментарии?')) {
-                let deletedCount = 0;
-                for (const group of duplicates) {
-                    for (let i = 1; i < group.length; i++) {
-                        await supabaseClient.from('comments').delete().eq('id', group[i].id);
-                        deletedCount++;
+                try {
+                    let deletedCount = 0;
+                    for (const group of duplicates) {
+                        for (let i = 1; i < group.length; i++) {
+                            await supabaseClient.from('comments').delete().eq('id', group[i].id);
+                            deletedCount++;
+                        }
                     }
-                }
-                showMessage(`Удалено ${deletedCount} дубликатов`, 'success');
-                await checkDuplicates();
-                await loadComments();
-                if (document.getElementById('duplicatesPanel').classList.contains('active')) {
-                    loadDuplicates();
+                    showMessage(`Удалено ${deletedCount} дубликатов`, 'success');
+                    await checkDuplicates();
+                    await loadComments();
+                    if (document.getElementById('duplicatesPanel').classList.contains('active')) {
+                        loadDuplicates();
+                    }
+                } catch (error) {
+                    showMessage('Ошибка: ' + error.message, 'error');
                 }
             }
         };
 
         window.keepOne = async (index) => {
-            const group = duplicates[index];
-            for (let i = 1; i < group.length; i++) {
-                await supabaseClient.from('comments').delete().eq('id', group[i].id);
+            try {
+                const group = duplicates[index];
+                for (let i = 1; i < group.length; i++) {
+                    await supabaseClient.from('comments').delete().eq('id', group[i].id);
+                }
+                showMessage('Оставлен один комментарий', 'success');
+                await checkDuplicates();
+                await loadComments();
+                loadDuplicates();
+            } catch (error) {
+                showMessage('Ошибка: ' + error.message, 'error');
             }
-            showMessage('Оставлен один комментарий', 'success');
-            await checkDuplicates();
-            await loadComments();
-            loadDuplicates();
         };
 
         // ============================================
@@ -922,18 +947,21 @@
                     .order('created_at', { ascending: false });
                     
                 let html = '';
-                data?.forEach(f => {
-                    html += `<tr>
-                        <td><span class="badge ${f.type}">${f.type || 'other'}</span></td>
-                        <td>${escapeHtml(f.name || '-')}</td>
-                        <td>${escapeHtml(f.message)}</td>
-                        <td>${f.ip_address || '-'}</td>
-                        <td>${f.created_at ? new Date(f.created_at).toLocaleString() : '-'}</td>
-                    </tr>`;
-                });
+                if (data) {
+                    data.forEach(f => {
+                        html += `<tr>
+                            <td><span class="badge ${f.type}">${f.type || 'other'}</span></td>
+                            <td>${escapeHtml(f.name || '-')}</td>
+                            <td>${escapeHtml(f.message)}</td>
+                            <td>${f.ip_address || '-'}</td>
+                            <td>${f.created_at ? new Date(f.created_at).toLocaleString() : '-'}</td>
+                        </tr>`;
+                    });
+                }
                 document.getElementById('feedbackBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
             } catch (error) {
                 console.error('Ошибка загрузки обратной связи:', error);
+                document.getElementById('feedbackBody').innerHTML = '<tr><td colspan="5">Ошибка загрузки</td></tr>';
             }
         }
 
@@ -948,19 +976,22 @@
                     .order('created_at', { ascending: false });
                 
                 let html = '';
-                data?.forEach(v => {
-                    html += `<tr>
-                        <td>${v.id}</td>
-                        <td>${escapeHtml(v.username)} 👑</td>
-                        <td>${v.created_at ? new Date(v.created_at).toLocaleString() : '-'}</td>
-                        <td>
-                            <button class="btn btn-sm btn-danger" onclick="deleteVerified(${v.id})">🗑️</button>
-                        </td>
-                    </tr>`;
-                });
+                if (data) {
+                    data.forEach(v => {
+                        html += `<tr>
+                            <td>${v.id}</td>
+                            <td>${escapeHtml(v.username)} 👑</td>
+                            <td>${v.created_at ? new Date(v.created_at).toLocaleString() : '-'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteVerified(${v.id})">🗑️</button>
+                            </td>
+                        </tr>`;
+                    });
+                }
                 document.getElementById('verifiedBody').innerHTML = html || '<tr><td colspan="4">Нет данных</td></tr>';
             } catch (error) {
                 console.error('Ошибка загрузки premium:', error);
+                document.getElementById('verifiedBody').innerHTML = '<tr><td colspan="4">Ошибка загрузки</td></tr>';
             }
         }
 
@@ -1011,16 +1042,19 @@
                     .limit(100);
                 
                 let html = '';
-                data?.forEach(v => {
-                    html += `<tr>
-                        <td>${v.candidates?.name || 'Удалён'}</td>
-                        <td>${v.ip_address}</td>
-                        <td>${v.created_at ? new Date(v.created_at).toLocaleString() : '-'}</td>
-                    </tr>`;
-                });
+                if (data) {
+                    data.forEach(v => {
+                        html += `<tr>
+                            <td>${v.candidates?.name || 'Удалён'}</td>
+                            <td>${v.ip_address}</td>
+                            <td>${v.created_at ? new Date(v.created_at).toLocaleString() : '-'}</td>
+                        </tr>`;
+                    });
+                }
                 document.getElementById('votesBody').innerHTML = html || '<tr><td colspan="3">Нет данных</td></tr>';
             } catch (error) {
                 console.error('Ошибка загрузки голосов:', error);
+                document.getElementById('votesBody').innerHTML = '<tr><td colspan="3">Ошибка загрузки</td></tr>';
             }
         }
 
@@ -1035,20 +1069,23 @@
                     .order('votes', { ascending: false });
                 
                 let html = '';
-                data?.forEach(c => {
-                    html += `<tr>
-                        <td>${c.id}</td>
-                        <td>${escapeHtml(c.name)}</td>
-                        <td>${c.class || '-'}</td>
-                        <td>❤️ ${c.votes || 0}</td>
-                        <td>
-                            <button class="btn btn-sm btn-danger" onclick="deleteCandidate(${c.id})">🗑️</button>
-                        </td>
-                    </tr>`;
-                });
+                if (data) {
+                    data.forEach(c => {
+                        html += `<tr>
+                            <td>${c.id}</td>
+                            <td>${escapeHtml(c.name)}</td>
+                            <td>${c.class || '-'}</td>
+                            <td>❤️ ${c.votes || 0}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCandidate(${c.id})">🗑️</button>
+                            </td>
+                        </tr>`;
+                    });
+                }
                 document.getElementById('candidatesBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
             } catch (error) {
                 console.error('Ошибка загрузки кандидатов:', error);
+                document.getElementById('candidatesBody').innerHTML = '<tr><td colspan="5">Ошибка загрузки</td></tr>';
             }
         }
 
@@ -1064,124 +1101,73 @@
             }
         };
 
-// ============================================
-// ЗАГРУЗКА ПРЕДЛОЖЕНИЙ - УНИВЕРСАЛЬНАЯ ВЕРСИЯ
-// ============================================
-async function loadSuggestions() {
-    try {
-        console.log('Загрузка предложений...');
-        
-        // Пробуем загрузить из suggestions
-        let allData = [];
-        let error = null;
-        
-        try {
-            const { data, error: suggestionsError } = await supabaseClient
-                .from('suggestions')
-                .select('*')
-                .order('created_at', { ascending: false });
-            
-            if (!suggestionsError && data) {
-                allData = [...data];
-                console.log('Загружено из suggestions:', data.length);
-            } else {
-                error = suggestionsError;
-            }
-        } catch (e) {
-            console.log('Ошибка загрузки из suggestions:', e);
-        }
-        
-        // Также загружаем из feedback (тип admin_message)
-        try {
-            const { data: feedbackData, error: feedbackError } = await supabaseClient
-                .from('feedback')
-                .select('*')
-                .eq('type', 'admin_message')
-                .order('created_at', { ascending: false });
-            
-            if (!feedbackError && feedbackData) {
-                // Преобразуем feedback в формат похожий на suggestions
-                const convertedFeedback = feedbackData.map(f => ({
-                    id: 'f_' + f.id,
-                    name: f.name,
-                    message: f.message,
-                    type: f.sub_type || 'feedback',
-                    status: 'pending',
-                    created_at: f.created_at,
-                    source: 'feedback'
-                }));
+        // ============================================
+        // ЗАГРУЗКА ПРЕДЛОЖЕНИЙ
+        // ============================================
+        async function loadSuggestions() {
+            try {
+                console.log('Загрузка предложений...');
                 
-                allData = [...allData, ...convertedFeedback];
-                console.log('Загружено из feedback:', feedbackData.length);
-            }
-        } catch (e) {
-            console.log('Ошибка загрузки из feedback:', e);
-        }
-        
-        // Сортируем по дате
-        allData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        
-        console.log('Всего загружено:', allData.length);
-        
-        let html = '';
-        
-        if (!allData || allData.length === 0) {
-            html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
-        } else {
-            allData.forEach(s => {
-                let statusBadge = '';
-                let statusText = s.status || 'pending';
-                let sourceBadge = s.source === 'feedback' ? '<span class="badge info">📨 feedback</span>' : '';
+                const { data, error } = await supabaseClient
+                    .from('suggestions')
+                    .select('*')
+                    .order('created_at', { ascending: false });
                 
-                if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
-                else if (statusText === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
-                else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
-                
-                // Парсим сообщение для отображения
-                let displayMessage = s.message || '-';
-                let candidateName = 'Не указан';
-                let description = displayMessage;
-                
-                // Пробуем извлечь имя кандидата из сообщения
-                const nameMatch = displayMessage.match(/Кандидат:\s*(.+?)(?:\n|$)/);
-                if (nameMatch) {
-                    candidateName = nameMatch[1].trim();
-                    description = displayMessage.replace(/Кандидат:.*?\n/, '').replace(/Описание:\s*/, '');
+                if (error) {
+                    console.error('Ошибка Supabase:', error);
+                    throw error;
                 }
                 
-                // Сокращаем длинные сообщения
-                if (description.length > 100) {
-                    description = description.substring(0, 100) + '...';
-                }
+                console.log('Получены данные:', data);
                 
-                html += `<tr>
-                    <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
-                    <td>${escapeHtml(s.name || 'Аноним')} ${sourceBadge}</td>
-                    <td>
-                        <strong>${escapeHtml(candidateName)}</strong><br>
-                        <small>${escapeHtml(description)}</small>
-                    </td>
-                    <td>${statusBadge}</td>
-                    <td>
-                        ${statusText === 'pending' ? `
-                            <button class="btn btn-sm btn-success" onclick="approveSuggestion('${s.id}')">✅ Одобрить</button>
-                            <button class="btn btn-sm btn-danger" onclick="rejectSuggestion('${s.id}')">❌ Отклонить</button>
-                        ` : '-'}
-                    </td>
-                </tr>`;
-            });
-        }
-        
-        document.getElementById('suggestionsBody').innerHTML = html;
-        
-    } catch (error) {
-        console.error('Ошибка загрузки предложений:', error);
-        document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
-    }
+                let html = '';
+                
+                if (!data || data.length === 0) {
+                    html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
+                } else {
+                    data.forEach(s => {
+                        let statusBadge = '';
+                        let statusText = s.status || 'pending';
+                        
+                        if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
+                        else if (statusText === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
+                        else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
+                        
+                        let displayMessage = s.message || '-';
+                        let candidateName = 'Не указан';
+                        let description = displayMessage;
+                        
+                        const nameMatch = displayMessage.match(/Кандидат:\s*(.+?)(?:\n|$)/);
+                        if (nameMatch) {
+                            candidateName = nameMatch[1].trim();
+                            description = displayMessage.replace(/Кандидат:.*?\n/, '').replace(/Описание:\s*/, '');
+                        }
+                        
+                        if (description.length > 100) {
+                            description = description.substring(0, 100) + '...';
+                        }
+                        
+                        html += `<tr>
+                            <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
+                            <td>${escapeHtml(s.name || 'Аноним')}</td>
+                            <td>
+                                <strong>${escapeHtml(candidateName)}</strong><br>
+                                <small>${escapeHtml(description)}</small>
+                            </td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                ${statusText === 'pending' ? `
+                                    <button class="btn btn-sm btn-success" onclick="approveSuggestion('${s.id}')">✅ Одобрить</button>
+                                    <button class="btn btn-sm btn-danger" onclick="rejectSuggestion('${s.id}')">❌ Отклонить</button>
+                                ` : '-'}
+                            </td>
+                        </tr>`;
+                    });
+                }
                 
                 document.getElementById('suggestionsBody').innerHTML = html;
-  }
-        catch (error) {
+                
+            } catch (error) {
                 console.error('Ошибка загрузки предложений:', error);
                 document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
             }
@@ -1192,7 +1178,6 @@ async function loadSuggestions() {
         // ============================================
         window.approveSuggestion = async (id) => {
             try {
-                // Получаем данные предложения
                 const { data: suggestion, error: fetchError } = await supabaseClient
                     .from('suggestions')
                     .select('*')
@@ -1204,17 +1189,14 @@ async function loadSuggestions() {
                     return;
                 }
                 
-                // Парсим сообщение
                 const message = suggestion.message || '';
                 let name = 'Новый кандидат';
                 
-                // Пробуем извлечь имя кандидата из сообщения
                 const nameMatch = message.match(/Кандидат:\s*(.+?)(?:\n|$)/);
                 if (nameMatch) {
                     name = nameMatch[1].trim();
                 }
                 
-                // Добавляем кандидата
                 const { error: insertError } = await supabaseClient
                     .from('candidates')
                     .insert({ 
@@ -1229,7 +1211,6 @@ async function loadSuggestions() {
                     return;
                 }
                 
-                // Обновляем статус предложения
                 await supabaseClient
                     .from('suggestions')
                     .update({ status: 'approved' })
@@ -1274,18 +1255,21 @@ async function loadSuggestions() {
                     .limit(50);
                 
                 let html = '';
-                data?.forEach(s => {
-                    const details = typeof s.details === 'object' ? JSON.stringify(s.details) : s.details;
-                    html += `<tr>
-                        <td><span class="badge warning">${s.type || 'unknown'}</span></td>
-                        <td>${escapeHtml(details)}</td>
-                        <td>${s.ip_address || '-'}</td>
-                        <td>${s.timestamp ? new Date(s.timestamp).toLocaleString() : '-'}</td>
-                    </tr>`;
-                });
+                if (data) {
+                    data.forEach(s => {
+                        const details = typeof s.details === 'object' ? JSON.stringify(s.details) : s.details;
+                        html += `<tr>
+                            <td><span class="badge warning">${s.type || 'unknown'}</span></td>
+                            <td>${escapeHtml(details)}</td>
+                            <td>${s.ip_address || '-'}</td>
+                            <td>${s.timestamp ? new Date(s.timestamp).toLocaleString() : '-'}</td>
+                        </tr>`;
+                    });
+                }
                 document.getElementById('suspiciousBody').innerHTML = html || '<tr><td colspan="4">Нет данных</td></tr>';
             } catch (error) {
                 console.error('Ошибка загрузки подозрений:', error);
+                document.getElementById('suspiciousBody').innerHTML = '<tr><td colspan="4">Ошибка загрузки</td></tr>';
             }
         }
 
