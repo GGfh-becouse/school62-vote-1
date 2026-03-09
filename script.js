@@ -1,236 +1,347 @@
-// ============================================
-// SUPABASE КОНФИГ
-// ============================================
 const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================
-// СОСТОЯНИЕ
+// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
 // ============================================
 let userIp = null;
-let browserId = localStorage.getItem('browserId');
-if (!browserId) {
-    browserId = 'user_' + Math.random().toString(36).substring(2, 15);
-    localStorage.setItem('browserId', browserId);
-}
-
-// Запрещённые слова
-const bannedWords = [
-    'порно', 'секс', 'еблан', 'дебил', 'дурак', 'идиот',
-    'хуй', 'пизда', 'блядь', 'сука', 'гандон', 'шлюха',
-    'porn', 'sex', 'fuck', 'shit', 'bitch',
-    'сайт', 'заработок', 'деньги', 'крипта', 'биткоин',
-    'казино', 'закладки', 'casino', 'bet'
-];
+let primeUser = JSON.parse(localStorage.getItem('primeUser') || 'null');
+let userVotes = {};
+let lastCommentTime = null;
+let lastUpdateVoteTime = null;
 
 // ============================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// PRIME СИСТЕМА
 // ============================================
-async function getUserIp() {
-    try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        return data.ip;
-    } catch {
-        return browserId;
-    }
-}
-
-function checkBannedWords(text) {
-    if (!text) return false;
-    const lowerText = text.toLowerCase();
-    return bannedWords.some(word => lowerText.includes(word));
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function showMessage(text, type) {
-    const container = document.getElementById('messageContainer');
-    if (!container) return;
+function updatePrimeUI() {
+    const primeIcon = document.getElementById('primeIcon');
+    const primeName = document.getElementById('primeName');
+    const primeStatus = document.getElementById('primeStatus');
     
-    const msg = document.createElement('div');
-    msg.className = `message ${type}`;
-    msg.textContent = text;
-    container.appendChild(msg);
-    setTimeout(() => msg.remove(), 3000);
-}
-
-// ============================================
-// ИНИЦИАЛИЗАЦИЯ
-// ============================================
-async function initApp() {
-    userIp = await getUserIp();
-    document.getElementById('userId').textContent = browserId.substring(0, 8);
-    
-    // Загружаем треды на главной
-    if (document.getElementById('threadsList')) {
-        loadThreads();
+    if (primeUser) {
+        primeIcon.style.display = 'inline';
+        primeName.textContent = primeUser.username;
+        primeStatus.style.display = 'flex';
         
-        // Обработчик создания треда
-        document.getElementById('createThreadBtn')?.addEventListener('click', createThread);
-    }
-}
-
-// Загрузка тредов
-async function loadThreads() {
-    const sortBy = document.getElementById('sortFilter')?.value || 'bump';
-    const search = document.getElementById('searchFilter')?.value || '';
-    
-    try {
-        let query = supabaseClient
-            .from('threads')
-            .select('*');
-        
-        if (sortBy === 'bump') query = query.order('bump_time', { ascending: false });
-        if (sortBy === 'new') query = query.order('created_at', { ascending: false });
-        if (sortBy === 'hot') query = query.order('reply_count', { ascending: false });
-        
-        const { data, error } = await query;
-        if (error) throw error;
-        
-        let filtered = data || [];
-        if (search) {
-            filtered = filtered.filter(t => 
-                t.title.toLowerCase().includes(search.toLowerCase()) ||
-                t.content.toLowerCase().includes(search.toLowerCase())
-            );
+        // Автозаполнение имени в комментариях
+        const commentName = document.getElementById('commentName');
+        if (commentName) {
+            commentName.value = primeUser.username;
+            commentName.disabled = true;
         }
+    } else {
+        primeIcon.style.display = 'none';
+        primeName.textContent = '';
+        primeStatus.style.display = 'none';
         
-        displayThreads(filtered);
-    } catch (error) {
-        console.error('Ошибка загрузки тредов:', error);
-        document.getElementById('threadsList').innerHTML = '<div class="loading">Ошибка загрузки</div>';
+        const commentName = document.getElementById('commentName');
+        if (commentName) {
+            commentName.value = '';
+            commentName.disabled = false;
+        }
     }
 }
 
-// Отображение тредов
-function displayThreads(threads) {
-    const container = document.getElementById('threadsList');
+document.getElementById('primeBtn')?.addEventListener('click', async function() {
+    const username = document.getElementById('primeUsername').value.trim();
+    const password = document.getElementById('primePassword').value.trim();
     
-    if (!threads || threads.length === 0) {
-        container.innerHTML = '<div class="loading">Пока нет тем</div>';
+    if (!username || !password) {
+        showMessage('Введите ник и пароль', 'error');
+        return;
+    }
+    
+    const { data, error } = await supabaseClient
+        .from('verified_users')
+        .select('*')
+        .eq('username', username)
+        .eq('password', password)
+        .single();
+    
+    if (error || !data) {
+        showMessage('Неверный ник или пароль', 'error');
+        return;
+    }
+    
+    primeUser = { username, id: data.id };
+    localStorage.setItem('primeUser', JSON.stringify(primeUser));
+    updatePrimeUI();
+    showMessage('Добро пожаловать в PRIME!', 'success');
+});
+
+window.logoutPrime = function() {
+    primeUser = null;
+    localStorage.removeItem('primeUser');
+    updatePrimeUI();
+    showMessage('Вы вышли из PRIME', 'info');
+};
+
+// ============================================
+// БИТВА
+// ============================================
+let allCandidates = [];
+let currentPair = [];
+let selectedCandidateId = null;
+
+async function loadCandidates() {
+    const { data } = await supabaseClient
+        .from('candidates')
+        .select('*')
+        .order('votes', { ascending: false });
+    
+    allCandidates = data || [];
+    if (allCandidates.length < 2) return;
+    
+    document.getElementById('battleContainer').style.display = 'block';
+    selectNewPair();
+}
+
+function selectNewPair() {
+    const available = allCandidates.filter(c => !userVotes[c.id]);
+    
+    if (available.length >= 2) {
+        let first, second;
+        do {
+            const shuffled = [...available].sort(() => 0.5 - Math.random());
+            first = shuffled[0];
+            second = shuffled[1];
+        } while (first.id === second.id);
+        currentPair = [first, second];
+    } else {
+        const shuffled = [...allCandidates].sort(() => 0.5 - Math.random());
+        currentPair = [shuffled[0], shuffled[1]];
+    }
+    
+    renderBattle();
+}
+
+function renderBattle() {
+    const grid = document.getElementById('battleGrid');
+    if (!grid || !currentPair[0]) return;
+    
+    grid.innerHTML = `
+        <div class="candidate-card" onclick="selectCandidate(${currentPair[0].id})">
+            <img src="${currentPair[0].photo_url || 'https://i.pravatar.cc/300'}">
+            <h3>${currentPair[0].name}</h3>
+            <p>${currentPair[0].class || ''}</p>
+            <span class="rating">❤️ ${currentPair[0].votes || 0}</span>
+        </div>
+        <div class="candidate-card" onclick="selectCandidate(${currentPair[1].id})">
+            <img src="${currentPair[1].photo_url || 'https://i.pravatar.cc/300'}">
+            <h3>${currentPair[1].name}</h3>
+            <p>${currentPair[1].class || ''}</p>
+            <span class="rating">❤️ ${currentPair[1].votes || 0}</span>
+        </div>
+    `;
+}
+
+window.selectCandidate = function(id) {
+    selectedCandidateId = id;
+    document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById(`card-${id}`)?.classList.add('selected');
+};
+
+document.getElementById('voteBtn')?.addEventListener('click', async function() {
+    if (!selectedCandidateId) {
+        showMessage('Выберите кандидата', 'error');
+        return;
+    }
+    
+    const winner = currentPair.find(c => c.id === selectedCandidateId);
+    const loser = currentPair.find(c => c.id !== selectedCandidateId);
+    
+    if (userVotes[winner.id]) {
+        showMessage('Вы уже голосовали', 'error');
+        return;
+    }
+    
+    await Promise.all([
+        supabaseClient.from('candidates').update({ votes: (winner.votes||0)+100 }).eq('id', winner.id),
+        supabaseClient.from('candidates').update({ votes: Math.max(0, (loser.votes||0)-50) }).eq('id', loser.id),
+        supabaseClient.from('votes').insert({ candidate_id: winner.id, ip_address: userIp })
+    ]);
+    
+    userVotes[winner.id] = true;
+    showMessage(`+100 ${winner.name}!`, 'success');
+    loadCandidates();
+});
+
+// ============================================
+// КОММЕНТАРИИ
+// ============================================
+async function loadComments() {
+    const { data } = await supabaseClient
+        .from('comments')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+    
+    displayComments(data || []);
+}
+
+function displayComments(comments) {
+    const list = document.getElementById('commentsList');
+    if (!list) return;
+    
+    if (comments.length === 0) {
+        list.innerHTML = '<div class="loading">Нет комментариев</div>';
         return;
     }
     
     let html = '';
-    threads.forEach(thread => {
-        const date = new Date(thread.created_at).toLocaleString('ru', {
+    comments.forEach(c => {
+        const date = new Date(c.created_at).toLocaleString('ru', {
             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
         });
         
-        const pinnedClass = thread.is_pinned ? 'pinned' : '';
-        const hotClass = thread.is_hot ? 'hot' : '';
-        const badges = [];
-        if (thread.is_pinned) badges.push('<span class="thread-badge pinned">📌 Закреплено</span>');
-        if (thread.is_hot) badges.push('<span class="thread-badge hot">🔥 Горячее</span>');
+        const primeBadge = c.is_verified ? 
+            '<span class="prime-badge"><img src="verified.png" width="12" height="12"> PRIME</span>' : '';
         
         html += `
-            <div class="thread-card ${pinnedClass} ${hotClass}" onclick="openThread(${thread.id})">
-                <div class="thread-header">
-                    <div class="thread-title">${escapeHtml(thread.title)}</div>
-                    <div class="thread-badges">${badges.join('')}</div>
+            <div class="comment-item">
+                <div class="comment-header">
+                    <span>${c.name} ${primeBadge}</span>
+                    <span class="comment-date">${date}</span>
                 </div>
-                <div class="thread-content">${escapeHtml(thread.content)}</div>
-                <div class="thread-footer">
-                    <div class="thread-stats">
-                        <span class="thread-stat">💬 ${thread.reply_count || 0}</span>
-                        <span class="thread-stat">👤 ${escapeHtml(thread.author_name)}</span>
-                        <span class="thread-stat">🕒 ${date}</span>
-                    </div>
-                    <div class="thread-report" onclick="reportThread(${thread.id}, event)">⚠️ Пожаловаться</div>
+                <div class="comment-message">${c.message}</div>
+            </div>
+        `;
+    });
+    list.innerHTML = html;
+}
+
+document.getElementById('submitComment')?.addEventListener('click', async function() {
+    const message = document.getElementById('commentMessage').value.trim();
+    
+    if (!message) {
+        showMessage('Напишите комментарий', 'error');
+        return;
+    }
+    
+    if (lastCommentTime && Date.now() - lastCommentTime < 5000) {
+        showMessage('Слишком часто! Подождите 5 сек', 'error');
+        return;
+    }
+    
+    const commentData = {
+        name: primeUser?.username || 'Аноним',
+        message: message,
+        ip_address: userIp,
+        is_verified: !!primeUser
+    };
+    
+    await supabaseClient.from('comments').insert(commentData);
+    lastCommentTime = Date.now();
+    document.getElementById('commentMessage').value = '';
+    showMessage('Комментарий добавлен', 'success');
+    loadComments();
+});
+
+// ============================================
+// ОБНОВЛЕНИЯ
+// ============================================
+let updates = [];
+
+async function loadUpdates() {
+    const { data } = await supabaseClient
+        .from('update_suggestions')
+        .select('*')
+        .eq('status', 'approved')
+        .order('votes', { ascending: false });
+    
+    updates = data || [];
+    displayUpdates();
+}
+
+function displayUpdates() {
+    const list = document.getElementById('updatesList');
+    if (!list) return;
+    
+    if (updates.length === 0) {
+        list.innerHTML = '<div class="loading">Нет голосований</div>';
+        return;
+    }
+    
+    let html = '';
+    updates.forEach(u => {
+        html += `
+            <div class="update-item" id="update-${u.id}">
+                <div>
+                    <h4>${u.title}</h4>
+                    <p>${u.description || ''}</p>
+                </div>
+                <div>
+                    <span class="update-vote-count">❤️ ${u.votes || 0}</span>
+                    <button class="update-vote-btn" onclick="voteUpdate(${u.id})">Голосовать</button>
                 </div>
             </div>
         `;
     });
-    
-    container.innerHTML = html;
+    list.innerHTML = html;
 }
 
-// Создание треда
-async function createThread() {
-    const title = document.getElementById('threadTitle')?.value.trim();
-    const content = document.getElementById('threadContent')?.value.trim();
+window.voteUpdate = async function(id) {
+    if (!userIp) return;
     
-    if (!title || !content) {
-        showMessage('Заполните заголовок и текст', 'error');
+    const fourHoursAgo = new Date(Date.now() - 4*60*60*1000).toISOString();
+    const { data: recent } = await supabaseClient
+        .from('update_votes')
+        .select('*')
+        .eq('ip_address', userIp)
+        .gt('voted_at', fourHoursAgo);
+    
+    if (recent && recent.length > 0) {
+        showMessage('Голосовать можно раз в 4 часа', 'error');
         return;
     }
     
-    if (title.length > 100 || content.length > 500) {
-        showMessage('Слишком длинное сообщение', 'error');
+    const update = updates.find(u => u.id === id);
+    await supabaseClient
+        .from('update_suggestions')
+        .update({ votes: (update.votes||0) + 1 })
+        .eq('id', id);
+    
+    await supabaseClient
+        .from('update_votes')
+        .insert({ suggestion_id: id, ip_address: userIp });
+    
+    showMessage('Голос учтён!', 'success');
+    loadUpdates();
+};
+
+document.getElementById('suggestBtn')?.addEventListener('click', async function() {
+    const title = document.getElementById('suggestTitle').value.trim();
+    const desc = document.getElementById('suggestDesc').value.trim();
+    
+    if (!title) {
+        showMessage('Введите название', 'error');
         return;
     }
     
-    if (checkBannedWords(title) || checkBannedWords(content)) {
-        showMessage('Сообщение содержит запрещённые слова', 'error');
-        return;
-    }
+    await supabaseClient
+        .from('update_suggestions')
+        .insert({
+            title: title,
+            description: desc,
+            status: 'pending'
+        });
     
-    try {
-        const { error } = await supabaseClient
-            .from('threads')
-            .insert({
-                title: title,
-                content: content,
-                author_ip: userIp,
-                author_name: 'Аноним',
-                reply_count: 0
-            });
-        
-        if (error) throw error;
-        
-        showMessage('Тема создана!', 'success');
-        document.getElementById('threadTitle').value = '';
-        document.getElementById('threadContent').value = '';
-        loadThreads();
-    } catch (error) {
-        showMessage('Ошибка: ' + error.message, 'error');
-    }
-}
+    showMessage('Предложение отправлено!', 'success');
+    document.getElementById('suggestTitle').value = '';
+    document.getElementById('suggestDesc').value = '';
+});
 
-// Открыть тред
-window.openThread = function(threadId) {
-    window.location.href = `thread.html?id=${threadId}`;
-}
-
-// Пожаловаться на тред
-window.reportThread = async function(threadId, event) {
-    event.stopPropagation();
+// ============================================
+// ЗАПУСК
+// ============================================
+async function init() {
+    userIp = await getUserIp();
+    updatePrimeUI();
     
-    const reason = prompt('Укажите причину жалобы (необязательно):');
-    
-    try {
-        await supabaseClient
-            .from('reports')
-            .insert({
-                target_type: 'thread',
-                target_id: threadId,
-                reason: reason || 'Без причины',
-                reporter_ip: userIp
-            });
-        
-        showMessage('Жалоба отправлена', 'success');
-    } catch (error) {
-        showMessage('Ошибка', 'error');
-    }
+    if (document.getElementById('battleGrid')) loadCandidates();
+    if (document.getElementById('commentsList')) loadComments();
+    if (document.getElementById('updatesList')) loadUpdates();
 }
 
-// Фильтры
-document.getElementById('sortFilter')?.addEventListener('change', loadThreads);
-document.getElementById('searchFilter')?.addEventListener('input', debounce(loadThreads, 500));
-
-function debounce(func, wait) {
-    let timeout;
-    return function() {
-        clearTimeout(timeout);
-        timeout = setTimeout(func, wait);
-    };
-}
-
-// Запуск
-initApp();
+init();
