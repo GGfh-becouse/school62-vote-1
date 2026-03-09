@@ -1064,72 +1064,121 @@
             }
         };
 
-        // ============================================
-        // ЗАГРУЗКА ПРЕДЛОЖЕНИЙ - ИСПРАВЛЕНО (ИСПОЛЬЗУЕМ supabaseClient)
-        // ============================================
-        async function loadSuggestions() {
-            try {
-                console.log('Загрузка предложений...');
+// ============================================
+// ЗАГРУЗКА ПРЕДЛОЖЕНИЙ - УНИВЕРСАЛЬНАЯ ВЕРСИЯ
+// ============================================
+async function loadSuggestions() {
+    try {
+        console.log('Загрузка предложений...');
+        
+        // Пробуем загрузить из suggestions
+        let allData = [];
+        let error = null;
+        
+        try {
+            const { data, error: suggestionsError } = await supabaseClient
+                .from('suggestions')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if (!suggestionsError && data) {
+                allData = [...data];
+                console.log('Загружено из suggestions:', data.length);
+            } else {
+                error = suggestionsError;
+            }
+        } catch (e) {
+            console.log('Ошибка загрузки из suggestions:', e);
+        }
+        
+        // Также загружаем из feedback (тип admin_message)
+        try {
+            const { data: feedbackData, error: feedbackError } = await supabaseClient
+                .from('feedback')
+                .select('*')
+                .eq('type', 'admin_message')
+                .order('created_at', { ascending: false });
+            
+            if (!feedbackError && feedbackData) {
+                // Преобразуем feedback в формат похожий на suggestions
+                const convertedFeedback = feedbackData.map(f => ({
+                    id: 'f_' + f.id,
+                    name: f.name,
+                    message: f.message,
+                    type: f.sub_type || 'feedback',
+                    status: 'pending',
+                    created_at: f.created_at,
+                    source: 'feedback'
+                }));
                 
-                const { data, error } = await supabaseClient
-                    .from('suggestions')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                allData = [...allData, ...convertedFeedback];
+                console.log('Загружено из feedback:', feedbackData.length);
+            }
+        } catch (e) {
+            console.log('Ошибка загрузки из feedback:', e);
+        }
+        
+        // Сортируем по дате
+        allData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        
+        console.log('Всего загружено:', allData.length);
+        
+        let html = '';
+        
+        if (!allData || allData.length === 0) {
+            html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
+        } else {
+            allData.forEach(s => {
+                let statusBadge = '';
+                let statusText = s.status || 'pending';
+                let sourceBadge = s.source === 'feedback' ? '<span class="badge info">📨 feedback</span>' : '';
                 
-                if (error) {
-                    console.error('Ошибка Supabase:', error);
-                    throw error;
+                if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
+                else if (statusText === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
+                else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
+                
+                // Парсим сообщение для отображения
+                let displayMessage = s.message || '-';
+                let candidateName = 'Не указан';
+                let description = displayMessage;
+                
+                // Пробуем извлечь имя кандидата из сообщения
+                const nameMatch = displayMessage.match(/Кандидат:\s*(.+?)(?:\n|$)/);
+                if (nameMatch) {
+                    candidateName = nameMatch[1].trim();
+                    description = displayMessage.replace(/Кандидат:.*?\n/, '').replace(/Описание:\s*/, '');
                 }
                 
-                console.log('Получены данные:', data);
-                
-                let html = '';
-                
-                if (!data || data.length === 0) {
-                    html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
-                } else {
-                    data.forEach(s => {
-                        let statusBadge = '';
-                        let statusText = s.status || 'pending';
-                        
-                        if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
-                        else if (statusText === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
-                        else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
-                        
-                        // Парсим сообщение для отображения
-                        let displayMessage = s.message || '-';
-                        let candidateName = 'Не указан';
-                        let description = displayMessage;
-                        
-                        // Пробуем извлечь имя кандидата из сообщения
-                        const nameMatch = displayMessage.match(/Кандидат:\s*(.+?)(?:\n|$)/);
-                        if (nameMatch) {
-                            candidateName = nameMatch[1].trim();
-                            description = displayMessage.replace(/Кандидат:.*?\n/, '').replace(/Описание:\s*/, '');
-                        }
-                        
-                        // Сокращаем длинные сообщения
-                        if (description.length > 100) {
-                            description = description.substring(0, 100) + '...';
-                        }
-                        
-                        html += `<tr>
-                            <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
-                            <td>${escapeHtml(s.name || 'Аноним')}</td>
-                            <td>
-                                <strong>${escapeHtml(candidateName)}</strong><br>
-                                <small>${escapeHtml(description)}</small>
-                            </td>
-                            <td>${statusBadge}</td>
-                            <td>
-                                ${statusText === 'pending' ? `
-                                    <button class="btn btn-sm btn-success" onclick="approveSuggestion('${s.id}')">✅ Одобрить</button>
-                                    <button class="btn btn-sm btn-danger" onclick="rejectSuggestion('${s.id}')">❌ Отклонить</button>
-                                ` : '-'}
-                            </td>
-                        </tr>`;
-                    });
+                // Сокращаем длинные сообщения
+                if (description.length > 100) {
+                    description = description.substring(0, 100) + '...';
                 }
+                
+                html += `<tr>
+                    <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
+                    <td>${escapeHtml(s.name || 'Аноним')} ${sourceBadge}</td>
+                    <td>
+                        <strong>${escapeHtml(candidateName)}</strong><br>
+                        <small>${escapeHtml(description)}</small>
+                    </td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        ${statusText === 'pending' ? `
+                            <button class="btn btn-sm btn-success" onclick="approveSuggestion('${s.id}')">✅ Одобрить</button>
+                            <button class="btn btn-sm btn-danger" onclick="rejectSuggestion('${s.id}')">❌ Отклонить</button>
+                        ` : '-'}
+                    </td>
+                </tr>`;
+            });
+        }
+        
+        document.getElementById('suggestionsBody').innerHTML = html;
+        
+    } catch (error) {
+        console.error('Ошибка загрузки предложений:', error);
+        document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
+    }
+}
                 
                 document.getElementById('suggestionsBody').innerHTML = html;
                 
