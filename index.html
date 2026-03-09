@@ -2,455 +2,98 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>ШКОЛЬНАЯ ЛЕНТА - 62</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Школа 62</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
-
         body {
-            background: #00aced; /* Синий как в Твиттере */
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 10px;
+            background: #00aced;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
         }
-
         .container {
-            max-width: 600px;
-            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            overflow: hidden;
+            padding: 20px;
         }
-
-        /* ЭКРАН СОГЛАШЕНИЯ */
-        .agreement-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+        .header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            z-index: 10000;
-            padding: 16px;
-        }
-
-        .agreement-card {
-            background: white;
-            border-radius: 10px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 24px;
-        }
-
-        .agreement-card h2 {
-            color: #333;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #00aced;
         }
-
-        .agreement-text {
-            color: #555;
-            line-height: 1.5;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+        .login-form {
+            max-width: 300px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
         }
-
-        .checkbox-container {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .agreement-button {
-            background: #00aced;
-            color: white;
-            border: none;
+        input, button, select, textarea {
             width: 100%;
-            padding: 12px;
-            border-radius: 5px;
-            font-weight: 700;
-            cursor: pointer;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
-
-        .agreement-button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* ОСНОВНОЙ КОНТЕНТ */
-        .main-content {
-            display: none;
-        }
-
-        /* Шапка */
-        .header {
-            background: #00aced;
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 1.5rem;
-        }
-
-        .header h1 small {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
-
-        /* Статистика */
-        .user-stats {
-            background: #f8f9fa;
-            padding: 12px 15px;
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .stat-items {
-            display: flex;
-            gap: 15px;
-        }
-
-        .stat-pill {
-            color: #555;
-        }
-
-        .stat-pill span {
-            font-weight: 700;
-            color: #00aced;
-            margin-left: 5px;
-        }
-
-        .school-badge {
-            background: #e1e8ed;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-        }
-
-        /* Сообщения */
-        .message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background: #333;
-            color: white;
-            border-radius: 5px;
-            z-index: 9999;
-        }
-
-        .message.success { background: #00aced; }
-        .message.error { background: #dc3545; }
-
-        /* Управление автообновлением */
-        .auto-refresh-control {
-            background: white;
-            padding: 8px 15px;
-            border-bottom: 1px solid #e1e8ed;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .auto-refresh-toggle {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.8rem;
-            color: #555;
-        }
-
-        /* Битва */
-        .battle-header {
-            background: #f8f9fa;
-            padding: 15px;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .battle-header h2 {
-            color: #333;
-            font-size: 1.2rem;
-        }
-
-        .battle-header p {
-            color: #777;
-            font-size: 0.8rem;
-        }
-
-        .battle-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            background: #e1e8ed;
-        }
-
-        .candidate-card {
-            background: white;
-            padding: 15px;
-            cursor: pointer;
-            transition: 0.1s;
-        }
-
-        .candidate-card:hover {
-            background: #f8f9fa;
-        }
-
-        .candidate-card.selected {
-            background: #e3f2fd;
-            border-left: 3px solid #00aced;
-        }
-
-        .candidate-card img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-bottom: 8px;
-        }
-
-        .candidate-name {
-            font-weight: 700;
-            color: #333;
-        }
-
-        .candidate-class {
-            color: #777;
-            font-size: 0.8rem;
-        }
-
-        .rating {
-            color: #00aced;
-            font-weight: 700;
-            display: block;
-            margin-top: 5px;
-        }
-
-        .vote-button {
+        button {
             background: #00aced;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            font-weight: 700;
-            margin: 15px auto;
-            display: block;
             cursor: pointer;
+            font-weight: 700;
         }
-
-        /* PRIME блок */
-        .prime-box {
-            background: #f8f9fa;
-            padding: 15px;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .prime-header {
+        .tabs {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .prime-badge {
-            background: #00aced;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-        }
-
-        .prime-input-group {
-            display: flex;
-            gap: 8px;
+            gap: 10px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
-
-        .prime-input-group input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .prime-input-group button {
-            background: #00aced;
-            color: white;
-            border: none;
-            padding: 8px 15px;
+        .tab {
+            padding: 8px 16px;
+            background: #f0f0f0;
             border-radius: 4px;
             cursor: pointer;
         }
-
-        .prime-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            color: #00aced;
-            font-weight: 700;
-        }
-
-        /* КОММЕНТАРИИ (ЧАТ) */
-        .chat-section {
-            background: white;
-        }
-
-        .chat-header {
-            padding: 15px;
-            border-bottom: 2px solid #00aced;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-header h3 {
-            color: #333;
-        }
-
-        .chat-header span {
+        .tab.active {
             background: #00aced;
             color: white;
+        }
+        .panel {
+            display: none;
+        }
+        .panel.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: #f5f5f5;
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .badge {
             padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-        }
-
-        .chat-form {
-            padding: 15px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .chat-form input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 8px;
-        }
-
-        .chat-form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            min-height: 60px;
-            resize: vertical;
-            margin-bottom: 8px;
-        }
-
-        .chat-submit {
+            border-radius: 4px;
+            font-size: 0.8rem;
             background: #00aced;
             color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            font-weight: 700;
-            cursor: pointer;
-            float: right;
+            display: inline-block;
         }
-
-        .chat-messages {
-            padding: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-            background: white;
-        }
-
-        .chat-message {
-            padding: 10px;
-            border-bottom: 1px solid #e1e8ed;
-            transition: 0.2s;
-        }
-
-        .chat-message.premium {
+        .prime-row {
             background: #fff9e6;
-            border-left: 3px solid #ffd700;
         }
-
-        .chat-message.premium .chat-name {
-            color: #b8860b;
-            font-weight: 700;
-        }
-
-        .chat-message.premium .chat-name::after {
-            content: " 👑";
-            color: #ffd700;
-        }
-
-        .chat-header-line {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-
-        .chat-name {
-            font-weight: 700;
-            color: #00aced;
-        }
-
-        .chat-date {
-            color: #999;
-            font-size: 0.7rem;
-        }
-
-        .chat-text {
-            color: #333;
-            font-size: 0.9rem;
-        }
-
-        .chat-loading {
-            text-align: center;
-            color: #999;
-            padding: 20px;
-        }
-
-        /* Кнопка связи с администрацией */
-        .feedback-button {
-            background: #f8f9fa;
-            padding: 12px 15px;
-            border-top: 1px solid #e1e8ed;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .feedback-button:hover {
-            background: #e1e8ed;
-        }
-
-        .feedback-button a {
-            color: #00aced;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        /* МОДАЛЬНОЕ ОКНО */
         .modal {
             display: none;
             position: fixed;
@@ -463,244 +106,57 @@
             align-items: center;
             z-index: 2000;
         }
-
         .modal-content {
             background: white;
             border-radius: 10px;
             padding: 24px;
             max-width: 400px;
             width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
-
-        .modal-content h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .modal-content input,
-        .modal-content textarea,
-        .modal-content select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .modal-content button {
-            background: #00aced;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 4px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
         .modal-close {
             float: right;
             font-size: 1.5rem;
             cursor: pointer;
             color: #999;
         }
-
         .modal-close:hover {
             color: #333;
         }
-
-        /* Загрузка */
-        .loading {
-            text-align: center;
-            color: #999;
-            padding: 20px;
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #00aced;
+            color: white;
+            border-radius: 5px;
+            z-index: 9999;
         }
-
-        /* Рекомендации */
-        .recommendations {
+        .feedback-button {
             background: #f8f9fa;
             padding: 15px;
-            border-top: 1px solid #e1e8ed;
-        }
-
-        .recommendations-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .recommendation-card {
-            background: white;
-            border-radius: 5px;
-            padding: 8px;
+            border-top: 1px solid #ddd;
             text-align: center;
-            border: 1px solid #ddd;
             cursor: pointer;
+            margin-top: 20px;
         }
-
-        .recommendation-photo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-bottom: 5px;
+        .feedback-button:hover {
+            background: #e1e8ed;
         }
-
-        /* Рейтинг */
-        .rating-table {
-            background: white;
-            padding: 15px;
-            border-top: 1px solid #e1e8ed;
-        }
-
-        .rating-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .rating-position {
-            width: 30px;
-            font-weight: 700;
+        .feedback-button a {
             color: #00aced;
-        }
-
-        .rating-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .rating-info {
-            flex: 1;
-        }
-
-        .rating-name {
-            font-weight: 700;
-            color: #333;
-        }
-
-        .rating-score {
-            color: #00aced;
+            text-decoration: none;
             font-weight: 700;
         }
     </style>
 </head>
 <body>
-    <!-- ЭКРАН СОГЛАШЕНИЯ -->
-    <div class="agreement-screen" id="agreementScreen">
-        <div class="agreement-card">
-            <h2>ДОГОВОР СООБЩЕСТВА</h2>
-            <div class="agreement-text">
-                <p>Правила использования сайта...</p>
-            </div>
-            <div class="checkbox-container">
-                <input type="checkbox" id="schoolCheckbox">
-                <label>Я принимаю условия</label>
-            </div>
-            <button class="agreement-button" id="enterSiteBtn" disabled>Войти</button>
-        </div>
-    </div>
+    <!-- Сообщения -->
+    <div id="messageContainer"></div>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
-    <div class="container">
-        <div class="main-content" id="mainContent">
-            <!-- Шапка -->
-            <div class="header">
-                <h1>ШКОЛЬНАЯ ЛЕНТА <small>№62</small></h1>
-            </div>
-
-            <!-- Статистика -->
-            <div class="user-stats">
-                <div class="stat-items">
-                    <div class="stat-pill">🗳️ <span id="voteCountBadge">0</span></div>
-                    <div class="stat-pill">🔥 <span id="comboCount">0</span></div>
-                </div>
-                <div class="school-badge">🏫 Школа 62</div>
-            </div>
-
-            <!-- Сообщения -->
-            <div id="messageContainer"></div>
-
-            <!-- Автообновление -->
-            <div class="auto-refresh-control">
-                <label class="auto-refresh-toggle">
-                    <input type="checkbox" id="autoRefreshToggle" checked>
-                    <span>Автообновление (3 сек)</span>
-                </label>
-            </div>
-
-            <!-- Битва -->
-            <div id="battleContainer" style="display: none;">
-                <div class="battle-header">
-                    <h2>⚔️ БИТВА КАНДИДАТОВ</h2>
-                    <p>Победитель +100 • Проигравший -50</p>
-                </div>
-                <div class="battle-grid" id="battleGrid"></div>
-                <button class="vote-button" id="voteBtn">Голосовать</button>
-            </div>
-
-            <!-- PRIME БЛОК -->
-            <div class="prime-box" id="primeBox">
-                <div class="prime-header">
-                    <img src="verified.png" width="20" height="20" onerror="this.src='https://via.placeholder.com/20'">
-                    <span>in PRIME</span>
-                    <span class="prime-badge">premium</span>
-                </div>
-                <div class="prime-input-group">
-                    <input type="text" id="primeUsername" placeholder="Ник">
-                    <input type="password" id="primePassword" placeholder="Пароль">
-                    <button id="primeBtn">Войти</button>
-                </div>
-                <div class="prime-status" id="primeStatus" style="display: none;">
-                    <img src="verified.png" width="16" height="16" onerror="this.src='https://via.placeholder.com/16'">
-                    <span id="primeDisplayName"></span>
-                    <button onclick="logoutPrime()" style="background:none; border:none; color:#999; text-decoration:underline; cursor:pointer;">выйти</button>
-                </div>
-            </div>
-
-            <!-- ЧАТ -->
-            <div class="chat-section">
-                <div class="chat-header">
-                    <h3>💬 ЧАТ ШКОЛЫ №62</h3>
-                    <span>последние 50</span>
-                </div>
-                
-                <!-- Форма сообщения -->
-                <div class="chat-form">
-                    <input type="text" id="commentName" placeholder="Ваше имя" maxlength="30">
-                    <textarea id="commentMessage" placeholder="Напишите сообщение..." maxlength="200"></textarea>
-                    <button class="chat-submit" id="submitComment">Отправить</button>
-                </div>
-
-                <!-- Список сообщений -->
-                <div class="chat-messages" id="commentsList">
-                    <div class="chat-loading">Загрузка...</div>
-                </div>
-            </div>
-
-            <!-- Кнопка связи с администрацией -->
-            <div class="feedback-button" onclick="openFeedbackModal()">
-                <a href="#">📨 Связь с администрацией</a>
-            </div>
-
-            <!-- Рекомендации -->
-            <div id="recommendations" class="recommendations" style="display: none;">
-                <h3>🎯 Рекомендации</h3>
-                <div id="recommendationsGrid" class="recommendations-grid"></div>
-            </div>
-
-            <!-- Рейтинг -->
-            <div id="ratingContainer" class="rating-table" style="display: none;">
-                <h3>🏆 ТОП-10</h3>
-                <div id="ratingList" class="rating-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО ОБРАТНОЙ СВЯЗИ -->
+    <!-- МОДАЛЬНОЕ ОКНО ОБРАТНОЙ СВЯЗИ (ДЛЯ ГЛАВНОЙ) -->
     <div class="modal" id="feedbackModal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeFeedbackModal()">&times;</span>
@@ -717,7 +173,362 @@
         </div>
     </div>
 
+    <!-- Вход в админку -->
+    <div class="login-form" id="loginForm">
+        <h2>Вход в админку</h2>
+        <input type="password" id="adminPassword" placeholder="Пароль">
+        <button onclick="checkPassword()">Войти</button>
+    </div>
+
+    <!-- Админ-панель -->
+    <div class="container" id="adminPanel" style="display:none;">
+        <div class="header">
+            <h1>Админ-панель Школа 62</h1>
+            <button onclick="logout()">Выйти</button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('comments')">Комментарии</div>
+            <div class="tab" onclick="switchTab('feedback')">Обратная связь</div>
+            <div class="tab" onclick="switchTab('prime')">PRIME</div>
+            <div class="tab" onclick="switchTab('votes')">Голоса</div>
+        </div>
+
+        <!-- Комментарии -->
+        <div id="commentsPanel" class="panel active">
+            <h3>Комментарии (PRIME выделены)</h3>
+            <table>
+                <thead>
+                    <tr><th>Имя</th><th>Сообщение</th><th>IP</th><th>Дата</th></tr>
+                </thead>
+                <tbody id="commentsTable"></tbody>
+            </table>
+        </div>
+
+        <!-- Обратная связь -->
+        <div id="feedbackPanel" class="panel">
+            <h3>Обратная связь (от пользователей)</h3>
+            <table>
+                <thead>
+                    <tr><th>Тип</th><th>Имя</th><th>Сообщение</th><th>IP</th><th>Дата</th><th>Действия</th></tr>
+                </thead>
+                <tbody id="feedbackTable"></tbody>
+            </table>
+        </div>
+
+        <!-- PRIME пользователи -->
+        <div id="primePanel" class="panel">
+            <h3>PRIME-пользователи</h3>
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Ник</th><th>Дата</th><th>Действия</th></tr>
+                </thead>
+                <tbody id="primeTable"></tbody>
+            </table>
+            <h4>➕ Добавить PRIME</h4>
+            <input type="text" id="newPrimeUser" placeholder="Ник">
+            <input type="text" id="newPrimePass" placeholder="Пароль">
+            <button onclick="addPrime()">Добавить</button>
+        </div>
+
+        <!-- Голоса -->
+        <div id="votesPanel" class="panel">
+            <h3>Голоса</h3>
+            <table>
+                <thead>
+                    <tr><th>Кандидат</th><th>IP</th><th>Дата</th></tr>
+                </thead>
+                <tbody id="votesTable"></tbody>
+            </table>
+        </div>
+
+        <!-- Кнопка тестового обращения (для админки) -->
+        <div class="feedback-button" onclick="openTestFeedbackModal()">
+            <a href="#">📨 Отправить тестовое обращение</a>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js"></script>
+    <script>
+        // ============================================
+        // SUPABASE КОНФИГ
+        // ============================================
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // ============================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            if (!container) return;
+            
+            const msg = document.createElement('div');
+            msg.className = 'message';
+            msg.style.background = type === 'error' ? '#dc3545' : '#00aced';
+            msg.textContent = text;
+            container.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        // ============================================
+        // ВХОД В АДМИНКУ
+        // ============================================
+        function checkPassword() {
+            if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAll();
+            } else {
+                showMessage('Неверный пароль', 'error');
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // ============================================
+        // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+        // ============================================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            
+            if (tab === 'comments') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('commentsPanel').classList.add('active');
+                loadComments();
+            } else if (tab === 'feedback') {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('feedbackPanel').classList.add('active');
+                loadFeedback();
+            } else if (tab === 'prime') {
+                document.querySelectorAll('.tab')[2].classList.add('active');
+                document.getElementById('primePanel').classList.add('active');
+                loadPrime();
+            } else if (tab === 'votes') {
+                document.querySelectorAll('.tab')[3].classList.add('active');
+                document.getElementById('votesPanel').classList.add('active');
+                loadVotes();
+            }
+        }
+
+        // ============================================
+        // ЗАГРУЗКА ВСЕХ ДАННЫХ
+        // ============================================
+        async function loadAll() {
+            loadComments();
+            loadFeedback();
+            loadPrime();
+            loadVotes();
+        }
+
+        // ============================================
+        // КОММЕНТАРИИ
+        // ============================================
+        async function loadComments() {
+            const { data } = await supabase
+                .from('comments')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(100);
+            
+            let html = '';
+            data?.forEach(c => {
+                const primeClass = c.is_verified ? 'prime-row' : '';
+                html += `<tr class="${primeClass}">
+                    <td>${c.name || 'Аноним'} ${c.is_verified ? '👑' : ''}</td>
+                    <td>${c.message || ''}</td>
+                    <td>${c.ip_address || '-'}</td>
+                    <td>${new Date(c.created_at).toLocaleString()}</td>
+                </tr>`;
+            });
+            document.getElementById('commentsTable').innerHTML = html || '<tr><td colspan="4">Нет данных</td></tr>';
+        }
+
+        // ============================================
+        // ОБРАТНАЯ СВЯЗЬ (ГЛАВНОЕ ДОБАВЛЕНИЕ)
+        // ============================================
+        async function loadFeedback() {
+            const { data } = await supabase
+                .from('feedback')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            let html = '';
+            data?.forEach(f => {
+                html += `<tr>
+                    <td><span class="badge">${f.type || 'other'}</span></td>
+                    <td>${f.name || 'Аноним'}</td>
+                    <td>${f.message || ''}</td>
+                    <td>${f.ip_address || '-'}</td>
+                    <td>${new Date(f.created_at).toLocaleString()}</td>
+                    <td>
+                        <button onclick="deleteFeedback(${f.id})" style="background:#dc3545; padding:5px 10px;">Удалить</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('feedbackTable').innerHTML = html || '<tr><td colspan="6">Нет данных</td></tr>';
+        }
+
+        // Удаление обращения
+        async function deleteFeedback(id) {
+            if (confirm('Удалить это обращение?')) {
+                await supabase.from('feedback').delete().eq('id', id);
+                loadFeedback();
+                showMessage('Обращение удалено', 'success');
+            }
+        }
+
+        // ============================================
+        // PRIME ПОЛЬЗОВАТЕЛИ
+        // ============================================
+        async function loadPrime() {
+            const { data } = await supabase
+                .from('verified_users')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            let html = '';
+            data?.forEach(p => {
+                html += `<tr>
+                    <td>${p.id}</td>
+                    <td>${p.username} 👑</td>
+                    <td>${new Date(p.created_at).toLocaleString()}</td>
+                    <td><button onclick="deletePrime(${p.id})" style="background:#dc3545;">Удалить</button></td>
+                </tr>`;
+            });
+            document.getElementById('primeTable').innerHTML = html || '<tr><td colspan="4">Нет данных</td></tr>';
+        }
+
+        async function addPrime() {
+            const user = document.getElementById('newPrimeUser').value.trim();
+            const pass = document.getElementById('newPrimePass').value.trim();
+            
+            if (!user || !pass) {
+                showMessage('Заполните все поля', 'error');
+                return;
+            }
+            
+            await supabase.from('verified_users').insert({ username: user, password: pass });
+            document.getElementById('newPrimeUser').value = '';
+            document.getElementById('newPrimePass').value = '';
+            loadPrime();
+            showMessage('PRIME добавлен', 'success');
+        }
+
+        async function deletePrime(id) {
+            if (confirm('Удалить PRIME-пользователя?')) {
+                await supabase.from('verified_users').delete().eq('id', id);
+                loadPrime();
+                showMessage('PRIME удалён', 'success');
+            }
+        }
+
+        // ============================================
+        // ГОЛОСА
+        // ============================================
+        async function loadVotes() {
+            const { data } = await supabase
+                .from('votes')
+                .select('*, candidates(name)')
+                .order('created_at', { ascending: false })
+                .limit(100);
+            
+            let html = '';
+            data?.forEach(v => {
+                html += `<tr>
+                    <td>${v.candidates?.name || 'Удалён'}</td>
+                    <td>${v.ip_address || '-'}</td>
+                    <td>${new Date(v.created_at).toLocaleString()}</td>
+                </tr>`;
+            });
+            document.getElementById('votesTable').innerHTML = html || '<tr><td colspan="3">Нет данных</td></tr>';
+        }
+
+        // ============================================
+        // ОБРАТНАЯ СВЯЗЬ - ФУНКЦИИ ДЛЯ МОДАЛКИ
+        // ============================================
+        // Открыть модальное окно (для теста из админки)
+        window.openTestFeedbackModal = function() {
+            document.getElementById('feedbackModal').style.display = 'flex';
+        };
+
+        // Закрыть модальное окно
+        window.closeFeedbackModal = function() {
+            document.getElementById('feedbackModal').style.display = 'none';
+            // Очистка полей
+            document.getElementById('feedbackName').value = '';
+            document.getElementById('feedbackType').value = 'idea';
+            document.getElementById('feedbackMessage').value = '';
+        };
+
+        // Отправка обращения
+        document.getElementById('submitFeedback')?.addEventListener('click', async function() {
+            const name = document.getElementById('feedbackName')?.value.trim() || 'Аноним';
+            const type = document.getElementById('feedbackType')?.value || 'other';
+            const message = document.getElementById('feedbackMessage')?.value.trim();
+            
+            if (!message) {
+                showMessage('Напишите сообщение', 'error');
+                return;
+            }
+            
+            try {
+                // Получаем IP (для админки используем заглушку)
+                let ip = 'admin-panel';
+                try {
+                    const response = await fetch('https://api.ipify.org?format=json');
+                    const data = await response.json();
+                    ip = data.ip;
+                } catch (e) {
+                    ip = 'unknown';
+                }
+                
+                await supabase.from('feedback').insert({
+                    type: type,
+                    name: name,
+                    message: message,
+                    ip_address: ip,
+                    user_agent: navigator.userAgent
+                });
+                
+                showMessage('Спасибо! Сообщение отправлено', 'success');
+                closeFeedbackModal();
+                
+                // Если открыта вкладка обратной связи, обновляем её
+                if (document.getElementById('feedbackPanel').classList.contains('active')) {
+                    loadFeedback();
+                }
+            } catch (error) {
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        });
+
+        // Закрытие по клику вне модалки
+        window.onclick = function(event) {
+            const modal = document.getElementById('feedbackModal');
+            if (event.target === modal) {
+                closeFeedbackModal();
+            }
+        };
+
+        // ============================================
+        // АВТОМАТИЧЕСКАЯ ЗАГРУЗКА (ОПЦИОНАЛЬНО)
+        // ============================================
+        // Можно добавить автообновление для админки, но это не обязательно
+        // setInterval(() => {
+        //     if (document.getElementById('adminPanel').style.display === 'block') {
+        //         if (document.getElementById('commentsPanel').classList.contains('active')) loadComments();
+        //         if (document.getElementById('feedbackPanel').classList.contains('active')) loadFeedback();
+        //         if (document.getElementById('primePanel').classList.contains('active')) loadPrime();
+        //         if (document.getElementById('votesPanel').classList.contains('active')) loadVotes();
+        //     }
+        // }, 10000);
+    </script>
 </body>
 </html>
