@@ -936,35 +936,119 @@
             }
         };
 
-        // ============================================
-        // ЗАГРУЗКА ОБРАТНОЙ СВЯЗИ
-        // ============================================
-        async function loadFeedback() {
-            try {
-                const { data } = await supabaseClient
-                    .from('feedback')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                    
-                let html = '';
-                if (data) {
-                    data.forEach(f => {
-                        html += `<tr>
-                            <td><span class="badge ${f.type}">${f.type || 'other'}</span></td>
-                            <td>${escapeHtml(f.name || '-')}</td>
-                            <td>${escapeHtml(f.message)}</td>
-                            <td>${f.ip_address || '-'}</td>
-                            <td>${f.created_at ? new Date(f.created_at).toLocaleString() : '-'}</td>
-                        </tr>`;
-                    });
-                }
-                document.getElementById('feedbackBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
-            } catch (error) {
-                console.error('Ошибка загрузки обратной связи:', error);
-                document.getElementById('feedbackBody').innerHTML = '<tr><td colspan="5">Ошибка загрузки</td></tr>';
-            }
+// ============================================
+// ЗАГРУЗКА ОБРАТНОЙ СВЯЗИ - ВСЕ СООБЩЕНИЯ
+// ============================================
+async function loadFeedback() {
+    try {
+        console.log('Загрузка обратной связи...');
+        
+        // Загружаем ВСЕ сообщения из feedback
+        const { data: feedbackData, error: feedbackError } = await supabaseClient
+            .from('feedback')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        // Также загружаем из suggestions для полноты
+        const { data: suggestionsData, error: suggestionsError } = await supabaseClient
+            .from('suggestions')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        let allMessages = [];
+        
+        // Добавляем сообщения из feedback
+        if (feedbackData && !feedbackError) {
+            const formattedFeedback = feedbackData.map(item => ({
+                id: 'fb_' + item.id,
+                type: item.type || 'feedback',
+                sub_type: item.sub_type || 'message',
+                name: item.name || 'Аноним',
+                message: item.message || '-',
+                ip_address: item.ip_address || '-',
+                created_at: item.created_at,
+                source: '📨 feedback'
+            }));
+            allMessages = [...allMessages, ...formattedFeedback];
+            console.log(`Загружено ${formattedFeedback.length} из feedback`);
         }
-
+        
+        // Добавляем сообщения из suggestions
+        if (suggestionsData && !suggestionsError) {
+            const formattedSuggestions = suggestionsData.map(item => ({
+                id: 'sug_' + item.id,
+                type: item.type || 'suggestion',
+                sub_type: item.type || 'other',
+                name: item.name || 'Аноним',
+                message: item.message || '-',
+                ip_address: item.ip_address || '-',
+                created_at: item.created_at,
+                source: '📝 suggestions',
+                status: item.status
+            }));
+            allMessages = [...allMessages, ...formattedSuggestions];
+            console.log(`Загружено ${formattedSuggestions.length} из suggestions`);
+        }
+        
+        // Сортируем по дате (новые сверху)
+        allMessages.sort((a, b) => {
+            return new Date(b.created_at) - new Date(a.created_at);
+        });
+        
+        console.log(`Всего сообщений: ${allMessages.length}`);
+        
+        let html = '';
+        
+        if (allMessages.length === 0) {
+            html = '<tr><td colspan="6" style="text-align:center; padding:30px;">Нет сообщений</td></tr>';
+        } else {
+            allMessages.forEach(msg => {
+                // Определяем иконку в зависимости от типа
+                let typeIcon = '📌';
+                if (msg.type === 'question' || msg.sub_type === 'question') typeIcon = '❓';
+                else if (msg.type === 'problem' || msg.sub_type === 'problem') typeIcon = '⚠️';
+                else if (msg.type === 'suggestion' || msg.sub_type === 'suggestion') typeIcon = '💡';
+                else if (msg.type === 'bug' || msg.sub_type === 'bug') typeIcon = '🐛';
+                else if (msg.type === 'candidate' || msg.sub_type === 'candidate') typeIcon = '👩';
+                
+                // Сокращаем длинные сообщения
+                let shortMessage = msg.message;
+                if (shortMessage && shortMessage.length > 100) {
+                    shortMessage = shortMessage.substring(0, 100) + '...';
+                }
+                
+                // Статус для suggestions
+                let statusBadge = '';
+                if (msg.status === 'pending') statusBadge = '<span class="badge warning">⏳</span>';
+                else if (msg.status === 'approved') statusBadge = '<span class="badge success">✅</span>';
+                else if (msg.status === 'rejected') statusBadge = '<span class="badge danger">❌</span>';
+                
+                html += `<tr>
+                    <td>
+                        <span style="display: flex; align-items: center; gap: 5px;">
+                            ${typeIcon} 
+                            <span class="badge ${msg.type}">${msg.sub_type || msg.type || 'message'}</span>
+                            <small style="color: #7f8c8d;">${msg.source}</small>
+                            ${statusBadge}
+                        </span>
+                    </td>
+                    <td>${escapeHtml(msg.name)}</td>
+                    <td>
+                        <div title="${escapeHtml(msg.message)}">${escapeHtml(shortMessage)}</div>
+                    </td>
+                    <td>${msg.ip_address}</td>
+                    <td>${msg.created_at ? new Date(msg.created_at).toLocaleString() : '-'}</td>
+                </tr>`;
+            });
+        }
+        
+        document.getElementById('feedbackBody').innerHTML = html;
+        
+    } catch (error) {
+        console.error('Ошибка загрузки обратной связи:', error);
+        document.getElementById('feedbackBody').innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
+    }
+}
         // ============================================
         // ЗАГРУЗКА PREMIUM
         // ============================================
