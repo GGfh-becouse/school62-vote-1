@@ -1129,19 +1129,42 @@ function enterSite() {
         }
 
         // ============================================
-        // ПОЛУЧЕНИЕ IP
-        // ============================================
-        async function getUserIp() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                userIp = data.ip;
-                return userIp;
-            } catch {
-                userIp = 'user-' + Math.random().toString(36).substring(2, 10);
-                return userIp;
-            }
+// ПОЛУЧЕНИЕ IP
+// ============================================
+async function getUserIp() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        userIp = data.ip;
+        return userIp;
+    } catch {
+        userIp = 'user-' + Math.random().toString(36).substring(2, 10);
+        return userIp;
+    }
+}
+
+// ============================================
+// ОТПРАВКА ПОДОЗРЕНИЙ В АДМИНКУ
+// ============================================
+async function reportSuspiciousActivity(type, details) {
+    try {
+        const { error } = await supabaseClient
+            .from('suspicious_activity')
+            .insert({
+                type: type,
+                details: details,
+                ip_address: userIp || 'unknown',
+                user_agent: navigator.userAgent,
+                timestamp: new Date().toISOString()
+            });
+        
+        if (error) {
+            console.error('Ошибка отправки в suspicious_activity:', error);
         }
+    } catch (error) {
+        console.error('Ошибка отправки в админку:', error);
+    }
+}
 
         // ============================================
         // СИСТЕМА ВЕРИФИКАЦИИ
