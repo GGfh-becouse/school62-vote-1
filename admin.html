@@ -647,13 +647,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-        // SUPABASE КОНФИГ
+        // SUPABASE КОНФИГ - ТОЛЬКО ОДНО ОБЪЯВЛЕНИЕ!
         // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8'; // Ваш пароль
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // СОЗДАЕМ КЛИЕНТ ТОЛЬКО ОДИН РАЗ
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
         // ВХОД
@@ -729,23 +730,23 @@
         // ============================================
         async function loadStats() {
             try {
-                const { count: votes } = await supabase
+                const { count: votes } = await supabaseClient
                     .from('votes')
                     .select('*', { count: 'exact', head: true });
                     
-                const { count: comments } = await supabase
+                const { count: comments } = await supabaseClient
                     .from('comments')
                     .select('*', { count: 'exact', head: true });
                     
-                const { count: candidates } = await supabase
+                const { count: candidates } = await supabaseClient
                     .from('candidates')
                     .select('*', { count: 'exact', head: true });
                     
-                const { count: verified } = await supabase
+                const { count: verified } = await supabaseClient
                     .from('verified_users')
                     .select('*', { count: 'exact', head: true });
                 
-                const { data: ips } = await supabase
+                const { data: ips } = await supabaseClient
                     .from('votes')
                     .select('ip_address');
                     
@@ -768,7 +769,7 @@
 
         async function checkDuplicates() {
             try {
-                const { data } = await supabase
+                const { data } = await supabaseClient
                     .from('comments')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -794,7 +795,7 @@
         // ============================================
         async function loadComments() {
             try {
-                const { data } = await supabase
+                const { data } = await supabaseClient
                     .from('comments')
                     .select('*')
                     .order('created_at', { ascending: false })
@@ -855,7 +856,7 @@
         window.deleteComment = async (id) => {
             if (confirm('Удалить комментарий?')) {
                 try {
-                    await supabase.from('comments').delete().eq('id', id);
+                    await supabaseClient.from('comments').delete().eq('id', id);
                     showMessage('Комментарий удалён', 'success');
                     await loadComments();
                     await checkDuplicates();
@@ -872,7 +873,7 @@
             if (confirm('Удалить все комментарии из этой группы?')) {
                 const group = duplicates[index];
                 for (const comment of group) {
-                    await supabase.from('comments').delete().eq('id', comment.id);
+                    await supabaseClient.from('comments').delete().eq('id', comment.id);
                 }
                 showMessage('Группа удалена', 'success');
                 await checkDuplicates();
@@ -886,7 +887,7 @@
                 let deletedCount = 0;
                 for (const group of duplicates) {
                     for (let i = 1; i < group.length; i++) {
-                        await supabase.from('comments').delete().eq('id', group[i].id);
+                        await supabaseClient.from('comments').delete().eq('id', group[i].id);
                         deletedCount++;
                     }
                 }
@@ -902,7 +903,7 @@
         window.keepOne = async (index) => {
             const group = duplicates[index];
             for (let i = 1; i < group.length; i++) {
-                await supabase.from('comments').delete().eq('id', group[i].id);
+                await supabaseClient.from('comments').delete().eq('id', group[i].id);
             }
             showMessage('Оставлен один комментарий', 'success');
             await checkDuplicates();
@@ -915,7 +916,7 @@
         // ============================================
         async function loadFeedback() {
             try {
-                const { data } = await supabase
+                const { data } = await supabaseClient
                     .from('feedback')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -941,7 +942,7 @@
         // ============================================
         async function loadVerified() {
             try {
-                const { data } = await supabase
+                const { data } = await supabaseClient
                     .from('verified_users')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -973,7 +974,7 @@
             }
             
             try {
-                await supabase
+                await supabaseClient
                     .from('verified_users')
                     .insert({ username, password });
                     
@@ -989,7 +990,7 @@
         window.deleteVerified = async (id) => {
             if (confirm('Удалить PREMIUM-пользователя?')) {
                 try {
-                    await supabase.from('verified_users').delete().eq('id', id);
+                    await supabaseClient.from('verified_users').delete().eq('id', id);
                     showMessage('Удалено', 'success');
                     loadVerified();
                 } catch (error) {
@@ -1003,7 +1004,7 @@
         // ============================================
         async function loadVotes() {
             try {
-                const { data } = await supabase
+                const { data } = await supabaseClient
                     .from('votes')
                     .select('*, candidates(name)')
                     .order('created_at', { ascending: false })
@@ -1028,7 +1029,7 @@
         // ============================================
         async function loadCandidates() {
             try {
-                const { data } = await supabase
+                const { data } = await supabaseClient
                     .from('candidates')
                     .select('*')
                     .order('votes', { ascending: false });
@@ -1054,7 +1055,7 @@
         window.deleteCandidate = async (id) => {
             if (confirm('Удалить кандидата?')) {
                 try {
-                    await supabase.from('candidates').delete().eq('id', id);
+                    await supabaseClient.from('candidates').delete().eq('id', id);
                     showMessage('Кандидат удалён', 'success');
                     loadCandidates();
                 } catch (error) {
@@ -1064,13 +1065,13 @@
         };
 
         // ============================================
-        // ЗАГРУЗКА ПРЕДЛОЖЕНИЙ - ИСПРАВЛЕНО
+        // ЗАГРУЗКА ПРЕДЛОЖЕНИЙ - ИСПРАВЛЕНО (ИСПОЛЬЗУЕМ supabaseClient)
         // ============================================
         async function loadSuggestions() {
             try {
                 console.log('Загрузка предложений...');
                 
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('suggestions')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -1144,7 +1145,7 @@
         window.approveSuggestion = async (id) => {
             try {
                 // Получаем данные предложения
-                const { data: suggestion, error: fetchError } = await supabase
+                const { data: suggestion, error: fetchError } = await supabaseClient
                     .from('suggestions')
                     .select('*')
                     .eq('id', id)
@@ -1166,7 +1167,7 @@
                 }
                 
                 // Добавляем кандидата
-                const { error: insertError } = await supabase
+                const { error: insertError } = await supabaseClient
                     .from('candidates')
                     .insert({ 
                         name: name,
@@ -1181,7 +1182,7 @@
                 }
                 
                 // Обновляем статус предложения
-                await supabase
+                await supabaseClient
                     .from('suggestions')
                     .update({ status: 'approved' })
                     .eq('id', id);
@@ -1201,7 +1202,7 @@
         // ============================================
         window.rejectSuggestion = async (id) => {
             try {
-                await supabase
+                await supabaseClient
                     .from('suggestions')
                     .update({ status: 'rejected' })
                     .eq('id', id);
@@ -1218,7 +1219,7 @@
         // ============================================
         async function loadSuspicious() {
             try {
-                const { data } = await supabase
+                const { data } = await supabaseClient
                     .from('suspicious_activity')
                     .select('*')
                     .order('timestamp', { ascending: false })
@@ -1266,7 +1267,7 @@
             
             const class_ = prompt('Класс:') || '11 класс';
             
-            supabase
+            supabaseClient
                 .from('candidates')
                 .insert({
                     name: name,
