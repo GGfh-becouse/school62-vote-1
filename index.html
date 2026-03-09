@@ -826,6 +826,69 @@
             margin-left: 10px;
             font-size: 0.85rem;
         }
+        /* ТОНКОЕ УВЕДОМЛЕНИЕ */
+.update-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: 90%;
+    background: #2c3e50;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 40px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    z-index: 9999;
+    border: 1px solid #4a6fa5;
+    font-size: 0.9rem;
+    backdrop-filter: blur(5px);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification-icon {
+    font-size: 1.1rem;
+}
+
+.notification-text a {
+    color: #ffd966;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.notification-text a:hover {
+    text-decoration: underline;
+}
+
+.notification-close {
+    background: transparent;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+.notification-close:hover {
+    color: white;
+}
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -967,6 +1030,24 @@
                 </div>
             </div>
 
+           <!-- БЛОК ГОЛОСОВАНИЯ ЗА ОБНОВЛЕНИЯ -->
+<div class="updates-section" id="updatesSection">
+    <div class="updates-header">
+        <h3>🚀 ГОЛОСОВАНИЕ ЗА СЛЕДУЮЩЕЕ ОБНОВЛЕНИЕ</h3>
+        <p>Выберите, что мы добавим следующим. Можно голосовать за несколько вариантов (1 раз в 4 часа)</p>
+    </div>
+    
+    <div class="updates-list" id="updatesList">
+        <div class="loading-small">Загрузка вариантов...</div>
+    </div>
+    
+    <div class="suggest-update" onclick="openSuggestionModal()">
+        <span class="suggest-icon">💡</span>
+        <span class="suggest-text">Предложить своё обновление</span>
+        <span class="suggest-arrow">→</span>
+    </div>
+</div>
+            
             <!-- БЛОК КОММЕНТАРИЕВ -->
             <div class="comments-section">
                 <h3>💬 КОММЕНТАРИИ ШКОЛЫ №62</h3>
@@ -1684,6 +1765,83 @@ function enterSite() {
         }
 
         // ============================================
+// УВЕДОМЛЕНИЕ ОБ ОБНОВЛЕНИЯХ
+// ============================================
+function showNotification() {
+    const notification = document.getElementById('updateNotification');
+    if (notification) {
+        notification.style.display = 'flex';
+        // Автоматически скрыть через 10 секунд
+        setTimeout(() => {
+            if (notification.style.display !== 'none') {
+                notification.style.display = 'none';
+            }
+        }, 10000);
+    }
+}
+
+function closeNotification() {
+    document.getElementById('updateNotification').style.display = 'none';
+}
+
+function showUpdatesSection() {
+    closeNotification();
+    // Плавный скролл к блоку с обновлениями
+    const updatesSection = document.querySelector('.updates-section');
+    if (updatesSection) {
+        updatesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// Показывать уведомление, если есть новые обновления
+function checkForUpdates() {
+    // Проверяем, есть ли одобренные обновления
+    if (updateSuggestions && updateSuggestions.length > 0) {
+        // Проверяем, не голосовал ли пользователь сегодня
+        const lastNotification = localStorage.getItem('lastUpdateNotification');
+        const today = new Date().toDateString();
+        
+        if (lastNotification !== today) {
+            setTimeout(showNotification, 2000); // Показать через 2 секунды после загрузки
+            localStorage.setItem('lastUpdateNotification', today);
+        }
+    }
+}
+
+// Добавь вызов в функцию loadUpdateSuggestions
+async function loadUpdateSuggestions() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('update_suggestions')
+            .select('*')
+            .eq('status', 'approved')
+            .order('votes', { ascending: false });
+
+        if (error) throw error;
+        updateSuggestions = data || [];
+        
+        // Загружаем голоса пользователя
+        if (userIp) {
+            const { data: votes } = await supabaseClient
+                .from('update_votes')
+                .select('suggestion_id')
+                .eq('ip_address', userIp);
+            
+            userUpdateVotes = {};
+            votes?.forEach(v => {
+                userUpdateVotes[v.suggestion_id] = true;
+            });
+        }
+        
+        displayUpdates();
+        checkForUpdates(); // Добавь эту строку
+    } catch (error) {
+        console.error('Ошибка загрузки обновлений:', error);
+        document.getElementById('updatesList').innerHTML = '<div class="loading-small">Ошибка загрузки</div>';
+    }
+}
+
+        // ============================================
         // ИНИЦИАЛИЗАЦИЯ
         // ============================================
         async function initApp() {
@@ -1693,5 +1851,33 @@ function enterSite() {
             await loadComments();
         }
     </script>
-</body>
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПРЕДЛОЖЕНИЯ ОБНОВЛЕНИЯ -->
+<div class="feedback-modal" id="suggestionModal">
+    <div class="feedback-modal-content">
+        <span class="feedback-modal-close" onclick="closeSuggestionModal()">&times;</span>
+        <h3>💡 Предложить обновление</h3>
+        
+        <div class="feedback-form-group">
+            <label for="suggestionTitle">Название <span style="color: #ff6b6b;">*</span></label>
+            <input type="text" id="suggestionTitle" class="feedback-input" placeholder="Например: Тёмная тема" maxlength="50">
+        </div>
+        
+        <div class="feedback-form-group">
+            <label for="suggestionDesc">Описание (необязательно)</label>
+            <textarea id="suggestionDesc" class="feedback-textarea" rows="3" placeholder="Опишите вашу идею..." maxlength="200"></textarea>
+        </div>
+        
+        <div class="feedback-form-group">
+            <label>Выберите тип обновления:</label>
+            <select id="suggestionType" class="feedback-input">
+                <option value="feature">✨ Новая функция</option>
+                <option value="design">🎨 Дизайн</option>
+                <option value="fix">🔧 Исправление</option>
+                <option value="other">📦 Другое</option>
+            </select>
+        </div>
+        
+        <button class="feedback-submit" id="submitSuggestion">📤 Отправить</button>
+    </div>
+</div></body>
 </html>
