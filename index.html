@@ -5,50 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>ШКОЛЬНАЯ ЛЕНТА - 62</title>
     
-    <!-- Шрифт как в старом Твиттере -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;500;700&family=Helvetica:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* ========== ОСНОВНЫЕ СТИЛИ (СТАРЫЙ ТВИТТЕР) ========== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
         }
 
         body {
-            background: #C0DEED; /* Легендарный голубой фон старого Твиттера */
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background: #00aced; /* Синий как в Твиттере */
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 0;
-            margin: 0;
+            padding: 10px;
         }
 
         .container {
-            max-width: 600px; /* Как старая лента Твиттера */
+            max-width: 600px;
             width: 100%;
             background: white;
-            min-height: 100vh;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
         }
 
-        /* ========== ЭКРАН СОГЛАШЕНИЯ ========== */
+        /* ЭКРАН СОГЛАШЕНИЯ */
         .agreement-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -58,60 +53,36 @@
 
         .agreement-card {
             background: white;
-            border-radius: 8px;
-            max-width: 520px;
+            border-radius: 10px;
+            max-width: 500px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            border: 1px solid #e1e8ed;
         }
 
         .agreement-card h2 {
-            font-size: 1.5rem;
-            color: #292f33;
+            color: #333;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #00aced;
-            font-weight: 700;
-        }
-
-        .agreement-card h2 span {
-            background: #00aced;
-            color: white;
-            font-size: 0.8rem;
-            padding: 3px 10px;
-            border-radius: 4px;
-            margin-left: 8px;
         }
 
         .agreement-text {
-            color: #292f33;
+            color: #555;
             line-height: 1.5;
-            margin-bottom: 20px;
             font-size: 0.9rem;
-        }
-
-        .agreement-text p {
-            margin-bottom: 6px;
+            margin-bottom: 20px;
         }
 
         .checkbox-container {
-            background: #f5f8fa;
+            background: #f5f5f5;
             padding: 15px;
-            border-radius: 6px;
+            border-radius: 8px;
             margin: 20px 0;
             display: flex;
             align-items: center;
             gap: 10px;
-            border: 1px solid #e1e8ed;
-        }
-
-        .checkbox-container input {
-            width: 18px;
-            height: 18px;
-            accent-color: #00aced;
         }
 
         .agreement-button {
@@ -120,15 +91,9 @@
             border: none;
             width: 100%;
             padding: 12px;
-            font-size: 1.1rem;
+            border-radius: 5px;
             font-weight: 700;
-            border-radius: 4px;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .agreement-button:hover {
-            background: #0084b4;
         }
 
         .agreement-button:disabled {
@@ -136,52 +101,35 @@
             cursor: not-allowed;
         }
 
-        /* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+        /* ОСНОВНОЙ КОНТЕНТ */
         .main-content {
             display: none;
         }
 
-        /* Шапка в стиле Твиттера */
+        /* Шапка */
         .header {
-            background: white;
-            padding: 12px 16px;
-            border-bottom: 1px solid #e1e8ed;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: #00aced;
+            color: white;
+            padding: 15px;
+            text-align: center;
         }
 
         .header h1 {
-            color: #292f33;
-            font-size: 1.3rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .header h1::before {
-            content: "🐦";
             font-size: 1.5rem;
         }
 
         .header h1 small {
             font-size: 0.8rem;
-            color: #8899a6;
-            font-weight: 400;
-            margin-left: 5px;
+            opacity: 0.9;
         }
 
-        /* Статистика пользователя */
+        /* Статистика */
         .user-stats {
-            background: white;
-            padding: 12px 16px;
-            border-bottom: 1px solid #e1e8ed;
+            background: #f8f9fa;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 1px solid #e1e8ed;
         }
 
         .stat-items {
@@ -190,213 +138,134 @@
         }
 
         .stat-pill {
-            color: #8899a6;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            color: #555;
         }
 
         .stat-pill span {
-            color: #292f33;
             font-weight: 700;
-            margin-left: 2px;
+            color: #00aced;
+            margin-left: 5px;
         }
 
         .school-badge {
             background: #e1e8ed;
-            color: #292f33;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
-            font-weight: 500;
         }
 
         /* Сообщения */
         .message {
             position: fixed;
-            top: 60px;
+            top: 20px;
             right: 20px;
             padding: 10px 20px;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 1000;
-            font-size: 0.9rem;
-            border-left: 4px solid #00aced;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+            z-index: 9999;
         }
 
-        .message.success { border-left-color: #2ecc71; }
-        .message.error { border-left-color: #e74c3c; }
+        .message.success { background: #00aced; }
+        .message.error { background: #dc3545; }
 
-        /* Битва (твиттер-стиль) */
+        /* Управление автообновлением */
+        .auto-refresh-control {
+            background: white;
+            padding: 8px 15px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .auto-refresh-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        /* Битва */
         .battle-header {
-            background: #f5f8fa;
-            padding: 12px 16px;
+            background: #f8f9fa;
+            padding: 15px;
             border-bottom: 1px solid #e1e8ed;
         }
 
         .battle-header h2 {
-            color: #292f33;
-            font-size: 1.1rem;
-            font-weight: 700;
+            color: #333;
+            font-size: 1.2rem;
         }
 
         .battle-header p {
-            color: #8899a6;
+            color: #777;
             font-size: 0.8rem;
         }
 
-        .holiday-banner {
-            background: #f5f8fa;
-            padding: 12px;
-            text-align: center;
-            color: #292f33;
-            font-size: 0.9rem;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .battle-container {
+        .battle-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1px;
             background: #e1e8ed;
-            border-bottom: 1px solid #e1e8ed;
         }
 
         .candidate-card {
             background: white;
-            padding: 16px;
+            padding: 15px;
             cursor: pointer;
-            transition: background 0.1s;
+            transition: 0.1s;
         }
 
         .candidate-card:hover {
-            background: #f5f8fa;
+            background: #f8f9fa;
         }
 
         .candidate-card.selected {
-            background: #e8f4fd;
+            background: #e3f2fd;
             border-left: 3px solid #00aced;
         }
 
         .candidate-card img {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             margin-bottom: 8px;
         }
 
         .candidate-name {
             font-weight: 700;
-            color: #292f33;
-            margin-bottom: 2px;
+            color: #333;
         }
 
         .candidate-class {
-            color: #8899a6;
+            color: #777;
             font-size: 0.8rem;
-            margin-bottom: 8px;
         }
 
         .rating {
             color: #00aced;
             font-weight: 700;
-            font-size: 0.9rem;
+            display: block;
+            margin-top: 5px;
         }
 
         .vote-button {
             background: #00aced;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 12px 25px;
+            border-radius: 5px;
             font-weight: 700;
-            font-size: 1rem;
-            margin: 16px auto;
+            margin: 15px auto;
             display: block;
             cursor: pointer;
-            width: fit-content;
         }
 
-        .vote-button:hover {
-            background: #0084b4;
-        }
-
-        /* Предсказания */
-        .prediction-box {
-            background: #f5f8fa;
-            padding: 12px 16px;
-            border-top: 1px solid #e1e8ed;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .prediction-bars {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .prediction-bar {
-            flex: 1;
-            height: 20px;
-            background: #e1e8ed;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .prediction-fill {
-            height: 100%;
-            background: #00aced;
-            width: 0%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 8px;
-            color: white;
-            font-size: 0.7rem;
-        }
-
-        /* Достижения */
-        .achievements {
-            background: white;
-            padding: 16px;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .achievements h3 {
-            color: #292f33;
-            font-size: 1rem;
-            margin-bottom: 12px;
-        }
-
-        .achievement-grid {
-            display: flex;
-            gap: 16px;
-        }
-
-        .achievement-item {
-            text-align: center;
-            opacity: 0.5;
-        }
-
-        .achievement-item.unlocked {
-            opacity: 1;
-        }
-
-        .achievement-icon {
-            font-size: 1.5rem;
-        }
-
-        .achievement-title {
-            font-size: 0.7rem;
-            color: #8899a6;
-        }
-
-        /* PRIME блок (в стиле Твиттера) */
+        /* PRIME блок */
         .prime-box {
-            background: #f5f8fa;
-            padding: 16px;
+            background: #f8f9fa;
+            padding: 15px;
             border-bottom: 1px solid #e1e8ed;
         }
 
@@ -404,21 +273,15 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .prime-header span {
-            color: #292f33;
-            font-weight: 700;
+            margin-bottom: 10px;
         }
 
         .prime-badge {
-            background: #e1e8ed;
-            color: #8899a6;
-            font-size: 0.7rem;
+            background: #00aced;
+            color: white;
             padding: 2px 8px;
             border-radius: 4px;
+            font-size: 0.7rem;
         }
 
         .prime-input-group {
@@ -429,20 +292,17 @@
 
         .prime-input-group input {
             flex: 1;
-            min-width: 120px;
-            padding: 8px 12px;
-            border: 1px solid #e1e8ed;
+            padding: 8px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 0.9rem;
         }
 
         .prime-input-group button {
             background: #00aced;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 15px;
             border-radius: 4px;
-            font-weight: 700;
             cursor: pointer;
         }
 
@@ -450,155 +310,233 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-top: 10px;
             color: #00aced;
             font-weight: 700;
-            margin-top: 8px;
         }
 
-        /* Комментарии */
-        .comments-section {
+        /* КОММЕНТАРИИ (ЧАТ) */
+        .chat-section {
             background: white;
         }
 
-        .comments-section h3 {
-            padding: 16px;
-            border-bottom: 1px solid #e1e8ed;
-            color: #292f33;
-            font-size: 1rem;
-        }
-
-        .comment-form {
-            padding: 16px;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .comment-input-group {
+        .chat-header {
+            padding: 15px;
+            border-bottom: 2px solid #00aced;
             display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .comment-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #e1e8ed;
-            border-radius: 4px;
-            font-size: 0.9rem;
+        .chat-header h3 {
+            color: #333;
         }
 
-        .comment-textarea {
+        .chat-header span {
+            background: #00aced;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+
+        .chat-form {
+            padding: 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .chat-form input {
             width: 100%;
             padding: 10px;
-            border: 1px solid #e1e8ed;
-            border-radius: 4px;
-            min-height: 60px;
-            resize: vertical;
-            font-family: inherit;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             margin-bottom: 8px;
         }
 
-        .comment-submit {
+        .chat-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 60px;
+            resize: vertical;
+            margin-bottom: 8px;
+        }
+
+        .chat-submit {
             background: #00aced;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 8px 20px;
+            border-radius: 5px;
             font-weight: 700;
             cursor: pointer;
             float: right;
         }
 
-        .comment-submit:hover {
-            background: #0084b4;
+        .chat-messages {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
         }
 
-        .comments-list {
-            padding: 16px;
-        }
-
-        .comment-item {
-            padding: 12px 0;
+        .chat-message {
+            padding: 10px;
             border-bottom: 1px solid #e1e8ed;
+            transition: 0.2s;
         }
 
-        .comment-item:last-child {
-            border-bottom: none;
+        .chat-message.premium {
+            background: #fff9e6;
+            border-left: 3px solid #ffd700;
         }
 
-        .comment-header {
+        .chat-message.premium .chat-name {
+            color: #b8860b;
+            font-weight: 700;
+        }
+
+        .chat-message.premium .chat-name::after {
+            content: " 👑";
+            color: #ffd700;
+        }
+
+        .chat-header-line {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 5px;
         }
 
-        .comment-name {
+        .chat-name {
             font-weight: 700;
-            color: #292f33;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            color: #00aced;
         }
 
-        .prime-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            background: #00aced;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.6rem;
-            margin-left: 5px;
-        }
-
-        .comment-date {
-            color: #8899a6;
+        .chat-date {
+            color: #999;
             font-size: 0.7rem;
         }
 
-        .comment-message {
-            color: #292f33;
+        .chat-text {
+            color: #333;
             font-size: 0.9rem;
-            line-height: 1.4;
         }
 
-        .comment-loading {
+        .chat-loading {
             text-align: center;
-            color: #8899a6;
+            color: #999;
+            padding: 20px;
+        }
+
+        /* Кнопка связи с администрацией */
+        .feedback-button {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            border-top: 1px solid #e1e8ed;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .feedback-button:hover {
+            background: #e1e8ed;
+        }
+
+        .feedback-button a {
+            color: #00aced;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        /* МОДАЛЬНОЕ ОКНО */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-content input,
+        .modal-content textarea,
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-content button {
+            background: #00aced;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        /* Загрузка */
+        .loading {
+            text-align: center;
+            color: #999;
             padding: 20px;
         }
 
         /* Рекомендации */
         .recommendations {
-            background: #f5f8fa;
-            padding: 16px;
+            background: #f8f9fa;
+            padding: 15px;
             border-top: 1px solid #e1e8ed;
-        }
-
-        .recommendations h3 {
-            color: #292f33;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
         }
 
         .recommendations-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .recommendation-card {
             background: white;
-            border-radius: 4px;
+            border-radius: 5px;
             padding: 8px;
             text-align: center;
-            border: 1px solid #e1e8ed;
+            border: 1px solid #ddd;
             cursor: pointer;
-        }
-
-        .recommendation-card:hover {
-            background: #f5f8fa;
         }
 
         .recommendation-photo {
@@ -608,41 +546,24 @@
             margin-bottom: 5px;
         }
 
-        .recommendation-name {
-            font-size: 0.8rem;
-            color: #292f33;
-            font-weight: 700;
-        }
-
         /* Рейтинг */
         .rating-table {
             background: white;
+            padding: 15px;
             border-top: 1px solid #e1e8ed;
-        }
-
-        .rating-table h3 {
-            padding: 16px;
-            border-bottom: 1px solid #e1e8ed;
-            color: #292f33;
-            font-size: 1rem;
-        }
-
-        .rating-list {
-            padding: 0 16px;
         }
 
         .rating-item {
             display: flex;
             align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid #e1e8ed;
+            border-bottom: 1px solid #eee;
         }
 
         .rating-position {
-            width: 25px;
-            color: #8899a6;
+            width: 30px;
             font-weight: 700;
-            font-size: 0.8rem;
+            color: #00aced;
         }
 
         .rating-avatar {
@@ -658,62 +579,12 @@
 
         .rating-name {
             font-weight: 700;
-            color: #292f33;
-            font-size: 0.9rem;
+            color: #333;
         }
 
         .rating-score {
             color: #00aced;
             font-weight: 700;
-        }
-
-        /* Управление автообновлением */
-        .auto-refresh-control {
-            background: #f5f8fa;
-            padding: 8px 16px;
-            display: flex;
-            justify-content: flex-end;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .auto-refresh-toggle {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.8rem;
-            color: #8899a6;
-            cursor: pointer;
-        }
-
-        .auto-refresh-toggle input {
-            accent-color: #00aced;
-        }
-
-        /* Загрузка */
-        .loading {
-            text-align: center;
-            color: #8899a6;
-            padding: 20px;
-            font-style: italic;
-        }
-
-        /* Адаптация */
-        @media (max-width: 480px) {
-            .container {
-                max-width: 100%;
-            }
-            
-            .battle-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .prime-input-group {
-                flex-direction: column;
-            }
-            
-            .prime-input-group button {
-                width: 100%;
-            }
         }
     </style>
 </head>
@@ -721,58 +592,15 @@
     <!-- ЭКРАН СОГЛАШЕНИЯ -->
     <div class="agreement-screen" id="agreementScreen">
         <div class="agreement-card">
-            <h2>ДОГОВОР СООБЩЕСТВА <span>Школа №62</span></h2>
-            
+            <h2>ДОГОВОР СООБЩЕСТВА</h2>
             <div class="agreement-text">
-                <p><strong>Статья 1. Общие положения</strong></p>
-                <p>1.1 Сайт является независимой онлайн-площадкой для общения учащихся и не связан с администрацией школы.</p>
-                <p>1.2 Публикуя сообщения на сайте, пользователь автоматически соглашается с настоящими правилами.</p>
-                <p>1.3 Пользователь несёт личную ответственность за публикуемый контент.</p>
-                <p>1.4 Администрация имеет право модерировать контент для поддержания безопасной среды общения.</p>
-                
-                <p><strong>Статья 2. Разрешённый контент</strong></p>
-                <p>На сайте допускается свободное общение при соблюдении следующих условий.</p>
-                <p>2.1 Пользователи могут публиковать сообщения анонимно или под выбранным никнеймом.</p>
-                <p>2.2 Допускается обсуждение школьных событий, учеников, мероприятий и новостей.</p>
-                <p>2.3 Допускаются юмор, шутки, мемы и неформальное общение.</p>
-                <p>2.4 Разрешается критика и выражение мнений, если она не превращается в целенаправленную травлю.</p>
-                <p>2.5 Допускается умеренная нецензурная лексика, если она не направлена на конкретного человека и не используется для систематических оскорблений.</p>
-                
-                <p><strong>Статья 3. Запрещённый контент</strong></p>
-                <p>Следующие действия запрещены на сайте.</p>
-                <p>3.1 Организованная травля или систематические оскорбления конкретного человека.</p>
-                <p>3.2 Публикация личной информации без согласия человека, включая: номер телефона, адрес, личные фотографии, ссылки на личные аккаунты.</p>
-                <p>3.3 Призывы к насилию или угрозы.</p>
-                <p>3.4 Распространение ложных обвинений, клеветы или провокаций.</p>
-                <p>3.5 Массовый спам или повторяющиеся сообщения.</p>
-                <p>3.6 Использование сайта для распространения незаконного контента.</p>
-                <p>3.7 Попытки нарушить работу сайта или обход ограничений.</p>
-                
-                <p><strong>Статья 4. Прайм-статус</strong></p>
-                <p>4.1 Прайм-статус является платной функцией сайта.</p>
-                <p>4.2 Прайм-статус позволяет выделять сообщения пользователя и использовать уникальный никнейм.</p>
-                <p>4.3 Прайм-статус не освобождает пользователя от соблюдения правил сообщества.</p>
-                <p>4.4 Администрация имеет право временно ограничить или полностью удалить Прайм-статус при нарушении правил.</p>
-                
-                <p><strong>Статья 5. Модерация</strong></p>
-                <p>5.1 Администрация имеет право удалять сообщения, нарушающие правила сайта.</p>
-                <p>5.2 Администрация может ограничивать публикацию сообщений или доступ к сайту.</p>
-                <p>5.3 Решения модерации принимаются по усмотрению администрации.</p>
-                
-                <p><strong>Статья 6. Санкции</strong></p>
-                <p>За нарушение правил могут применяться следующие меры:</p>
-                <p>6.1 Удаление сообщения.</p>
-                <p>6.2 Временное ограничение публикации сообщений.</p>
-                <p>6.3 Временная блокировка аккаунта.</p>
-                <p>6.4 Постоянная блокировка аккаунта.</p>
+                <p>Правила использования сайта...</p>
             </div>
-            
-            <div class="checkbox-container" id="agreementCheckbox">
+            <div class="checkbox-container">
                 <input type="checkbox" id="schoolCheckbox">
-                <label for="schoolCheckbox">✅ Я принимаю условия Договора сообщества</label>
+                <label>Я принимаю условия</label>
             </div>
-            
-            <button class="agreement-button" id="enterSiteBtn" disabled>Войти на сайт</button>
+            <button class="agreement-button" id="enterSiteBtn" disabled>Войти</button>
         </div>
     </div>
 
@@ -781,14 +609,14 @@
         <div class="main-content" id="mainContent">
             <!-- Шапка -->
             <div class="header">
-                <h1>Школьная лента <small>№62</small></h1>
+                <h1>ШКОЛЬНАЯ ЛЕНТА <small>№62</small></h1>
             </div>
 
             <!-- Статистика -->
             <div class="user-stats">
                 <div class="stat-items">
-                    <div class="stat-pill"><i class="far fa-heart"></i> <span id="voteCountBadge">0</span></div>
-                    <div class="stat-pill"><i class="far fa-star"></i> <span id="comboCount">0</span></div>
+                    <div class="stat-pill">🗳️ <span id="voteCountBadge">0</span></div>
+                    <div class="stat-pill">🔥 <span id="comboCount">0</span></div>
                 </div>
                 <div class="school-badge">🏫 Школа 62</div>
             </div>
@@ -796,7 +624,7 @@
             <!-- Сообщения -->
             <div id="messageContainer"></div>
 
-            <!-- Управление автообновлением -->
+            <!-- Автообновление -->
             <div class="auto-refresh-control">
                 <label class="auto-refresh-toggle">
                     <input type="checkbox" id="autoRefreshToggle" checked>
@@ -806,95 +634,86 @@
 
             <!-- Битва -->
             <div id="battleContainer" style="display: none;">
-                <div class="holiday-banner">
-                    🌸 С 8 марта, девочки! 🌸
-                </div>
-                
                 <div class="battle-header">
-                    <h2>⚔️ Битва кандидатов</h2>
+                    <h2>⚔️ БИТВА КАНДИДАТОВ</h2>
                     <p>Победитель +100 • Проигравший -50</p>
                 </div>
-                
-                <!-- Карточки кандидатов -->
-                <div class="battle-container" id="battleGrid"></div>
-                
-                <!-- КНОПКА ГОЛОСОВАНИЯ -->
+                <div class="battle-grid" id="battleGrid"></div>
                 <button class="vote-button" id="voteBtn">Голосовать</button>
-                
-                <!-- Предсказания -->
-                <div class="prediction-box" id="predictionBox">
-                    <div class="prediction-bars" id="predictionBars"></div>
-                </div>
-            </div>
-
-            <!-- Достижения -->
-            <div class="achievements">
-                <h3>🏆 Достижения</h3>
-                <div class="achievement-grid">
-                    <div class="achievement-item" id="ach1">
-                        <div class="achievement-icon">🗳️</div>
-                        <div class="achievement-title">Новичок</div>
-                    </div>
-                    <div class="achievement-item" id="ach2">
-                        <div class="achievement-icon">🔥</div>
-                        <div class="achievement-title">Комбо</div>
-                    </div>
-                    <div class="achievement-item" id="ach3">
-                        <div class="achievement-icon">⭐</div>
-                        <div class="achievement-title">Предсказатель</div>
-                    </div>
-                </div>
             </div>
 
             <!-- PRIME БЛОК -->
             <div class="prime-box" id="primeBox">
                 <div class="prime-header">
-                    <img src="verified.png" width="20" height="20">
+                    <img src="verified.png" width="20" height="20" onerror="this.src='https://via.placeholder.com/20'">
                     <span>in PRIME</span>
-                    <span class="prime-badge">скоро</span>
+                    <span class="prime-badge">premium</span>
                 </div>
                 <div class="prime-input-group">
-                    <input type="text" id="primeUsername" placeholder="Ваш ник">
+                    <input type="text" id="primeUsername" placeholder="Ник">
                     <input type="password" id="primePassword" placeholder="Пароль">
                     <button id="primeBtn">Войти</button>
                 </div>
                 <div class="prime-status" id="primeStatus" style="display: none;">
-                    <img src="verified.png" width="16" height="16">
+                    <img src="verified.png" width="16" height="16" onerror="this.src='https://via.placeholder.com/16'">
                     <span id="primeDisplayName"></span>
-                    <button onclick="logoutPrime()" style="background: none; border: none; color: #8899a6; text-decoration: underline; cursor: pointer;">(выйти)</button>
+                    <button onclick="logoutPrime()" style="background:none; border:none; color:#999; text-decoration:underline; cursor:pointer;">выйти</button>
                 </div>
             </div>
 
-            <!-- КОММЕНТАРИИ -->
-            <div class="comments-section">
-                <h3>💬 Лента сообщений</h3>
+            <!-- ЧАТ -->
+            <div class="chat-section">
+                <div class="chat-header">
+                    <h3>💬 ЧАТ ШКОЛЫ №62</h3>
+                    <span>последние 50</span>
+                </div>
                 
-                <!-- Форма комментария -->
-                <div class="comment-form">
-                    <div class="comment-input-group">
-                        <input type="text" id="commentName" class="comment-input" placeholder="Ваше имя" maxlength="30">
-                    </div>
-                    <textarea id="commentMessage" class="comment-textarea" placeholder="Что нового?" maxlength="200"></textarea>
-                    <button class="comment-submit" id="submitComment">Твитнуть</button>
+                <!-- Форма сообщения -->
+                <div class="chat-form">
+                    <input type="text" id="commentName" placeholder="Ваше имя" maxlength="30">
+                    <textarea id="commentMessage" placeholder="Напишите сообщение..." maxlength="200"></textarea>
+                    <button class="chat-submit" id="submitComment">Отправить</button>
                 </div>
 
-                <!-- Список комментариев -->
-                <div class="comments-list" id="commentsList">
-                    <div class="comment-loading">Загрузка...</div>
+                <!-- Список сообщений -->
+                <div class="chat-messages" id="commentsList">
+                    <div class="chat-loading">Загрузка...</div>
                 </div>
+            </div>
+
+            <!-- Кнопка связи с администрацией -->
+            <div class="feedback-button" onclick="openFeedbackModal()">
+                <a href="#">📨 Связь с администрацией</a>
             </div>
 
             <!-- Рекомендации -->
             <div id="recommendations" class="recommendations" style="display: none;">
-                <h3>🎯 Вам может понравиться</h3>
+                <h3>🎯 Рекомендации</h3>
                 <div id="recommendationsGrid" class="recommendations-grid"></div>
             </div>
 
             <!-- Рейтинг -->
             <div id="ratingContainer" class="rating-table" style="display: none;">
-                <h3>🏆 Топ-10</h3>
+                <h3>🏆 ТОП-10</h3>
                 <div id="ratingList" class="rating-list"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ОБРАТНОЙ СВЯЗИ -->
+    <div class="modal" id="feedbackModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeFeedbackModal()">&times;</span>
+            <h3>📨 Связь с администрацией</h3>
+            <input type="text" id="feedbackName" placeholder="Ваше имя (необязательно)">
+            <select id="feedbackType">
+                <option value="idea">💡 Предложить идею</option>
+                <option value="bug">🐛 Сообщить об ошибке</option>
+                <option value="support">❤️ Поддержка</option>
+                <option value="other">📝 Другое</option>
+            </select>
+            <textarea id="feedbackMessage" placeholder="Сообщение..." rows="4"></textarea>
+            <button id="submitFeedback">Отправить</button>
         </div>
     </div>
 
