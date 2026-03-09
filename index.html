@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Школьный форум - Главная</title>
+    <title>ШКОЛЬНАЯ СТЕНА 62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -14,54 +14,76 @@
     <div class="container">
         <!-- Шапка с навигацией -->
         <div class="header">
-            <h1>ШКОЛЬНЫЙ ФОРУМ <small>Школа №62</small></h1>
+            <h1>ШКОЛЬНАЯ СТЕНА 62</h1>
             <div class="nav-links">
-                <a href="index.html" class="nav-link active">Главный поток</a>
-                <a href="#" class="nav-link" onclick="showHotThreads()">🔥 Горячее</a>
-                <a href="#" class="nav-link" onclick="showPinnedThreads()">📌 Закреплённые</a>
+                <a href="index.html" class="nav-link active">🏠 Главная</a>
+                <a href="threads.html" class="nav-link">💬 Форум</a>
+                <a href="updates.html" class="nav-link">🚀 Обновления</a>
             </div>
         </div>
 
-        <!-- Статистика пользователя -->
+        <!-- Статистика и PRIME статус -->
         <div class="user-stats">
             <div class="stat-items">
-                <div class="stat-pill">👤 <span id="userId">Гость</span></div>
-                <div class="stat-pill">📝 <span id="userMessages">0</span></div>
+                <div class="stat-pill">🗳️ <span id="voteCountBadge">0</span></div>
+                <div class="stat-pill">🔥 <span id="comboCount">0</span></div>
             </div>
-            <div class="school-badge">🏫 Школа №62</div>
+            <div class="prime-status" id="primeStatus">
+                <img src="verified.png" width="20" height="20" id="primeIcon" style="display: none;">
+                <span id="primeName"></span>
+            </div>
         </div>
 
         <!-- Сообщения -->
         <div id="messageContainer"></div>
 
-        <!-- Форма создания нового треда -->
-        <div class="create-thread">
-            <h3>➕ СОЗДАТЬ НОВУЮ ТЕМУ</h3>
-            <input type="text" id="threadTitle" class="thread-input" placeholder="Заголовок" maxlength="100">
-            <textarea id="threadContent" class="thread-textarea" placeholder="Что хотите обсудить?" maxlength="500"></textarea>
-            <div class="thread-actions">
-                <button class="thread-submit" id="createThreadBtn">📤 Опубликовать</button>
+        <!-- БЛОК in-PRIME -->
+        <div class="prime-box">
+            <h3 class="prime-header">
+                <img src="verified.png" width="24" height="24">
+                <span>in-PRIME</span>
+                <span class="prime-badge">скоро будет доступно</span>
+            </h3>
+            <div class="prime-input-group">
+                <input type="text" id="primeUsername" placeholder="Ваш ник PRIME" maxlength="30">
+                <input type="password" id="primePassword" placeholder="Пароль" maxlength="50">
+                <button id="primeBtn">Войти</button>
+            </div>
+            <div class="prime-status" id="primeStatusMsg" style="display: none;">
+                <span>✅ Вы в PRIME как <span id="primeDisplayName"></span></span>
+                <button onclick="logoutPrime()">(выйти)</button>
             </div>
         </div>
 
-        <!-- Фильтры -->
-        <div class="filters">
-            <select id="sortFilter" class="filter-select">
-                <option value="bump">По активности</option>
-                <option value="new">Сначала новые</option>
-                <option value="hot">Горячие</option>
-            </select>
-            <input type="text" id="searchFilter" class="filter-input" placeholder="🔍 Поиск по темам...">
+        <!-- БИТВА -->
+        <div id="battleContainer" style="display: none;">
+            <div class="battle-header">
+                <h2>⚔️ БИТВА КАНДИДАТОВ</h2>
+                <p>Победитель +100, проигравший -50</p>
+            </div>
+            <div class="battle-grid" id="battleGrid"></div>
+            <button class="battle-vote-btn" id="voteBtn">⚡ ГОЛОСОВАТЬ</button>
+            <div class="prediction-box" id="predictionBox">
+                <div class="prediction-bars" id="predictionBars"></div>
+            </div>
         </div>
 
-        <!-- Список тредов -->
-        <div class="threads-list" id="threadsList">
-            <div class="loading">Загрузка тем...</div>
+        <!-- РЕКОМЕНДАЦИИ -->
+        <div id="recommendations" class="recommendations" style="display: none;">
+            <h3>🎯 Вам также могут понравиться</h3>
+            <div id="recommendationsGrid" class="recommendations-grid"></div>
         </div>
 
-        <!-- Подвал -->
-        <div class="footer">
-            <p>Школьный форум • свободное общение</p>
+        <!-- КОММЕНТАРИИ -->
+        <div class="comments-section">
+            <h3>💬 КОММЕНТАРИИ</h3>
+            <div class="comment-form">
+                <textarea id="commentMessage" placeholder="Напишите комментарий..." maxlength="200"></textarea>
+                <button id="submitComment">📝 Отправить</button>
+            </div>
+            <div class="comments-list" id="commentsList">
+                <div class="loading">Загрузка...</div>
+            </div>
         </div>
     </div>
 
