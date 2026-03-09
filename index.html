@@ -1165,6 +1165,202 @@ async function reportSuspiciousActivity(type, details) {
         console.error('Ошибка отправки в админку:', error);
     }
 }
+        // ============================================
+// ОТПРАВКА СООБЩЕНИЙ В АДМИНИСТРАЦИЮ
+// ============================================
+async function submitToAdmin() {
+    console.log('Отправка сообщения администрации...');
+    
+    const name = document.getElementById('adminName')?.value.trim() || 'Аноним';
+    const type = document.getElementById('adminType')?.value || 'other';
+    const message = document.getElementById('adminMessage')?.value.trim();
+    const candidateName = document.getElementById('adminCandidateName')?.value.trim();
+    
+    if (!message) {
+        showMessage('Напишите сообщение', 'error');
+        return;
+    }
+    
+    if (message.length < 5) {
+        showMessage('Слишком короткое сообщение', 'error');
+        return;
+    }
+    
+    // Для типа "candidate" проверяем наличие имени кандидата
+    if (type === 'candidate' && !candidateName) {
+        showMessage('Введите имя кандидата', 'error');
+        return;
+    }
+    
+    if (checkBannedWords(message) || checkBannedWords(name)) {
+        showMessage('Текст содержит запрещённые слова', 'error');
+        
+        // Отправляем в подозрительную активность
+        await reportSuspiciousActivity('banned_words_message', {
+            message: message,
+            name: name
+        });
+        
+        return;
+    }
+    
+    try {
+        // Формируем сообщение в зависимости от типа
+        let finalMessage = message;
+        if (type === 'candidate' && candidateName) {
+            finalMessage = `Кандидат: ${candidateName}\nОписание: ${message}`;
+        }
+        
+        // Получаем IP
+        let userIp = window.userIp || 'unknown';
+        
+        // Отправляем в suggestions
+        try {
+            const { error: suggestError } = await supabaseClient
+                .from('suggestions')
+                .insert({
+                    name: name,
+                    message: finalMessage,
+                    type: type,
+                    status: 'pending',
+                    ip_address: userIp,
+                    user_agent: navigator.userAgent,
+                    created_at: new Date().toISOString()
+                });
+            
+            if (suggestError) {
+                console.error('Ошибка suggestions:', suggestError);
+            } else {
+                console.log('✅ Успешно отправлено в suggestions');
+            }
+        } catch (e) {
+            console.error('Исключение suggestions:', e);
+        }
+        
+        // Отправляем в feedback
+        try {
+            const { error: feedbackError } = await supabaseClient
+                .from('feedback')
+                .insert({
+                    type: 'admin_message',
+                    sub_type: type,
+                    name: name,
+                    message: finalMessage,
+                    ip_address: userIp,
+                    user_agent: navigator.userAgent,
+                    created_at: new Date().toISOString()
+                });
+            
+            if (feedbackError) {
+                console.error('Ошибка feedback:', feedbackError);
+            } else {
+                console.log('✅ Успешно отправлено в feedback');
+            }
+        } catch (e) {
+            console.error('Исключение feedback:', e);
+        }
+        
+        // Закрываем и очищаем форму
+        const modal = document.getElementById('adminModal');
+        if (modal) modal.style.display = 'none';
+        
+        document.getElementById('adminName').value = '';
+        document.getElementById('adminMessage').value = '';
+        document.getElementById('adminCandidateName').value = '';
+        if (document.getElementById('adminType')) {
+            document.getElementById('adminType').value = 'question';
+        }
+        if (document.getElementById('candidateField')) {
+            document.getElementById('candidateField').style.display = 'none';
+        }
+        
+        showMessage('✅ Сообщение отправлено администрации', 'success');
+        
+    } catch (error) {
+        console.error('Общая ошибка:', error);
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+}
+
+// ============================================
+// ФУНКЦИЯ ДЛЯ ПОКАЗА СООБЩЕНИЙ
+// ============================================
+function showMessage(text, type) {
+    // Удаляем старое сообщение если есть
+    const oldMsg = document.querySelector('.custom-message');
+    if (oldMsg) oldMsg.remove();
+    
+    const msg = document.createElement('div');
+    msg.className = 'custom-message';
+    msg.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        background: ${type === 'error' ? '#c0392b' : '#4a6fa5'};
+        color: white;
+        border-radius: 30px;
+        z-index: 10002;
+        font-weight: 500;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        border-bottom: 4px solid ${type === 'error' ? '#962d22' : '#2c3e50'};
+        animation: slideIn 0.3s;
+    `;
+    msg.textContent = text;
+    document.body.appendChild(msg);
+    setTimeout(() => msg.remove(), 3000);
+}
+
+// ============================================
+// ФУНКЦИЯ ПРОВЕРКИ ЗАПРЕЩЁННЫХ СЛОВ
+// ============================================
+function checkBannedWords(text) {
+    const bannedWords = [
+        'порно', 'секс', 'еблан', 'дебил', 'дурак', 'идиот',
+        'хуй', 'пизда', 'блядь', 'сука', 'гандон', 'шлюха',
+        'porn', 'sex', 'fuck', 'shit', 'bitch',
+        'казино', 'наркотики', 'меф'
+    ];
+    if (!text) return false;
+    const lowerText = text.toLowerCase();
+    return bannedWords.some(word => lowerText.includes(word));
+}
+
+// ============================================
+// ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Инициализация форм отправки');
+    
+    // Кнопка отправки
+    const submitBtn = document.getElementById('adminSubmit');
+    if (submitBtn) {
+        submitBtn.onclick = function(e) {
+            e.preventDefault();
+            submitToAdmin();
+        };
+    }
+    
+    // Показываем/скрываем поле для кандидата
+    const typeSelect = document.getElementById('adminType');
+    const candidateField = document.getElementById('candidateField');
+    
+    if (typeSelect && candidateField) {
+        typeSelect.addEventListener('change', function() {
+            candidateField.style.display = this.value === 'candidate' ? 'block' : 'none';
+        });
+    }
+    
+    // Добавляем анимацию
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+});
 
         // ============================================
         // СИСТЕМА ВЕРИФИКАЦИИ
