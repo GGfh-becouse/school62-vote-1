@@ -1761,17 +1761,156 @@ function enterSite() {
 
 <script>
 // ============================================
-// СИСТЕМА ПРЕДЛОЖЕНИЙ
+// СИСТЕМА ПРЕДЛОЖЕНИЙ - ИСПРАВЛЕННАЯ ВЕРСИЯ
 // ============================================
-document.getElementById('suggestBtn').addEventListener('click', function() {
-    document.getElementById('suggestModal').style.display = 'flex';
+
+// Кнопка для открытия модалки
+const suggestBtn = document.createElement('button');
+suggestBtn.className = 'suggest-button';
+suggestBtn.id = 'suggestBtn';
+suggestBtn.innerHTML = '📝';
+suggestBtn.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #4a6fa5;
+    color: white;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 9999;
+    border-bottom: 4px solid #2c3e50;
+`;
+document.body.appendChild(suggestBtn);
+
+// Модальное окно
+const suggestModal = document.createElement('div');
+suggestModal.className = 'suggest-modal';
+suggestModal.id = 'suggestModal';
+suggestModal.style.cssText = `
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 10001;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+`;
+
+suggestModal.innerHTML = `
+    <div class="suggest-card" style="
+        background: white;
+        border-radius: 24px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        padding: 25px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        border: 2px solid #4a6fa5;
+    ">
+        <h3 style="color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #4a6fa5;">
+            📝 ПРЕДЛОЖИТЬ КАНДИДАТА
+        </h3>
+        
+        <div class="suggest-form">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Ваше имя</label>
+                <input type="text" id="suggestName" class="suggest-input" placeholder="Аноним" style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 2px solid #e0e0e0;
+                    border-radius: 12px;
+                    font-size: 0.95rem;
+                ">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Имя кандидата <span style="color: #c0392b;">*</span></label>
+                <input type="text" id="suggestCandidateName" class="suggest-input" placeholder="Например: Иванова Анна" style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 2px solid #e0e0e0;
+                    border-radius: 12px;
+                    font-size: 0.95rem;
+                    margin-bottom: 10px;
+                ">
+                
+                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Описание / класс</label>
+                <textarea id="suggestMessage" class="suggest-textarea" placeholder="Напишите класс и немного о кандидате..." maxlength="500" style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 2px solid #e0e0e0;
+                    border-radius: 12px;
+                    min-height: 100px;
+                    font-family: inherit;
+                "></textarea>
+                <div style="text-align: right; color: #7f8c8d; font-size: 0.8rem; margin-top: 5px;">
+                    <span id="suggestCounter">0</span>/500
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="suggest-submit" id="submitSuggestion" style="
+                    flex: 2;
+                    background: #4a6fa5;
+                    color: white;
+                    border: none;
+                    padding: 14px;
+                    border-radius: 40px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    border-bottom: 4px solid #2c3e50;
+                ">📨 ОТПРАВИТЬ</button>
+                
+                <button class="suggest-cancel" id="cancelSuggestion" style="
+                    flex: 1;
+                    background: #e0e0e0;
+                    color: #2c3e50;
+                    border: none;
+                    padding: 14px;
+                    border-radius: 40px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    border-bottom: 4px solid #b0b0b0;
+                ">❌</button>
+            </div>
+        </div>
+    </div>
+`;
+
+document.body.appendChild(suggestModal);
+
+// ============================================
+// ОБРАБОТЧИКИ
+// ============================================
+
+// Открыть модалку
+suggestBtn.addEventListener('click', () => {
+    suggestModal.style.display = 'flex';
 });
 
-document.getElementById('cancelSuggestion').addEventListener('click', function() {
-    document.getElementById('suggestModal').style.display = 'none';
-    document.getElementById('suggestMessage').value = '';
+// Закрыть модалку
+document.getElementById('cancelSuggestion').addEventListener('click', () => {
+    suggestModal.style.display = 'none';
     document.getElementById('suggestName').value = '';
-    document.getElementById('suggestType').value = 'feature';
+    document.getElementById('suggestCandidateName').value = '';
+    document.getElementById('suggestMessage').value = '';
+});
+
+// Закрыть по клику вне модалки
+suggestModal.addEventListener('click', (e) => {
+    if (e.target === suggestModal) {
+        suggestModal.style.display = 'none';
+    }
 });
 
 // Счётчик символов
@@ -1785,76 +1924,86 @@ document.getElementById('suggestMessage').addEventListener('input', function() {
 document.getElementById('submitSuggestion').addEventListener('click', submitSuggestion);
 
 async function submitSuggestion() {
-    const type = document.getElementById('suggestType').value;
     const name = document.getElementById('suggestName').value.trim() || 'Аноним';
+    const candidateName = document.getElementById('suggestCandidateName').value.trim();
     const message = document.getElementById('suggestMessage').value.trim();
     
+    if (!candidateName) {
+        showMessage('Введите имя кандидата', 'error');
+        return;
+    }
+    
     if (!message) {
-        showMessage('Напишите текст предложения', 'error');
+        showMessage('Напишите описание', 'error');
         return;
     }
     
     if (message.length < 10) {
-        showMessage('Слишком короткое сообщение (минимум 10 символов)', 'error');
+        showMessage('Слишком короткое описание (минимум 10 символов)', 'error');
         return;
     }
     
-    if (checkBannedWords(message)) {
-        showMessage('Сообщение содержит запрещённые слова', 'error');
-        await reportSuspiciousActivity('banned_words_suggestion', { message, ip: userIp });
+    // Проверка на запрещённые слова
+    if (checkBannedWords(message) || checkBannedWords(candidateName) || checkBannedWords(name)) {
+        showMessage('Текст содержит запрещённые слова', 'error');
         return;
     }
     
     try {
-        const { error } = await supabaseClient
+        // Формируем полное сообщение
+        const fullMessage = `Кандидат: ${candidateName}\nОписание: ${message}`;
+        
+        // Отправляем в suggestions
+        const { error: suggestError } = await supabaseClient
             .from('suggestions')
             .insert({
-                type: type,
                 name: name,
-                message: message,
-                ip_address: userIp,
+                message: fullMessage,
+                type: 'candidate_suggestion',
+                status: 'pending',
+                ip_address: userIp || 'unknown',
                 user_agent: navigator.userAgent,
-                status: 'new',
                 created_at: new Date()
             });
         
-        if (error) throw error;
+        if (suggestError) {
+            console.error('Ошибка suggestions:', suggestError);
+            throw suggestError;
+        }
         
-        // Дублируем в feedback для админки
+        // Дублируем в feedback
         await supabaseClient
             .from('feedback')
             .insert({
                 type: 'suggestion',
-                sub_type: type,
                 name: name,
-                message: message,
-                ip_address: userIp,
-                user_agent: navigator.userAgent
+                message: fullMessage,
+                ip_address: userIp || 'unknown',
+                user_agent: navigator.userAgent,
+                created_at: new Date()
             });
         
-        document.getElementById('suggestModal').style.display = 'none';
-        document.getElementById('suggestMessage').value = '';
+        // Очищаем форму и закрываем
+        suggestModal.style.display = 'none';
         document.getElementById('suggestName').value = '';
-        showMessage('✅ Спасибо! Предложение отправлено', 'success');
+        document.getElementById('suggestCandidateName').value = '';
+        document.getElementById('suggestMessage').value = '';
+        
+        showMessage('✅ Спасибо! Предложение отправлено на рассмотрение', 'success');
         
     } catch (error) {
+        console.error('Полная ошибка:', error);
         showMessage('Ошибка: ' + error.message, 'error');
     }
 }
 
-// Закрытие по клику вне модалки
-document.getElementById('suggestModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.style.display = 'none';
+// Добавляем обработку Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && suggestModal.style.display === 'flex') {
+        suggestModal.style.display = 'none';
     }
 });
 
-// Добавляем обработку клавиши Escape
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && document.getElementById('suggestModal').style.display === 'flex') {
-        document.getElementById('suggestModal').style.display = 'none';
-    }
-});
 </script>
 </body>
 </html>
