@@ -3,91 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>ШКОЛЬНАЯ СТЕНА 62</title>
+    <title>СТЕНА 62 ШКОЛЫ</title>
+    
+    <!-- Подключаем шрифт Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Подключаем Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Подключаем внешний CSS файл -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- ЭКРАН СОГЛАШЕНИЯ -->
+    <div class="agreement-screen" id="agreementScreen">
+        <div class="agreement-card">
+            <h2>ДОГОВОР СООБЩЕСТВА <span>Школа №62</span></h2>
+            
+            <div class="agreement-text">
+                <p><strong>Статья 1. Общие положения</strong></p>
+                <p>1.1 Сайт является независимой онлайн-площадкой для общения учащихся и не связан с администрацией школы.</p>
+                <p>1.2 Публикуя сообщения на сайте, пользователь автоматически соглашается с настоящими правилами.</p>
+                <p>1.3 Пользователь несёт личную ответственность за публикуемый контент.</p>
+                <p>1.4 Администрация имеет право модерировать контент для поддержания безопасной среды общения.</p>
+                
+                <p><strong>Статья 2. Разрешённый контент</strong></p>
+                <p>На сайте допускается свободное общение при соблюдении следующих условий.</p>
+                <p>2.1 Пользователи могут публиковать сообщения анонимно или под выбранным никнеймом.</p>
+                <p>2.2 Допускается обсуждение школьных событий, учеников, мероприятий и новостей.</p>
+                <p>2.3 Допускаются юмор, шутки, мемы и неформальное общение.</p>
+                <p>2.4 Разрешается критика и выражение мнений, если она не превращается в целенаправленную травлю.</p>
+                <p>2.5 Допускается умеренная нецензурная лексика, если она не направлена на конкретного человека и не используется для систематических оскорблений.</p>
+                
+                <p><strong>Статья 3. Запрещённый контент</strong></p>
+                <p>Следующие действия запрещены на сайте.</p>
+                <p>3.1 Организованная травля или систематические оскорбления конкретного человека.</p>
+                <p>3.2 Публикация личной информации без согласия человека, включая: номер телефона, адрес, личные фотографии, ссылки на личные аккаунты.</p>
+                <p>3.3 Призывы к насилию или угрозы.</p>
+                <p>3.4 Распространение ложных обвинений, клеветы или провокаций.</p>
+                <p>3.5 Массовый спам или повторяющиеся сообщения.</p>
+                <p>3.6 Использование сайта для распространения незаконного контента.</p>
+                <p>3.7 Попытки нарушить работу сайта или обход ограничений.</p>
+                
+                <p><strong>Статья 4. Прайм-статус</strong></p>
+                <p>4.1 Прайм-статус является платной функцией сайта.</p>
+                <p>4.2 Прайм-статус позволяет выделять сообщения пользователя и использовать уникальный никнейм.</p>
+                <p>4.3 Прайм-статус не освобождает пользователя от соблюдения правил сообщества.</p>
+                <p>4.4 Администрация имеет право временно ограничить или полностью удалить Прайм-статус при нарушении правил.</p>
+                
+                <p><strong>Статья 5. Модерация</strong></p>
+                <p>5.1 Администрация имеет право удалять сообщения, нарушающие правила сайта.</p>
+                <p>5.2 Администрация может ограничивать публикацию сообщений или доступ к сайту.</p>
+                <p>5.3 Решения модерации принимаются по усмотрению администрации.</p>
+                
+                <p><strong>Статья 6. Санкции</strong></p>
+                <p>За нарушение правил могут применяться следующие меры:</p>
+                <p>6.1 Удаление сообщения.</p>
+                <p>6.2 Временное ограничение публикации сообщений.</p>
+                <p>6.3 Временная блокировка аккаунта.</p>
+                <p>6.4 Постоянная блокировка аккаунта.</p>
+            </div>
+            
+            <div class="checkbox-container" id="agreementCheckbox">
+                <input type="checkbox" id="schoolCheckbox">
+                <label for="schoolCheckbox">✅ Я принимаю условия Договора сообщества</label>
+            </div>
+            
+            <button class="agreement-button" id="enterSiteBtn" disabled>Войти на стену</button>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
     <div class="container">
-        <!-- Шапка с навигацией -->
-        <div class="header">
-            <h1>ШКОЛЬНАЯ СТЕНА 62</h1>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link active">🏠 Главная</a>
-                <a href="threads.html" class="nav-link">💬 Форум</a>
-                <a href="updates.html" class="nav-link">🚀 Обновления</a>
+        <div class="main-content" id="mainContent">
+            <!-- Шапка -->
+            <div class="header">
+                <h1>ШКОЛЬНАЯ СТЕНКА <small>Школа №62</small></h1>
             </div>
-        </div>
 
-        <!-- Статистика и PRIME статус -->
-        <div class="user-stats">
-            <div class="stat-items">
-                <div class="stat-pill">🗳️ <span id="voteCountBadge">0</span></div>
-                <div class="stat-pill">🔥 <span id="comboCount">0</span></div>
+            <!-- Статистика -->
+            <div class="user-stats">
+                <div class="stat-items">
+                    <div class="stat-pill">🗳️ <span id="voteCountBadge">0</span></div>
+                    <div class="stat-pill">🔥 <span id="comboCount">0</span></div>
+                </div>
+                <div class="school-badge">🏫 Школа №62</div>
             </div>
-            <div class="prime-status" id="primeStatus">
-                <img src="verified.png" width="20" height="20" id="primeIcon" style="display: none;">
-                <span id="primeName"></span>
-            </div>
-        </div>
 
-        <!-- Сообщения -->
-        <div id="messageContainer"></div>
+            <!-- Сообщения -->
+            <div id="messageContainer"></div>
 
-        <!-- БЛОК in-PRIME -->
-        <div class="prime-box">
-            <h3 class="prime-header">
-                <img src="verified.png" width="24" height="24">
-                <span>in-PRIME</span>
-                <span class="prime-badge">скоро будет доступно</span>
-            </h3>
-            <div class="prime-input-group">
-                <input type="text" id="primeUsername" placeholder="Ваш ник PRIME" maxlength="30">
-                <input type="password" id="primePassword" placeholder="Пароль" maxlength="50">
-                <button id="primeBtn">Войти</button>
+            <!-- Битва -->
+            <div id="battleContainer" style="display: none;">
+                <!-- Праздничная приписка -->
+                <div class="holiday-banner">
+                    🌸 С 8 марта, девочки! 🌸
+                </div>
+                
+                <!-- Карточки кандидатов -->
+                <div class="battle-container" id="battleGrid"></div>
+                
+                <!-- КНОПКА ГОЛОСОВАНИЯ -->
+                <button class="vote-button" id="voteBtn">⚡ ГОЛОСОВАТЬ ⚡</button>
+                
+                <!-- Предсказания -->
+                <div class="prediction-box" id="predictionBox">
+                    <h3>🔮 Шансы на победу</h3>
+                    <div class="prediction-bars" id="predictionBars"></div>
+                </div>
             </div>
-            <div class="prime-status" id="primeStatusMsg" style="display: none;">
-                <span>✅ Вы в PRIME как <span id="primeDisplayName"></span></span>
-                <button onclick="logoutPrime()">(выйти)</button>
-            </div>
-        </div>
 
-        <!-- БИТВА -->
-        <div id="battleContainer" style="display: none;">
-            <div class="battle-header">
-                <h2>⚔️ БИТВА КАНДИДАТОВ</h2>
-                <p>Победитель +100, проигравший -50</p>
+            <!-- Достижения -->
+            <div class="achievements">
+                <h3>🏆 ДОСТИЖЕНИЯ</h3>
+                <div class="achievement-grid">
+                    <div class="achievement-item" id="ach1">
+                        <div class="achievement-icon">🗳️</div>
+                        <div class="achievement-title">Новичок</div>
+                    </div>
+                    <div class="achievement-item" id="ach2">
+                        <div class="achievement-icon">🔥</div>
+                        <div class="achievement-title">Комбо 3</div>
+                    </div>
+                    <div class="achievement-item" id="ach3">
+                        <div class="achievement-icon">⭐</div>
+                        <div class="achievement-title">Предсказатель</div>
+                    </div>
+                </div>
             </div>
-            <div class="battle-grid" id="battleGrid"></div>
-            <button class="battle-vote-btn" id="voteBtn">⚡ ГОЛОСОВАТЬ</button>
-            <div class="prediction-box" id="predictionBox">
-                <div class="prediction-bars" id="predictionBars"></div>
-            </div>
-        </div>
 
-        <!-- РЕКОМЕНДАЦИИ -->
-        <div id="recommendations" class="recommendations" style="display: none;">
-            <h3>🎯 Вам также могут понравиться</h3>
-            <div id="recommendationsGrid" class="recommendations-grid"></div>
-        </div>
-
-        <!-- КОММЕНТАРИИ -->
-        <div class="comments-section">
-            <h3>💬 КОММЕНТАРИИ</h3>
-            <div class="comment-form">
-                <textarea id="commentMessage" placeholder="Напишите комментарий..." maxlength="200"></textarea>
-                <button id="submitComment">📝 Отправить</button>
+            <!-- БЛОК ВЕРИФИКАЦИИ -->
+            <div class="verification-box" id="verificationBox">
+                <h3 class="prime-header">
+                    <img src="verified.png" alt="PRIME" width="24" height="24" class="prime-icon">
+                    <span>ВХОД В in PRIME</span>
+                    <span class="prime-badge">скоро будет доступно к покупке</span>
+                </h3>
+                <div class="verification-input-group">
+                    <input type="text" id="verifyUsername" class="verification-input" placeholder="Ваш ник" maxlength="30">
+                    <input type="password" id="verifyPassword" class="verification-input" placeholder="Пароль" maxlength="50">
+                    <button class="verification-button" id="verifyBtn">
+                        <span>✅</span> Войти
+                    </button>
+                </div>
+                <div class="verification-status" id="verifyStatus">
+                    <span>✅</span> <span id="verifyStatusText"></span>
+                    <button onclick="logoutVerification()">(выйти)</button>
+                </div>
             </div>
-            <div class="comments-list" id="commentsList">
-                <div class="loading">Загрузка...</div>
+
+            <!-- БЛОК КОММЕНТАРИЕВ -->
+            <div class="comments-section">
+                <h3>💬 КОММЕНТАРИИ ШКОЛЫ №62</h3>
+                
+                <!-- Форма комментария -->
+                <div class="comment-form">
+                    <div class="comment-input-group">
+                        <input type="text" id="commentName" class="comment-input" placeholder="Ваше имя" maxlength="30">
+                        <textarea id="commentMessage" class="comment-textarea" placeholder="Напишите что-нибудь..." maxlength="200"></textarea>
+                    </div>
+                    <button class="comment-submit" id="submitComment">📝 ОТПРАВИТЬ</button>
+                </div>
+
+                <!-- Список комментариев -->
+                <div class="comments-list" id="commentsList">
+                    <div class="comment-loading">Загрузка комментариев...</div>
+                </div>
+            </div>
+
+            <!-- Рекомендации -->
+            <div id="recommendations" class="recommendations" style="display: none;">
+                <h3>🎯 Вам также могут понравиться</h3>
+                <div id="recommendationsGrid" class="recommendations-grid"></div>
+            </div>
+
+            <!-- Рейтинг -->
+            <div id="ratingContainer" class="rating-table" style="display: none;">
+                <h3>🏆 ТОП-10 ШКОЛЫ №62</h3>
+                <div id="ratingList" class="rating-list"></div>
             </div>
         </div>
     </div>
 
+    <!-- Подключаем Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Подключаем внешний JavaScript файл -->
     <script src="script.js"></script>
 </body>
 </html>
