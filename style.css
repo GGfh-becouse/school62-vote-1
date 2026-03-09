@@ -656,4 +656,162 @@ body {
     .reactions {
         justify-content: center;
     }
+   /* PRIME статус */
+.prime-status {
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 8px 16px;
+    margin: 0 16px 16px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #4a6fa5;
+}
+
+.prime-box {
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 0 16px 20px 16px;
+    border: 2px solid #4a6fa5;
+    box-shadow: 0 4px 0 #2c3e50;
+}
+
+.prime-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.prime-input-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.prime-input-group input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+}
+
+.prime-input-group button {
+    background: #4a6fa5;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    border-bottom: 3px solid #2c3e50;
+}
+
+/* Битва */
+.battle-header {
+    text-align: center;
+    margin: 20px 16px;
+}
+
+.battle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 0 16px;
+}
+
+.battle-vote-btn {
+    background: #4a6fa5;
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 20px auto;
+    display: block;
+    cursor: pointer;
+    border-bottom: 4px solid #2c3e50;
+}
+
+/* Обновления */
+.update-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2c3e50;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+    font-size: 0.9rem;
+}
+
+.update-notification a {
+    color: #ffd966;
+    text-decoration: none;
+}
+
+.update-notification button {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+}
+
+.suggest-update-box {
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 0 16px 20px 16px;
+    border: 2px solid #4a6fa5;
+}
+
+.suggest-update-box input,
+.suggest-update-box textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.updates-section {
+    margin: 20px 16px;
+}
+
+.update-item {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #4a6fa5;
+}
+
+.update-item.voted {
+    opacity: 0.7;
+    border-left-color: #28a745;
+}
+
+.update-vote-btn {
+    background: #4a6fa5;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    border-bottom: 3px solid #2c3e50;
+}
+
+.update-vote-btn.voted {
+    background: #28a745;
+}
 }
