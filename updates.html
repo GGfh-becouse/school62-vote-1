@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Обновления - Школа 62</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ГОЛОСОВАНИЕ ЗА ОБНОВЛЕНИЯ</h1>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">🏠 Главная</a>
+                <a href="threads.html" class="nav-link">💬 Форум</a>
+                <a href="updates.html" class="nav-link active">🚀 Обновления</a>
+            </div>
+        </div>
+
+        <div class="prime-status" id="primeStatus">
+            <img src="verified.png" width="20" height="20" id="primeIcon" style="display: none;">
+            <span id="primeName"></span>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <!-- УВЕДОМЛЕНИЕ -->
+        <div class="update-notification" id="updateNotification" style="display: none;">
+            <span>🚀 Появились новые варианты обновлений!</span>
+            <a href="#" onclick="showUpdatesSection(); return false;">Проголосовать</a>
+            <button onclick="closeNotification()">✕</button>
+        </div>
+
+        <!-- ПРЕДЛОЖИТЬ ОБНОВЛЕНИЕ -->
+        <div class="suggest-update-box">
+            <h3>💡 ПРЕДЛОЖИТЬ ОБНОВЛЕНИЕ</h3>
+            <input type="text" id="suggestTitle" placeholder="Название" maxlength="50">
+            <textarea id="suggestDesc" placeholder="Описание (необязательно)" maxlength="200"></textarea>
+            <button id="suggestBtn">Отправить</button>
+        </div>
+
+        <!-- СПИСОК ОБНОВЛЕНИЙ -->
+        <div class="updates-section">
+            <h3>🚀 ГОЛОСОВАНИЕ</h3>
+            <div class="updates-list" id="updatesList">
+                <div class="loading">Загрузка...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>
