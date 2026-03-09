@@ -1693,43 +1693,52 @@ function enterSite() {
             await loadComments();
         }
     </script>
-<!-- КНОПКА ДЛЯ ПРЕДЛОЖЕНИЙ -->
-<button class="suggest-button" id="suggestBtn" style="position: fixed; bottom: 20px; right: 20px; background: #4a6fa5; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; border-bottom: 4px solid #2c3e50;">📝</button>
+<!-- ЕДИНСТВЕННАЯ КНОПКА ДЛЯ СВЯЗИ С АДМИНИСТРАЦИЕЙ -->
+<button class="suggest-button" id="adminBtn" style="position: fixed; bottom: 20px; right: 20px; background: #4a6fa5; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; border-bottom: 4px solid #2c3e50; display: flex; justify-content: center; align-items: center;">📨</button>
 
-<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПРЕДЛОЖЕНИЙ -->
-<div class="suggest-modal" id="suggestModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
-    <div class="suggest-card" style="background: white; border-radius: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 2px solid #4a6fa5;">
-        <h3 style="color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #4a6fa5; display: flex; align-items: center; gap: 10px;">
-            <span>📝 ПРЕДЛОЖИТЬ ИДЕЮ</span>
-            <span style="font-size: 0.7rem; color: #7f8c8d; background: #f0f0f0; padding: 3px 8px; border-radius: 12px;">для администрации</span>
-        </h3>
-        
-        <div class="suggest-form">
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Тип предложения</label>
-                <select id="suggestType" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem;">
-                    <option value="feature">Новая функция</option>
-                    <option value="bug">Сообщить об ошибке</option>
-                    <option value="content">Добавить кандидата</option>
-                    <option value="moderation">Жалоба на пользователя</option>
-                    <option value="other">Другое</option>
-                </select>
-            </div>
+<!-- ЕДИНСТВЕННОЕ МОДАЛЬНОЕ ОКНО (УНИВЕРСАЛЬНОЕ) -->
+<div class="suggest-modal" id="adminModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001;">
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; padding: 16px;">
+        <div class="suggest-card" style="background: white; border-radius: 24px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 2px solid #4a6fa5;">
+            <h3 style="color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #4a6fa5; display: flex; align-items: center; gap: 10px;">
+                <span>📨 СВЯЗЬ С АДМИНИСТРАЦИЕЙ</span>
+                <span style="font-size: 0.7rem; color: #7f8c8d; background: #f0f0f0; padding: 3px 8px; border-radius: 12px;">анонимно</span>
+            </h3>
             
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Ваше имя (необязательно)</label>
-                <input type="text" id="suggestName" class="suggest-input" placeholder="Аноним" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem;">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Текст предложения <span style="color: #c0392b;">*</span></label>
-                <textarea id="suggestMessage" class="suggest-textarea" placeholder="Опишите вашу идею или проблему..." maxlength="500" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; min-height: 120px; font-family: inherit;"></textarea>
-                <div style="text-align: right; color: #7f8c8d; font-size: 0.8rem; margin-top: 5px;"><span id="suggestCounter">0</span>/500</div>
-            </div>
-            
-            <div style="display: flex; gap: 10px;">
-                <button class="suggest-submit" id="submitSuggestion" style="flex: 2; background: #4a6fa5; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 700; cursor: pointer; border-bottom: 4px solid #2c3e50;">📨 ОТПРАВИТЬ</button>
-                <button class="suggest-cancel" id="cancelSuggestion" style="flex: 1; background: #e0e0e0; color: #2c3e50; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer; border-bottom: 4px solid #b0b0b0;">❌</button>
+            <div class="suggest-form">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Тема обращения</label>
+                    <select id="adminType" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem;">
+                        <option value="question">❓ Вопрос</option>
+                        <option value="problem">⚠️ Проблема</option>
+                        <option value="suggestion">💡 Предложение</option>
+                        <option value="bug">🐛 Ошибка на сайте</option>
+                        <option value="candidate">👩 Предложить кандидата</option>
+                        <option value="other">📌 Другое</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Ваше имя (необязательно)</label>
+                    <input type="text" id="adminName" class="suggest-input" placeholder="Аноним" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem;">
+                </div>
+                
+                <!-- Поле для имени кандидата (появляется только если выбрана соответствующая тема) -->
+                <div id="candidateField" style="margin-bottom: 15px; display: none;">
+                    <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Имя кандидата <span style="color: #c0392b;">*</span></label>
+                    <input type="text" id="adminCandidateName" class="suggest-input" placeholder="Например: Иванова Анна" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Сообщение <span style="color: #c0392b;">*</span></label>
+                    <textarea id="adminMessage" class="suggest-textarea" placeholder="Напишите что хотите сообщить администрации..." maxlength="1000" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; min-height: 150px; font-family: inherit;"></textarea>
+                    <div style="text-align: right; color: #7f8c8d; font-size: 0.8rem; margin-top: 5px;"><span id="adminCounter">0</span>/1000</div>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="suggest-submit" id="adminSubmit" style="flex: 2; background: #4a6fa5; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 700; cursor: pointer; border-bottom: 4px solid #2c3e50;">📨 ОТПРАВИТЬ</button>
+                    <button class="suggest-cancel" id="adminCancel" style="flex: 1; background: #e0e0e0; color: #2c3e50; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer; border-bottom: 4px solid #b0b0b0;">❌</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1754,255 +1763,202 @@ function enterSite() {
     transform: translateY(2px);
     border-bottom-width: 2px !important;
 }
-.suggest-modal.active {
-    display: flex !important;
-}
 </style>
 
+<!-- ЕДИНСТВЕННЫЙ СКРИПТ -->
 <script>
-// ============================================
-// СИСТЕМА ПРЕДЛОЖЕНИЙ - ИСПРАВЛЕННАЯ ВЕРСИЯ
-// ============================================
-
-// Кнопка для открытия модалки
-const suggestBtn = document.createElement('button');
-suggestBtn.className = 'suggest-button';
-suggestBtn.id = 'suggestBtn';
-suggestBtn.innerHTML = '📝';
-suggestBtn.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #4a6fa5;
-    color: white;
-    border: none;
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    z-index: 9999;
-    border-bottom: 4px solid #2c3e50;
-`;
-document.body.appendChild(suggestBtn);
-
-// Модальное окно
-const suggestModal = document.createElement('div');
-suggestModal.className = 'suggest-modal';
-suggestModal.id = 'suggestModal';
-suggestModal.style.cssText = `
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 10001;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-`;
-
-suggestModal.innerHTML = `
-    <div class="suggest-card" style="
-        background: white;
-        border-radius: 24px;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        padding: 25px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        border: 2px solid #4a6fa5;
-    ">
-        <h3 style="color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #4a6fa5;">
-            📝 ПРЕДЛОЖИТЬ КАНДИДАТА
-        </h3>
+(function() {
+    console.log('Запуск скрипта связи с администрацией');
+    
+    // Функция для показа сообщений
+    window.showMessage = function(text, type) {
+        const msg = document.createElement('div');
+        msg.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: ${type === 'error' ? '#c0392b' : '#4a6fa5'};
+            color: white;
+            border-radius: 30px;
+            z-index: 10002;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-bottom: 4px solid ${type === 'error' ? '#962d22' : '#2c3e50'};
+        `;
+        msg.textContent = text;
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+    };
+    
+    // Функция проверки запрещённых слов
+    window.checkBannedWords = function(text) {
+        const bannedWords = [
+            'порно', 'секс', 'еблан', 'дебил', 'дурак', 'идиот',
+            'хуй', 'пизда', 'блядь', 'сука', 'гандон', 'шлюха',
+            'porn', 'sex', 'fuck', 'shit', 'bitch',
+            'казино', 'наркотики', 'меф'
+        ];
+        if (!text) return false;
+        const lowerText = text.toLowerCase();
+        return bannedWords.some(word => lowerText.includes(word));
+    };
+    
+    // Инициализация
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
+    function init() {
+        console.log('Инициализация формы связи');
         
-        <div class="suggest-form">
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Ваше имя</label>
-                <input type="text" id="suggestName" class="suggest-input" placeholder="Аноним" style="
-                    width: 100%;
-                    padding: 12px;
-                    border: 2px solid #e0e0e0;
-                    border-radius: 12px;
-                    font-size: 0.95rem;
-                ">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Имя кандидата <span style="color: #c0392b;">*</span></label>
-                <input type="text" id="suggestCandidateName" class="suggest-input" placeholder="Например: Иванова Анна" style="
-                    width: 100%;
-                    padding: 12px;
-                    border: 2px solid #e0e0e0;
-                    border-radius: 12px;
-                    font-size: 0.95rem;
-                    margin-bottom: 10px;
-                ">
-                
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Описание / класс</label>
-                <textarea id="suggestMessage" class="suggest-textarea" placeholder="Напишите класс и немного о кандидате..." maxlength="500" style="
-                    width: 100%;
-                    padding: 12px;
-                    border: 2px solid #e0e0e0;
-                    border-radius: 12px;
-                    min-height: 100px;
-                    font-family: inherit;
-                "></textarea>
-                <div style="text-align: right; color: #7f8c8d; font-size: 0.8rem; margin-top: 5px;">
-                    <span id="suggestCounter">0</span>/500
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 10px;">
-                <button class="suggest-submit" id="submitSuggestion" style="
-                    flex: 2;
-                    background: #4a6fa5;
-                    color: white;
-                    border: none;
-                    padding: 14px;
-                    border-radius: 40px;
-                    font-weight: 700;
-                    cursor: pointer;
-                    border-bottom: 4px solid #2c3e50;
-                ">📨 ОТПРАВИТЬ</button>
-                
-                <button class="suggest-cancel" id="cancelSuggestion" style="
-                    flex: 1;
-                    background: #e0e0e0;
-                    color: #2c3e50;
-                    border: none;
-                    padding: 14px;
-                    border-radius: 40px;
-                    font-weight: 600;
-                    cursor: pointer;
-                    border-bottom: 4px solid #b0b0b0;
-                ">❌</button>
-            </div>
-        </div>
-    </div>
-`;
-
-document.body.appendChild(suggestModal);
-
-// ============================================
-// ОБРАБОТЧИКИ
-// ============================================
-
-// Открыть модалку
-suggestBtn.addEventListener('click', () => {
-    suggestModal.style.display = 'flex';
-});
-
-// Закрыть модалку
-document.getElementById('cancelSuggestion').addEventListener('click', () => {
-    suggestModal.style.display = 'none';
-    document.getElementById('suggestName').value = '';
-    document.getElementById('suggestCandidateName').value = '';
-    document.getElementById('suggestMessage').value = '';
-});
-
-// Закрыть по клику вне модалки
-suggestModal.addEventListener('click', (e) => {
-    if (e.target === suggestModal) {
-        suggestModal.style.display = 'none';
-    }
-});
-
-// Счётчик символов
-document.getElementById('suggestMessage').addEventListener('input', function() {
-    const len = this.value.length;
-    document.getElementById('suggestCounter').textContent = len;
-    if (len > 500) this.value = this.value.substring(0, 500);
-});
-
-// Отправка предложения
-document.getElementById('submitSuggestion').addEventListener('click', submitSuggestion);
-
-async function submitSuggestion() {
-    const name = document.getElementById('suggestName').value.trim() || 'Аноним';
-    const candidateName = document.getElementById('suggestCandidateName').value.trim();
-    const message = document.getElementById('suggestMessage').value.trim();
-    
-    if (!candidateName) {
-        showMessage('Введите имя кандидата', 'error');
-        return;
-    }
-    
-    if (!message) {
-        showMessage('Напишите описание', 'error');
-        return;
-    }
-    
-    if (message.length < 10) {
-        showMessage('Слишком короткое описание (минимум 10 символов)', 'error');
-        return;
-    }
-    
-    // Проверка на запрещённые слова
-    if (checkBannedWords(message) || checkBannedWords(candidateName) || checkBannedWords(name)) {
-        showMessage('Текст содержит запрещённые слова', 'error');
-        return;
-    }
-    
-    try {
-        // Формируем полное сообщение
-        const fullMessage = `Кандидат: ${candidateName}\nОписание: ${message}`;
+        const btn = document.getElementById('adminBtn');
+        const modal = document.getElementById('adminModal');
+        const cancelBtn = document.getElementById('adminCancel');
+        const submitBtn = document.getElementById('adminSubmit');
+        const messageField = document.getElementById('adminMessage');
+        const counter = document.getElementById('adminCounter');
+        const typeSelect = document.getElementById('adminType');
+        const candidateField = document.getElementById('candidateField');
         
-        // Отправляем в suggestions
-        const { error: suggestError } = await supabaseClient
-            .from('suggestions')
-            .insert({
-                name: name,
-                message: fullMessage,
-                type: 'candidate_suggestion',
-                status: 'pending',
-                ip_address: userIp || 'unknown',
-                user_agent: navigator.userAgent,
-                created_at: new Date()
+        // Показывать/скрывать поле для имени кандидата в зависимости от выбора
+        if (typeSelect && candidateField) {
+            typeSelect.addEventListener('change', function() {
+                if (this.value === 'candidate') {
+                    candidateField.style.display = 'block';
+                } else {
+                    candidateField.style.display = 'none';
+                }
             });
-        
-        if (suggestError) {
-            console.error('Ошибка suggestions:', suggestError);
-            throw suggestError;
         }
         
-        // Дублируем в feedback
-        await supabaseClient
-            .from('feedback')
-            .insert({
-                type: 'suggestion',
-                name: name,
-                message: fullMessage,
-                ip_address: userIp || 'unknown',
-                user_agent: navigator.userAgent,
-                created_at: new Date()
-            });
+        // Открытие
+        if (btn && modal) {
+            btn.onclick = function(e) {
+                e.preventDefault();
+                modal.style.display = 'block';
+            };
+        }
         
-        // Очищаем форму и закрываем
-        suggestModal.style.display = 'none';
-        document.getElementById('suggestName').value = '';
-        document.getElementById('suggestCandidateName').value = '';
-        document.getElementById('suggestMessage').value = '';
+        // Закрытие
+        if (cancelBtn && modal) {
+            cancelBtn.onclick = function() {
+                modal.style.display = 'none';
+                document.getElementById('adminName').value = '';
+                document.getElementById('adminMessage').value = '';
+                document.getElementById('adminCandidateName').value = '';
+                if (typeSelect) typeSelect.value = 'question';
+                if (candidateField) candidateField.style.display = 'none';
+            };
+        }
         
-        showMessage('✅ Спасибо! Предложение отправлено на рассмотрение', 'success');
+        // Закрыть по фону
+        if (modal) {
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        }
         
-    } catch (error) {
-        console.error('Полная ошибка:', error);
-        showMessage('Ошибка: ' + error.message, 'error');
+        // Счетчик
+        if (messageField && counter) {
+            messageField.oninput = function() {
+                counter.textContent = this.value.length;
+                if (this.value.length > 1000) {
+                    this.value = this.value.substring(0, 1000);
+                }
+            };
+        }
+        
+        // Отправка (УНИВЕРСАЛЬНАЯ)
+        if (submitBtn) {
+            submitBtn.onclick = async function() {
+                const name = document.getElementById('adminName')?.value.trim() || 'Аноним';
+                const type = document.getElementById('adminType')?.value || 'other';
+                const message = document.getElementById('adminMessage')?.value.trim();
+                const candidateName = document.getElementById('adminCandidateName')?.value.trim();
+                
+                if (!message) {
+                    showMessage('Напишите сообщение', 'error');
+                    return;
+                }
+                
+                if (message.length < 5) {
+                    showMessage('Слишком короткое сообщение', 'error');
+                    return;
+                }
+                
+                // Для типа "candidate" проверяем наличие имени кандидата
+                if (type === 'candidate' && !candidateName) {
+                    showMessage('Введите имя кандидата', 'error');
+                    return;
+                }
+                
+                if (checkBannedWords(message) || checkBannedWords(name)) {
+                    showMessage('Текст содержит запрещённые слова', 'error');
+                    return;
+                }
+                
+                try {
+                    // Формируем сообщение в зависимости от типа
+                    let finalMessage = message;
+                    if (type === 'candidate' && candidateName) {
+                        finalMessage = `Кандидат: ${candidateName}\nОписание: ${message}`;
+                    }
+                    
+                    // Проверяем, что supabaseClient существует
+                    if (typeof supabaseClient !== 'undefined') {
+                        // Отправляем в suggestions
+                        const { error: suggestError } = await supabaseClient
+                            .from('suggestions')
+                            .insert({
+                                name: name,
+                                message: finalMessage,
+                                type: type,
+                                status: 'pending',
+                                ip_address: window.userIp || 'unknown',
+                                user_agent: navigator.userAgent,
+                                created_at: new Date().toISOString()
+                            });
+                        
+                        if (suggestError) {
+                            console.error('Ошибка Supabase:', suggestError);
+                            showMessage('Ошибка отправки: ' + suggestError.message, 'error');
+                        } else {
+                            showMessage('✅ Сообщение отправлено администрации', 'success');
+                        }
+                    } else {
+                        // Если Supabase не подключен - тестовый режим
+                        console.log('ТЕСТОВЫЙ РЕЖИМ:', { name, type, message: finalMessage });
+                        showMessage('✅ Тест: сообщение отправлено (Supabase не подключен)', 'success');
+                    }
+                    
+                    // Закрываем и очищаем форму
+                    modal.style.display = 'none';
+                    document.getElementById('adminName').value = '';
+                    document.getElementById('adminMessage').value = '';
+                    document.getElementById('adminCandidateName').value = '';
+                    if (typeSelect) typeSelect.value = 'question';
+                    if (candidateField) candidateField.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    showMessage('Ошибка: ' + error.message, 'error');
+                }
+            };
+        }
+        
+        // Escape
+        document.onkeydown = function(e) {
+            if (e.key === 'Escape' && modal && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        };
     }
-}
-
-// Добавляем обработку Escape
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && suggestModal.style.display === 'flex') {
-        suggestModal.style.display = 'none';
-    }
-});
+})();
 </script>
 </body>
 </html>
