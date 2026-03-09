@@ -2138,6 +2138,88 @@ document.addEventListener('keydown', function(e) {
         };
     }
 })();
+    <!-- ПРОСТАЯ КНОПКА БЕЗ СЛОЖНОСТЕЙ -->
+<div id="simpleButtonContainer">
+    <button id="simpleSuggestBtn" style="position: fixed; bottom: 90px; right: 20px; background: #27ae60; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10000; border-bottom: 4px solid #1e8449; display: flex; justify-content: center; align-items: center;">💬</button>
+</div>
+
+<!-- ПРОСТОЕ МОДАЛЬНОЕ ОКНО -->
+<div id="simpleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001;">
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; padding: 16px;">
+        <div style="background: white; border-radius: 24px; max-width: 500px; width: 100%; padding: 25px;">
+            <h3 style="color: #2c3e50; margin-bottom: 20px;">📨 СВЯЗЬ С АДМИНОМ</h3>
+            
+            <select id="simpleType" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 12px;">
+                <option value="question">❓ Вопрос</option>
+                <option value="problem">⚠️ Проблема</option>
+                <option value="suggestion">💡 Предложение</option>
+            </select>
+            
+            <input type="text" id="simpleName" placeholder="Ваше имя" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 12px;">
+            
+            <textarea id="simpleMessage" placeholder="Сообщение..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 12px; min-height: 120px;"></textarea>
+            
+            <div style="display: flex; gap: 10px;">
+                <button id="simpleSubmit" style="flex: 2; background: #4a6fa5; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 700; cursor: pointer;">ОТПРАВИТЬ</button>
+                <button id="simpleCancel" style="flex: 1; background: #e0e0e0; color: #2c3e50; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer;">❌</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Простейший скрипт
+(function() {
+    console.log('Запуск простого скрипта');
+    
+    // Получаем элементы
+    const btn = document.getElementById('simpleSuggestBtn');
+    const modal = document.getElementById('simpleModal');
+    const cancel = document.getElementById('simpleCancel');
+    const submit = document.getElementById('simpleSubmit');
+    
+    console.log('Кнопка:', btn);
+    console.log('Модалка:', modal);
+    
+    // Открыть
+    if (btn && modal) {
+        btn.onclick = function() {
+            console.log('Клик');
+            modal.style.display = 'block';
+        };
+    }
+    
+    // Закрыть
+    if (cancel && modal) {
+        cancel.onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
+    
+    // Закрыть по фону
+    if (modal) {
+        modal.onclick = function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    }
+    
+    // Отправить
+    if (submit) {
+        submit.onclick = function() {
+            const message = document.getElementById('simpleMessage').value;
+            if (!message) {
+                alert('Напишите сообщение');
+                return;
+            }
+            alert('Отправлено! (тест)');
+            modal.style.display = 'none';
+            document.getElementById('simpleName').value = '';
+            document.getElementById('simpleMessage').value = '';
+        };
+    }
+})();
 </script>
 </body>
 </html>
