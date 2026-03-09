@@ -1061,66 +1061,111 @@
             }
         };
 
-        // ============================================
-        // ЗАГРУЗКА ПРЕДЛОЖЕНИЙ
-        // ============================================
-        async function loadSuggestions() {
-            try {
-                const { data } = await supabaseClient
-                    .from('suggestions')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
-                let html = '';
-                data?.forEach(s => {
-                    let statusBadge = '';
-                    if (s.status === 'pending' || !s.status) statusBadge = '<span class="badge warning">Ожидает</span>';
-                    else if (s.status === 'approved') statusBadge = '<span class="badge success">Одобрено</span>';
-                    else if (s.status === 'rejected') statusBadge = '<span class="badge danger">Отклонено</span>';
-                    
-                    html += `<tr>
-                        <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
-                        <td>${escapeHtml(s.name || 'Аноним')}</td>
-                        <td>${escapeHtml(s.message || '-')}</td>
-                        <td>${statusBadge}</td>
-                        <td>
-                            ${s.status === 'pending' || !s.status ? `
-                                <button class="btn btn-sm btn-success" onclick="approveSuggestion(${s.id}, '${escapeHtml(s.name)}', '${escapeHtml(s.message)}')">✅</button>
-                                <button class="btn btn-sm btn-danger" onclick="rejectSuggestion(${s.id})">❌</button>
-                            ` : '-'}
-                        </td>
-                    </tr>`;
-                });
-                document.getElementById('suggestionsBody').innerHTML = html || '<tr><td colspan="5">Нет данных</td></tr>';
-            } catch (error) {
-                console.error('Ошибка загрузки предложений:', error);
-            }
-        }
+// ============================================
+// ЗАГРУЗКА ПРЕДЛОЖЕНИЙ - ИСПРАВЛЕННАЯ ВЕРСИЯ
+// ============================================
+async function loadSuggestions() {
+    try {
+        const { data, error } = await supabase
+            .from('suggestions')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        let html = '';
+        data?.forEach(s => {
+            let statusBadge = '';
+            if (s.status === 'pending' || !s.status) statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
+            else if (s.status === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
+            else if (s.status === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
+            
+            html += `<tr>
+                <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
+                <td>${escapeHtml(s.name || 'Аноним')}</td>
+                <td>${escapeHtml(s.message || '-')}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    ${s.status === 'pending' || !s.status ? `
+                        <button class="btn btn-sm btn-success" onclick="approveSuggestion(${s.id})">✅</button>
+                        <button class="btn btn-sm btn-danger" onclick="rejectSuggestion(${s.id})">❌</button>
+                    ` : '-'}
+                </td>
+            </tr>`;
+        });
+        document.getElementById('suggestionsBody').innerHTML = html || '<tr><td colspan="5">Нет предложений</td></tr>';
+    } catch (error) {
+        console.error('Ошибка загрузки предложений:', error);
+        document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5">Ошибка загрузки</td></tr>';
+    }
+}
 
-        window.approveSuggestion = async (id, name, message) => {
-            try {
-                await supabaseClient
-                    .from('candidates')
-                    .insert({ 
-                        name: name, 
-                        bio: message,
-                        class: 'Новый кандидат',
-                        votes: 0,
-                        photo_url: 'https://i.pravatar.cc/300'
-                    });
-                    
-                await supabaseClient
-                    .from('suggestions')
-                    .update({ status: 'approved' })
-                    .eq('id', id);
-                    
-                showMessage('Кандидат добавлен!', 'success');
-                loadSuggestions();
-                loadCandidates();
-            } catch (error) {
-                showMessage('Ошибка: ' + error.message, 'error');
-            }
-        };
+// Одобрение предложения
+window.approveSuggestion = async (id) => {
+    try {
+        // Получаем данные предложения
+        const { data: suggestion } = await supabase
+            .from('suggestions')
+            .select('*')
+            .eq('id', id)
+            .single();
+        
+        if (!suggestion) {
+            showMessage('Предложение не найдено', 'error');
+            return;
+        }
+        
+        // Парсим сообщение
+        const message = suggestion.message || '';
+        let name = 'Новый кандидат';
+        let bio = '';
+        
+        // Пробуем извлечь имя кандидата из сообщения
+        const nameMatch = message.match(/Кандидат:\s*(.+?)(?:\n|$)/);
+        if (nameMatch) {
+            name = nameMatch[1].trim();
+        }
+        
+        // Добавляем кандидата
+        await supabase
+            .from('candidates')
+            .insert({ 
+                name: name,
+                class: 'Новый кандидат',
+                bio: message,
+                votes: 0,
+                photo_url: 'https://i.pravatar.cc/300'
+            });
+            
+        // Обновляем статус предложения
+        await supabase
+            .from('suggestions')
+            .update({ status: 'approved' })
+            .eq('id', id);
+            
+        showMessage('✅ Кандидат добавлен!', 'success');
+        loadSuggestions();
+        loadCandidates(); // Обновляем список кандидатов
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+};
+
+// Отклонение предложения
+window.rejectSuggestion = async (id) => {
+    try {
+        await supabase
+            .from('suggestions')
+            .update({ status: 'rejected' })
+            .eq('id', id);
+            
+        showMessage('❌ Предложение отклонено', 'info');
+        loadSuggestions();
+    } catch (error) {
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+};
 
         window.rejectSuggestion = async (id) => {
             try {
