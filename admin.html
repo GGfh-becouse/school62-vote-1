@@ -1066,37 +1066,73 @@
 // ============================================
 async function loadSuggestions() {
     try {
+        console.log('Загрузка предложений...');
+        
         const { data, error } = await supabase
             .from('suggestions')
             .select('*')
             .order('created_at', { ascending: false });
         
-        if (error) throw error;
+        if (error) {
+            console.error('Ошибка Supabase:', error);
+            throw error;
+        }
+        
+        console.log('Получены данные:', data);
         
         let html = '';
-        data?.forEach(s => {
-            let statusBadge = '';
-            if (s.status === 'pending' || !s.status) statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
-            else if (s.status === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
-            else if (s.status === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
-            
-            html += `<tr>
-                <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
-                <td>${escapeHtml(s.name || 'Аноним')}</td>
-                <td>${escapeHtml(s.message || '-')}</td>
-                <td>${statusBadge}</td>
-                <td>
-                    ${s.status === 'pending' || !s.status ? `
-                        <button class="btn btn-sm btn-success" onclick="approveSuggestion(${s.id})">✅</button>
-                        <button class="btn btn-sm btn-danger" onclick="rejectSuggestion(${s.id})">❌</button>
-                    ` : '-'}
-                </td>
-            </tr>`;
-        });
-        document.getElementById('suggestionsBody').innerHTML = html || '<tr><td colspan="5">Нет предложений</td></tr>';
+        
+        if (!data || data.length === 0) {
+            html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
+        } else {
+            data?.forEach(s => {
+                let statusBadge = '';
+                let statusText = s.status || 'pending';
+                
+                if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
+                else if (statusText === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
+                else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
+                
+                // Парсим сообщение для отображения
+                let displayMessage = s.message || '-';
+                let candidateName = 'Не указан';
+                let description = displayMessage;
+                
+                // Пробуем извлечь имя кандидата из сообщения
+                const nameMatch = displayMessage.match(/Кандидат:\s*(.+?)(?:\n|$)/);
+                if (nameMatch) {
+                    candidateName = nameMatch[1];
+                    description = displayMessage.replace(/Кандидат:.*?\n/, '').replace(/Описание:\s*/, '');
+                }
+                
+                // Сокращаем длинные сообщения
+                if (description.length > 100) {
+                    description = description.substring(0, 100) + '...';
+                }
+                
+                html += `<tr>
+                    <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
+                    <td>${escapeHtml(s.name || 'Аноним')}</td>
+                    <td>
+                        <strong>${escapeHtml(candidateName)}</strong><br>
+                        <small>${escapeHtml(description)}</small>
+                    </td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        ${statusText === 'pending' ? `
+                            <button class="btn btn-sm btn-success" onclick="approveSuggestion('${s.id}')">✅ Одобрить</button>
+                            <button class="btn btn-sm btn-danger" onclick="rejectSuggestion('${s.id}')">❌ Отклонить</button>
+                        ` : '-'}
+                    </td>
+                </tr>`;
+            });
+        }
+        
+        document.getElementById('suggestionsBody').innerHTML = html;
+        
     } catch (error) {
         console.error('Ошибка загрузки предложений:', error);
-        document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5">Ошибка загрузки</td></tr>';
+        document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
     }
 }
 
