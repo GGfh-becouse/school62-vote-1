@@ -2004,80 +2004,12 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-</script>
-<!-- КНОПКА ДЛЯ СВЯЗИ С АДМИНИСТРАЦИЕЙ -->
-<button class="suggest-button" id="suggestBtn" style="position: fixed; bottom: 20px; right: 20px; background: #4a6fa5; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; border-bottom: 4px solid #2c3e50;">📨</button>
+}
+    <!-- КНОПКА ДЛЯ СВЯЗИ С АДМИНИСТРАЦИЕЙ -->
+<button class="suggest-button" id="suggestBtn" style="position: fixed; bottom: 20px; right: 20px; background: #4a6fa5; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; border-bottom: 4px solid #2c3e50; display: flex; justify-content: center; align-items: center;">📨</button>
 
-<!-- МОДАЛЬНОЕ ОКНО ДЛЯ СВЯЗИ С АДМИНИСТРАЦИЕЙ -->
-<div class="suggest-modal" id="suggestModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
-    <div class="suggest-card" style="background: white; border-radius: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 2px solid #4a6fa5;">
-        <h3 style="color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #4a6fa5; display: flex; align-items: center; gap: 10px;">
-            <span>📨 СВЯЗЬ С АДМИНИСТРАЦИЕЙ</span>
-            <span style="font-size: 0.7rem; color: #7f8c8d; background: #f0f0f0; padding: 3px 8px; border-radius: 12px;">анонимно</span>
-        </h3>
-        
-        <div class="suggest-form">
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Тема обращения</label>
-                <select id="suggestType" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem;">
-                    <option value="question">❓ Вопрос</option>
-                    <option value="problem">⚠️ Проблема</option>
-                    <option value="suggestion">💡 Предложение</option>
-                    <option value="bug">🐛 Ошибка на сайте</option>
-                    <option value="candidate">👩 Предложить кандидата</option>
-                    <option value="other">📌 Другое</option>
-                </select>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Ваше имя (необязательно)</label>
-                <input type="text" id="suggestName" class="suggest-input" placeholder="Аноним" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem;">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px; color: #2c3e50; font-weight: 600;">Сообщение <span style="color: #c0392b;">*</span></label>
-                <textarea id="suggestMessage" class="suggest-textarea" placeholder="Напишите что хотите сообщить администрации..." maxlength="1000" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; min-height: 150px; font-family: inherit;"></textarea>
-                <div style="text-align: right; color: #7f8c8d; font-size: 0.8rem; margin-top: 5px;"><span id="suggestCounter">0</span>/1000</div>
-            </div>
-            
-            <div style="display: flex; gap: 10px;">
-                <button class="suggest-submit" id="submitSuggestion" style="flex: 2; background: #4a6fa5; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 700; cursor: pointer; border-bottom: 4px solid #2c3e50;">📨 ОТПРАВИТЬ</button>
-                <button class="suggest-cancel" id="cancelSuggestion" style="flex: 1; background: #e0e0e0; color: #2c3e50; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer; border-bottom: 4px solid #b0b0b0;">❌</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-.suggest-button {
-    transition: all 0.2s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.suggest-button:active {
-    transform: translateY(3px);
-    border-bottom-width: 2px;
-}
-.suggest-button:hover {
-    background: #3a5a8a;
-}
-.suggest-input:focus, .suggest-textarea:focus {
-    border-color: #4a6fa5 !important;
-    outline: none;
-}
-.suggest-submit:active, .suggest-cancel:active {
-    transform: translateY(2px);
-    border-bottom-width: 2px !important;
-}
-</style>
-
-<script>
-<!-- КНОПКА ДЛЯ СВЯЗИ С АДМИНИСТРАЦИЕЙ -->
-<button class="suggest-button" id="suggestBtn" style="position: fixed; bottom: 20px; right: 20px; background: #4a6fa5; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; border-bottom: 4px solid #2c3e50; display: flex; justify-content: center; align-items: center;">📨</button>>
-
-<!-- МОДАЛЬНОЕ ОКНО ДЛЯ СВЯЗИ С АДМИНИСТРАЦИЕЙ -->
-<div class="suggest-modal" id="suggestModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001; backdrop-filter: blur(5px);">
+<!-- МОДАЛЬНОЕ ОКНО -->
+<div class="suggest-modal" id="suggestModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001;">
     <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; padding: 16px;">
         <div class="suggest-card" style="background: white; border-radius: 24px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 2px solid #4a6fa5;">
             <h3 style="color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #4a6fa5; display: flex; align-items: center; gap: 10px;">
@@ -2118,225 +2050,95 @@ document.addEventListener('keydown', function(e) {
     </div>
 </div>
 
-<style>
-.suggest-button {
-    transition: all 0.2s;
-}
-.suggest-button:active {
-    transform: translateY(3px);
-    border-bottom-width: 2px;
-}
-.suggest-button:hover {
-    background: #3a5a8a;
-}
-.suggest-input:focus, .suggest-textarea:focus {
-    border-color: #4a6fa5 !important;
-    outline: none;
-}
-.suggest-submit:active, .suggest-cancel:active {
-    transform: translateY(2px);
-    border-bottom-width: 2px !important;
-}
-</style>
-
+<!-- ПРОСТОЙ СКРИПТ ДЛЯ РАБОТЫ КНОПКИ -->
 <script>
-// ============================================
-// СИСТЕМА СВЯЗИ С АДМИНИСТРАЦИЕЙ - ИСПРАВЛЕННАЯ
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Инициализация системы связи');
+// Этот скрипт должен быть в самом конце, после всех элементов
+(function() {
+    console.log('Запуск скрипта кнопки');
     
-    const suggestBtn = document.getElementById('suggestBtn');
-    const suggestModal = document.getElementById('suggestModal');
-    const cancelBtn = document.getElementById('cancelSuggestion');
-    const submitBtn = document.getElementById('submitSuggestion');
-    const suggestName = document.getElementById('suggestName');
-    const suggestType = document.getElementById('suggestType');
-    const suggestMessage = document.getElementById('suggestMessage');
-    const suggestCounter = document.getElementById('suggestCounter');
-
-    console.log('Кнопка найдена:', !!suggestBtn);
-    console.log('Модалка найдена:', !!suggestModal);
-
-    // Открыть модалку
-    if (suggestBtn && suggestModal) {
-        suggestBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Клик по кнопке');
-            
-            // Принудительно устанавливаем стили для отображения
-            suggestModal.style.display = 'block';
-            suggestModal.style.justifyContent = 'center';
-            suggestModal.style.alignItems = 'center';
-            
-            console.log('Модалка должна открыться');
-        });
+    // Ждем загрузки DOM
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        console.error('Кнопка или модалка не найдены');
-    }
-
-    // Закрыть модалку по кнопке "Отмена"
-    if (cancelBtn && suggestModal) {
-        cancelBtn.addEventListener('click', function() {
-            suggestModal.style.display = 'none';
-            if (suggestName) suggestName.value = '';
-            if (suggestMessage) suggestMessage.value = '';
-            if (suggestType) suggestType.value = 'question';
-        });
-    }
-
-    // Закрыть по клику на фон
-    if (suggestModal) {
-        suggestModal.addEventListener('click', function(e) {
-            if (e.target === suggestModal) {
-                suggestModal.style.display = 'none';
-            }
-        });
-    }
-
-    // Счётчик символов
-    if (suggestMessage && suggestCounter) {
-        suggestMessage.addEventListener('input', function() {
-            const len = this.value.length;
-            suggestCounter.textContent = len;
-            if (len > 1000) this.value = this.value.substring(0, 1000);
-        });
-    }
-
-    // Отправка формы
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            submitToAdmin();
-        });
-    }
-
-    // Закрыть по Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && suggestModal && suggestModal.style.display === 'block') {
-            suggestModal.style.display = 'none';
-        }
-    });
-});
-
-async function submitToAdmin() {
-    console.log('Отправка сообщения');
-    
-    const name = document.getElementById('suggestName')?.value.trim() || 'Аноним';
-    const type = document.getElementById('suggestType')?.value || 'other';
-    const message = document.getElementById('suggestMessage')?.value.trim();
-    
-    if (!message) {
-        showMessage('Напишите сообщение', 'error');
-        return;
+        init();
     }
     
-    if (message.length < 5) {
-        showMessage('Слишком короткое сообщение', 'error');
-        return;
-    }
-    
-    // Проверка на запрещённые слова
-    if (checkBannedWords(message) || checkBannedWords(name)) {
-        showMessage('Текст содержит запрещённые слова', 'error');
-        return;
-    }
-    
-    try {
-        // Проверяем, что supabaseClient существует
-        if (typeof supabaseClient === 'undefined') {
-            console.error('supabaseClient не найден');
-            showMessage('Ошибка: не удалось подключиться к базе данных', 'error');
-            return;
-        }
+    function init() {
+        console.log('Инициализация');
         
-        // Отправляем в suggestions
-        const { error: suggestError } = await supabaseClient
-            .from('suggestions')
-            .insert({
-                name: name,
-                message: message,
-                type: type,
-                status: 'pending',
-                ip_address: userIp || 'unknown',
-                user_agent: navigator.userAgent,
-                created_at: new Date().toISOString()
-            });
-        
-        if (suggestError) {
-            console.error('Ошибка suggestions:', suggestError);
-            throw suggestError;
-        }
-        
-        // Дублируем в feedback
-        await supabaseClient
-            .from('feedback')
-            .insert({
-                type: 'admin_message',
-                sub_type: type,
-                name: name,
-                message: message,
-                ip_address: userIp || 'unknown',
-                user_agent: navigator.userAgent,
-                created_at: new Date().toISOString()
-            });
-        
-        // Очищаем форму и закрываем
+        const btn = document.getElementById('suggestBtn');
         const modal = document.getElementById('suggestModal');
-        if (modal) modal.style.display = 'none';
+        const cancelBtn = document.getElementById('cancelSuggestion');
+        const submitBtn = document.getElementById('submitSuggestion');
         
-        document.getElementById('suggestName').value = '';
-        document.getElementById('suggestMessage').value = '';
+        console.log('Кнопка:', btn);
+        console.log('Модалка:', modal);
         
-        const typeSelect = document.getElementById('suggestType');
-        if (typeSelect) typeSelect.value = 'question';
+        // Открытие модалки
+        if (btn && modal) {
+            btn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Клик по кнопке');
+                modal.style.display = 'block';
+                return false;
+            };
+        }
         
-        showMessage('✅ Сообщение отправлено администрации', 'success');
+        // Закрытие по крестику
+        if (cancelBtn && modal) {
+            cancelBtn.onclick = function() {
+                modal.style.display = 'none';
+            };
+        }
         
-    } catch (error) {
-        console.error('Ошибка:', error);
-        showMessage('Ошибка: ' + error.message, 'error');
+        // Закрытие по клику на фон
+        if (modal) {
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        }
+        
+        // Счетчик символов
+        const message = document.getElementById('suggestMessage');
+        const counter = document.getElementById('suggestCounter');
+        if (message && counter) {
+            message.oninput = function() {
+                counter.textContent = this.value.length;
+            };
+        }
+        
+        // Отправка
+        if (submitBtn) {
+            submitBtn.onclick = function() {
+                const name = document.getElementById('suggestName')?.value || 'Аноним';
+                const type = document.getElementById('suggestType')?.value || 'other';
+                const message = document.getElementById('suggestMessage')?.value;
+                
+                if (!message) {
+                    alert('Напишите сообщение');
+                    return;
+                }
+                
+                alert('Сообщение отправлено! (тест)');
+                modal.style.display = 'none';
+                
+                // Очистка
+                document.getElementById('suggestName').value = '';
+                document.getElementById('suggestMessage').value = '';
+            };
+        }
+        
+        // Escape
+        document.onkeydown = function(e) {
+            if (e.key === 'Escape' && modal && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        };
     }
-}
-
-// Функция проверки запрещённых слов
-if (typeof checkBannedWords !== 'function') {
-    window.checkBannedWords = function(text) {
-        const bannedWords = [
-            'порно', 'секс', 'еблан', 'дебил', 'дурак', 'идиот',
-            'хуй', 'пизда', 'блядь', 'сука', 'гандон', 'шлюха',
-            'porn', 'sex', 'fuck', 'shit', 'bitch',
-            'казино', 'наркотики', 'меф'
-        ];
-        if (!text) return false;
-        const lowerText = text.toLowerCase();
-        return bannedWords.some(word => lowerText.includes(word));
-    };
-}
-
-// Функция showMessage если её нет
-if (typeof showMessage !== 'function') {
-    window.showMessage = function(text, type) {
-        // Создаём временное сообщение
-        const msg = document.createElement('div');
-        msg.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            background: ${type === 'error' ? '#c0392b' : '#4a6fa5'};
-            color: white;
-            border-radius: 30px;
-            z-index: 10002;
-            font-weight: 500;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        `;
-        msg.textContent = text;
-        document.body.appendChild(msg);
-        setTimeout(() => msg.remove(), 3000);
-    };
-}
+})();
 </script>
 </body>
 </html>
