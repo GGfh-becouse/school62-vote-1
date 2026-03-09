@@ -1178,7 +1178,6 @@ async function loadSuggestions() {
         console.error('Ошибка загрузки предложений:', error);
         document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
     }
-}
                 
                 document.getElementById('suggestionsBody').innerHTML = html;
   }
