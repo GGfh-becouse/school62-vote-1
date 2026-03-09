@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Школьный форум - Тред</title>
+    <title>Форум - Школа 62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -12,51 +12,43 @@
 </head>
 <body>
     <div class="container">
-        <!-- Шапка с навигацией -->
         <div class="header">
-            <h1>ШКОЛЬНЫЙ ФОРУМ <small>Школа №62</small></h1>
+            <h1>ШКОЛЬНЫЙ ФОРУМ</h1>
             <div class="nav-links">
-                <a href="index.html" class="nav-link">← К списку тем</a>
+                <a href="index.html" class="nav-link">🏠 Главная</a>
+                <a href="threads.html" class="nav-link active">💬 Форум</a>
+                <a href="updates.html" class="nav-link">🚀 Обновления</a>
             </div>
         </div>
 
-        <!-- Статистика пользователя -->
-        <div class="user-stats">
-            <div class="stat-items">
-                <div class="stat-pill">👤 <span id="userId">Гость</span></div>
-                <div class="stat-pill">📝 <span id="userMessages">0</span></div>
-            </div>
-            <div class="school-badge">🏫 Школа №62</div>
+        <div class="prime-status" id="primeStatus">
+            <img src="verified.png" width="20" height="20" id="primeIcon" style="display: none;">
+            <span id="primeName"></span>
         </div>
 
-        <!-- Сообщения -->
         <div id="messageContainer"></div>
 
-        <!-- Основной тред -->
-        <div class="thread-container" id="threadContainer">
-            <div class="loading">Загрузка треда...</div>
+        <!-- СОЗДАНИЕ ТРЕДА -->
+        <div class="create-thread">
+            <h3>➕ НОВАЯ ТЕМА</h3>
+            <input type="text" id="threadTitle" placeholder="Заголовок" maxlength="100">
+            <textarea id="threadContent" placeholder="Текст..." maxlength="500"></textarea>
+            <button id="createThreadBtn">Создать тему</button>
         </div>
 
-        <!-- Форма ответа -->
-        <div class="reply-form">
-            <h3>✏️ ОТВЕТИТЬ</h3>
-            <textarea id="replyContent" class="reply-textarea" placeholder="Напишите ответ..." maxlength="300"></textarea>
-            <div class="reply-actions">
-                <button class="reply-submit" id="submitReply">📤 Отправить</button>
-            </div>
+        <!-- ФИЛЬТРЫ -->
+        <div class="filters">
+            <select id="sortFilter">
+                <option value="bump">По активности</option>
+                <option value="new">Сначала новые</option>
+                <option value="hot">Горячие</option>
+            </select>
+            <input type="text" id="searchFilter" placeholder="🔍 Поиск...">
         </div>
 
-        <!-- Список ответов -->
-        <div class="replies-section">
-            <h3>💬 ОТВЕТЫ</h3>
-            <div class="replies-list" id="repliesList">
-                <div class="loading">Загрузка ответов...</div>
-            </div>
-        </div>
-
-        <!-- Подвал -->
-        <div class="footer">
-            <p>Школьный форум • свободное общение</p>
+        <!-- СПИСОК ТРЕДОВ -->
+        <div class="threads-list" id="threadsList">
+            <div class="loading">Загрузка...</div>
         </div>
     </div>
 
