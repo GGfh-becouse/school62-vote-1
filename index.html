@@ -426,6 +426,14 @@
             outline: none;
         }
 
+        .comment-input:disabled {
+    background: #f0f0f0 !important;
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    border-color: #4a6fa5 !important;
+    cursor: not-allowed;
+}
+
         .comment-textarea {
             width: 100%;
             padding: 14px 16px;
@@ -943,7 +951,7 @@
             <div class="verification-box" id="verificationBox">
                 <h3 style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
     <img src="verified.png" width="24" height="24" style="display: inline-block;">
-    <span>ВХОД В PRIME</span>
+    <span>ВХОД В in PRIME</span>
     <span style="font-size: 0.8rem; color: #7f8c8d; font-weight: normal; background: #f0f0f0; padding: 2px 8px; border-radius: 12px;">скоро будет доступно к покупке</span>
 </h3>
                 <div class="verification-input-group">
@@ -1146,55 +1154,76 @@ function enterSite() {
         });
 
         async function verifyUser() {
-            const username = document.getElementById('verifyUsername').value.trim();
-            const password = document.getElementById('verifyPassword').value.trim();
-            
-            if (!username || !password) {
-                showMessage('Введите ник и пароль', 'error');
-                return;
-            }
-            
-            try {
-                const { data, error } = await supabaseClient
-                    .from('verified_users')
-                    .select('*')
-                    .eq('username', username)
-                    .eq('password', password)
-                    .single();
-                
-                if (error || !data) {
-                    showMessage('Неверный ник или пароль', 'error');
-                    return;
-                }
-                
-                verifiedUser = username;
-                verifiedUserName = username;
-                verifiedUserData = data;
-                
-                const statusDiv = document.getElementById('verifyStatus');
-                const statusText = document.getElementById('verifyStatusText');
-                statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img src="verified.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
-                statusDiv.classList.add('active');
-                
-                document.getElementById('verifyUsername').value = '';
-                document.getElementById('verifyPassword').value = '';
-                
-                showMessage('Верификация успешна!', 'success');
-                await loadComments();
-                
-            } catch (error) {
-                showMessage('Ошибка: ' + error.message, 'error');
-            }
+    const username = document.getElementById('verifyUsername').value.trim();
+    const password = document.getElementById('verifyPassword').value.trim();
+    
+    if (!username || !password) {
+        showMessage('Введите ник и пароль', 'error');
+        return;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('verified_users')
+            .select('*')
+            .eq('username', username)
+            .eq('password', password)
+            .single();
+        
+        if (error || !data) {
+            showMessage('Неверный ник или пароль', 'error');
+            return;
         }
+        
+        verifiedUser = username;
+        verifiedUserName = username;
+        verifiedUserData = data;
+        
+        // АВТОМАТИЧЕСКИ ЗАПОЛНЯЕМ ИМЯ В КОММЕНТАРИЯХ
+        const commentNameInput = document.getElementById('commentName');
+        if (commentNameInput) {
+            commentNameInput.value = username;
+            commentNameInput.disabled = true; // Блокируем поле, чтобы нельзя было изменить
+            commentNameInput.style.background = '#f0f0f0';
+            commentNameInput.style.color = '#2c3e50';
+            commentNameInput.style.fontWeight = '600';
+        }
+        
+        const statusDiv = document.getElementById('verifyStatus');
+        const statusText = document.getElementById('verifyStatusText');
+        statusText.innerHTML = `Вы вошли как <strong>${username}</strong> <img src="verified.png" width="14" height="14" style="display: inline; margin-left: 5px;">`;
+        statusDiv.classList.add('active');
+        
+        document.getElementById('verifyUsername').value = '';
+        document.getElementById('verifyPassword').value = '';
+        
+        showMessage('Верификация успешна!', 'success');
+        await loadComments();
+        
+    } catch (error) {
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+}
 
         window.logoutVerification = function() {
-            verifiedUser = null;
-            verifiedUserName = null;
-            verifiedUserData = null;
-            document.getElementById('verifyStatus').classList.remove('active');
-            showMessage('Вы вышли из системы', 'info');
-            loadComments();
-        }
+    verifiedUser = null;
+    verifiedUserName = null;
+    verifiedUserData = null;
+    
+    // Разблокируем поле имени
+    const commentNameInput = document.getElementById('commentName');
+    if (commentNameInput) {
+        commentNameInput.value = '';
+        commentNameInput.disabled = false;
+        commentNameInput.style.background = 'white';
+        commentNameInput.style.color = '#2c3e50';
+        commentNameInput.style.fontWeight = 'normal';
+    }
+    
+    document.getElementById('verifyStatus').classList.remove('active');
+    showMessage('Вы вышли из системы', 'info');
+    loadComments();
+}
 
         // ============================================
         // ЗАГРУЗКА КОММЕНТАРИЕВ
