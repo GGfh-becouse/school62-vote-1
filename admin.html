@@ -653,7 +653,7 @@
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const ADMIN_PASSWORD = 'a7K9#mP2$vL5@nR8'; // Ваш пароль
         
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
         // ВХОД
@@ -707,17 +707,21 @@
         // ЗАГРУЗКА ВСЕХ ДАННЫХ
         // ============================================
         async function loadAllData() {
-            await Promise.all([
-                loadStats(),
-                loadComments(),
-                loadFeedback(),
-                loadVerified(),
-                loadVotes(),
-                loadCandidates(),
-                loadSuggestions(),
-                loadSuspicious(),
-                checkDuplicates()
-            ]);
+            try {
+                await Promise.all([
+                    loadStats(),
+                    loadComments(),
+                    loadFeedback(),
+                    loadVerified(),
+                    loadVotes(),
+                    loadCandidates(),
+                    loadSuggestions(),
+                    loadSuspicious(),
+                    checkDuplicates()
+                ]);
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+            }
         }
 
         // ============================================
@@ -725,23 +729,23 @@
         // ============================================
         async function loadStats() {
             try {
-                const { count: votes } = await supabaseClient
+                const { count: votes } = await supabase
                     .from('votes')
                     .select('*', { count: 'exact', head: true });
                     
-                const { count: comments } = await supabaseClient
+                const { count: comments } = await supabase
                     .from('comments')
                     .select('*', { count: 'exact', head: true });
                     
-                const { count: candidates } = await supabaseClient
+                const { count: candidates } = await supabase
                     .from('candidates')
                     .select('*', { count: 'exact', head: true });
                     
-                const { count: verified } = await supabaseClient
+                const { count: verified } = await supabase
                     .from('verified_users')
                     .select('*', { count: 'exact', head: true });
                 
-                const { data: ips } = await supabaseClient
+                const { data: ips } = await supabase
                     .from('votes')
                     .select('ip_address');
                     
@@ -764,12 +768,11 @@
 
         async function checkDuplicates() {
             try {
-                const { data } = await supabaseClient
+                const { data } = await supabase
                     .from('comments')
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                // Группируем по IP и сообщению
                 const groups = {};
                 data?.forEach(comment => {
                     const key = `${comment.ip_address}_${comment.message}`;
@@ -777,7 +780,6 @@
                     groups[key].push(comment);
                 });
 
-                // Оставляем только группы с более чем 1 комментарием
                 duplicates = Object.values(groups).filter(group => group.length > 1);
                 
                 document.getElementById('totalDuplicates').textContent = duplicates.length;
@@ -792,7 +794,7 @@
         // ============================================
         async function loadComments() {
             try {
-                const { data } = await supabaseClient
+                const { data } = await supabase
                     .from('comments')
                     .select('*')
                     .order('created_at', { ascending: false })
@@ -853,7 +855,7 @@
         window.deleteComment = async (id) => {
             if (confirm('Удалить комментарий?')) {
                 try {
-                    await supabaseClient.from('comments').delete().eq('id', id);
+                    await supabase.from('comments').delete().eq('id', id);
                     showMessage('Комментарий удалён', 'success');
                     await loadComments();
                     await checkDuplicates();
@@ -870,7 +872,7 @@
             if (confirm('Удалить все комментарии из этой группы?')) {
                 const group = duplicates[index];
                 for (const comment of group) {
-                    await supabaseClient.from('comments').delete().eq('id', comment.id);
+                    await supabase.from('comments').delete().eq('id', comment.id);
                 }
                 showMessage('Группа удалена', 'success');
                 await checkDuplicates();
@@ -884,7 +886,7 @@
                 let deletedCount = 0;
                 for (const group of duplicates) {
                     for (let i = 1; i < group.length; i++) {
-                        await supabaseClient.from('comments').delete().eq('id', group[i].id);
+                        await supabase.from('comments').delete().eq('id', group[i].id);
                         deletedCount++;
                     }
                 }
@@ -900,7 +902,7 @@
         window.keepOne = async (index) => {
             const group = duplicates[index];
             for (let i = 1; i < group.length; i++) {
-                await supabaseClient.from('comments').delete().eq('id', group[i].id);
+                await supabase.from('comments').delete().eq('id', group[i].id);
             }
             showMessage('Оставлен один комментарий', 'success');
             await checkDuplicates();
@@ -913,7 +915,7 @@
         // ============================================
         async function loadFeedback() {
             try {
-                const { data } = await supabaseClient
+                const { data } = await supabase
                     .from('feedback')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -939,7 +941,7 @@
         // ============================================
         async function loadVerified() {
             try {
-                const { data } = await supabaseClient
+                const { data } = await supabase
                     .from('verified_users')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -971,7 +973,7 @@
             }
             
             try {
-                await supabaseClient
+                await supabase
                     .from('verified_users')
                     .insert({ username, password });
                     
@@ -987,7 +989,7 @@
         window.deleteVerified = async (id) => {
             if (confirm('Удалить PREMIUM-пользователя?')) {
                 try {
-                    await supabaseClient.from('verified_users').delete().eq('id', id);
+                    await supabase.from('verified_users').delete().eq('id', id);
                     showMessage('Удалено', 'success');
                     loadVerified();
                 } catch (error) {
@@ -1001,7 +1003,7 @@
         // ============================================
         async function loadVotes() {
             try {
-                const { data } = await supabaseClient
+                const { data } = await supabase
                     .from('votes')
                     .select('*, candidates(name)')
                     .order('created_at', { ascending: false })
@@ -1026,7 +1028,7 @@
         // ============================================
         async function loadCandidates() {
             try {
-                const { data } = await supabaseClient
+                const { data } = await supabase
                     .from('candidates')
                     .select('*')
                     .order('votes', { ascending: false });
@@ -1052,7 +1054,7 @@
         window.deleteCandidate = async (id) => {
             if (confirm('Удалить кандидата?')) {
                 try {
-                    await supabaseClient.from('candidates').delete().eq('id', id);
+                    await supabase.from('candidates').delete().eq('id', id);
                     showMessage('Кандидат удалён', 'success');
                     loadCandidates();
                 } catch (error) {
@@ -1061,156 +1063,150 @@
             }
         };
 
-// ============================================
-// ЗАГРУЗКА ПРЕДЛОЖЕНИЙ - ИСПРАВЛЕННАЯ ВЕРСИЯ
-// ============================================
-async function loadSuggestions() {
-    try {
-        console.log('Загрузка предложений...');
-        
-        const { data, error } = await supabase
-            .from('suggestions')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        if (error) {
-            console.error('Ошибка Supabase:', error);
-            throw error;
+        // ============================================
+        // ЗАГРУЗКА ПРЕДЛОЖЕНИЙ - ИСПРАВЛЕНО
+        // ============================================
+        async function loadSuggestions() {
+            try {
+                console.log('Загрузка предложений...');
+                
+                const { data, error } = await supabase
+                    .from('suggestions')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Ошибка Supabase:', error);
+                    throw error;
+                }
+                
+                console.log('Получены данные:', data);
+                
+                let html = '';
+                
+                if (!data || data.length === 0) {
+                    html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
+                } else {
+                    data.forEach(s => {
+                        let statusBadge = '';
+                        let statusText = s.status || 'pending';
+                        
+                        if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
+                        else if (statusText === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
+                        else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
+                        
+                        // Парсим сообщение для отображения
+                        let displayMessage = s.message || '-';
+                        let candidateName = 'Не указан';
+                        let description = displayMessage;
+                        
+                        // Пробуем извлечь имя кандидата из сообщения
+                        const nameMatch = displayMessage.match(/Кандидат:\s*(.+?)(?:\n|$)/);
+                        if (nameMatch) {
+                            candidateName = nameMatch[1].trim();
+                            description = displayMessage.replace(/Кандидат:.*?\n/, '').replace(/Описание:\s*/, '');
+                        }
+                        
+                        // Сокращаем длинные сообщения
+                        if (description.length > 100) {
+                            description = description.substring(0, 100) + '...';
+                        }
+                        
+                        html += `<tr>
+                            <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
+                            <td>${escapeHtml(s.name || 'Аноним')}</td>
+                            <td>
+                                <strong>${escapeHtml(candidateName)}</strong><br>
+                                <small>${escapeHtml(description)}</small>
+                            </td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                ${statusText === 'pending' ? `
+                                    <button class="btn btn-sm btn-success" onclick="approveSuggestion('${s.id}')">✅ Одобрить</button>
+                                    <button class="btn btn-sm btn-danger" onclick="rejectSuggestion('${s.id}')">❌ Отклонить</button>
+                                ` : '-'}
+                            </td>
+                        </tr>`;
+                    });
+                }
+                
+                document.getElementById('suggestionsBody').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Ошибка загрузки предложений:', error);
+                document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
+            }
         }
-        
-        console.log('Получены данные:', data);
-        
-        let html = '';
-        
-        if (!data || data.length === 0) {
-            html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
-        } else {
-            data?.forEach(s => {
-                let statusBadge = '';
-                let statusText = s.status || 'pending';
+
+        // ============================================
+        // ОДОБРЕНИЕ ПРЕДЛОЖЕНИЯ
+        // ============================================
+        window.approveSuggestion = async (id) => {
+            try {
+                // Получаем данные предложения
+                const { data: suggestion, error: fetchError } = await supabase
+                    .from('suggestions')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
                 
-                if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
-                else if (statusText === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
-                else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
+                if (fetchError || !suggestion) {
+                    showMessage('Предложение не найдено', 'error');
+                    return;
+                }
                 
-                // Парсим сообщение для отображения
-                let displayMessage = s.message || '-';
-                let candidateName = 'Не указан';
-                let description = displayMessage;
+                // Парсим сообщение
+                const message = suggestion.message || '';
+                let name = 'Новый кандидат';
                 
                 // Пробуем извлечь имя кандидата из сообщения
-                const nameMatch = displayMessage.match(/Кандидат:\s*(.+?)(?:\n|$)/);
+                const nameMatch = message.match(/Кандидат:\s*(.+?)(?:\n|$)/);
                 if (nameMatch) {
-                    candidateName = nameMatch[1];
-                    description = displayMessage.replace(/Кандидат:.*?\n/, '').replace(/Описание:\s*/, '');
+                    name = nameMatch[1].trim();
                 }
                 
-                // Сокращаем длинные сообщения
-                if (description.length > 100) {
-                    description = description.substring(0, 100) + '...';
+                // Добавляем кандидата
+                const { error: insertError } = await supabase
+                    .from('candidates')
+                    .insert({ 
+                        name: name,
+                        class: 'Предложенный кандидат',
+                        votes: 0,
+                        photo_url: 'https://i.pravatar.cc/300'
+                    });
+                
+                if (insertError) {
+                    showMessage('Ошибка при добавлении кандидата: ' + insertError.message, 'error');
+                    return;
                 }
                 
-                html += `<tr>
-                    <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
-                    <td>${escapeHtml(s.name || 'Аноним')}</td>
-                    <td>
-                        <strong>${escapeHtml(candidateName)}</strong><br>
-                        <small>${escapeHtml(description)}</small>
-                    </td>
-                    <td>${statusBadge}</td>
-                    <td>
-                        ${statusText === 'pending' ? `
-                            <button class="btn btn-sm btn-success" onclick="approveSuggestion('${s.id}')">✅ Одобрить</button>
-                            <button class="btn btn-sm btn-danger" onclick="rejectSuggestion('${s.id}')">❌ Отклонить</button>
-                        ` : '-'}
-                    </td>
-                </tr>`;
-            });
-        }
-        
-        document.getElementById('suggestionsBody').innerHTML = html;
-        
-    } catch (error) {
-        console.error('Ошибка загрузки предложений:', error);
-        document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
-    }
-}
+                // Обновляем статус предложения
+                await supabase
+                    .from('suggestions')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                
+                showMessage('✅ Кандидат добавлен!', 'success');
+                loadSuggestions();
+                loadCandidates();
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        };
 
-// Одобрение предложения
-window.approveSuggestion = async (id) => {
-    try {
-        // Получаем данные предложения
-        const { data: suggestion } = await supabase
-            .from('suggestions')
-            .select('*')
-            .eq('id', id)
-            .single();
-        
-        if (!suggestion) {
-            showMessage('Предложение не найдено', 'error');
-            return;
-        }
-        
-        // Парсим сообщение
-        const message = suggestion.message || '';
-        let name = 'Новый кандидат';
-        let bio = '';
-        
-        // Пробуем извлечь имя кандидата из сообщения
-        const nameMatch = message.match(/Кандидат:\s*(.+?)(?:\n|$)/);
-        if (nameMatch) {
-            name = nameMatch[1].trim();
-        }
-        
-        // Добавляем кандидата
-        await supabase
-            .from('candidates')
-            .insert({ 
-                name: name,
-                class: 'Новый кандидат',
-                bio: message,
-                votes: 0,
-                photo_url: 'https://i.pravatar.cc/300'
-            });
-            
-        // Обновляем статус предложения
-        await supabase
-            .from('suggestions')
-            .update({ status: 'approved' })
-            .eq('id', id);
-            
-        showMessage('✅ Кандидат добавлен!', 'success');
-        loadSuggestions();
-        loadCandidates(); // Обновляем список кандидатов
-    } catch (error) {
-        console.error('Ошибка:', error);
-        showMessage('Ошибка: ' + error.message, 'error');
-    }
-};
-
-// Отклонение предложения
-window.rejectSuggestion = async (id) => {
-    try {
-        await supabase
-            .from('suggestions')
-            .update({ status: 'rejected' })
-            .eq('id', id);
-            
-        showMessage('❌ Предложение отклонено', 'info');
-        loadSuggestions();
-    } catch (error) {
-        showMessage('Ошибка: ' + error.message, 'error');
-    }
-};
-
+        // ============================================
+        // ОТКЛОНЕНИЕ ПРЕДЛОЖЕНИЯ
+        // ============================================
         window.rejectSuggestion = async (id) => {
             try {
-                await supabaseClient
+                await supabase
                     .from('suggestions')
                     .update({ status: 'rejected' })
                     .eq('id', id);
                     
-                showMessage('Предложение отклонено', 'info');
+                showMessage('❌ Предложение отклонено', 'info');
                 loadSuggestions();
             } catch (error) {
                 showMessage('Ошибка: ' + error.message, 'error');
@@ -1222,7 +1218,7 @@ window.rejectSuggestion = async (id) => {
         // ============================================
         async function loadSuspicious() {
             try {
-                const { data } = await supabaseClient
+                const { data } = await supabase
                     .from('suspicious_activity')
                     .select('*')
                     .order('timestamp', { ascending: false })
@@ -1270,7 +1266,7 @@ window.rejectSuggestion = async (id) => {
             
             const class_ = prompt('Класс:') || '11 класс';
             
-            supabaseClient
+            supabase
                 .from('candidates')
                 .insert({
                     name: name,
@@ -1281,6 +1277,9 @@ window.rejectSuggestion = async (id) => {
                 .then(() => {
                     showMessage('Кандидат добавлен', 'success');
                     loadCandidates();
+                })
+                .catch(error => {
+                    showMessage('Ошибка: ' + error.message, 'error');
                 });
         });
     </script>
