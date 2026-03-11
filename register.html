@@ -160,12 +160,12 @@
         
         <div class="form-group">
             <label>Настоящее имя</label>
-            <input type="text" id="realName" class="form-control" placeholder="Иванов Иван" maxlength="50">
+            <input type="text" id="realName" class="form-control" placeholder="Его не будет видно остальным, но админы будут првоерять на наличие в базе и списках школы" maxlength="50">
         </div>
 
         <div class="form-group">
             <label>Никнейм (латиница и цифры, до 10 символов)</label>
-            <input type="text" id="nickname" class="form-control" placeholder="john2007" maxlength="10" pattern="[A-Za-z0-9]+">
+            <input type="text" id="nickname" class="form-control" placeholder="StenKa2026" maxlength="10" pattern="[A-Za-z0-9]+">
             <div class="hint" id="nicknameHint">Только латиница и цифры</div>
         </div>
 
@@ -187,7 +187,7 @@
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const classes = ['7А', '7Б', '8А', '8Б', '9А', '9Б', '10А', '11А'];
+        const classes = ['6А', ':6Б', '7А', '7Б', '8А', '8Б', '9А', '9Б', '10А', '11А'];
         let selectedClass = '';
         let isNicknameValid = false;
 
