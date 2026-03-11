@@ -117,6 +117,70 @@
             padding: 0 16px 30px 16px;
         }
 
+        /* Информация о пользователе */
+        .user-info-bar {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .user-info-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .user-nickname {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .user-class {
+            background: #4a6fa5;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 3px solid #2c3e50;
+        }
+
+        .user-prime {
+            background: #ffd966;
+            color: #2c3e50;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 3px solid #b38f4a;
+        }
+
+        .logout-btn {
+            background: #e0e0e0;
+            color: #2c3e50;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid #b0b0b0;
+            transition: all 0.1s;
+        }
+
+        .logout-btn:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
+
         /* Блок с кнопкой просмотра */
         .view-actions {
             display: flex;
@@ -170,6 +234,12 @@
             flex-shrink: 0;
         }
 
+        .avatar-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
         .avatar {
             width: 100%;
             height: 100%;
@@ -177,6 +247,52 @@
             object-fit: cover;
             border: 3px solid #4a6fa5;
             box-shadow: 0 4px 0 #2c3e50;
+            transition: all 0.3s;
+        }
+
+        /* Рамки */
+        .avatar-frame-neon {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 22px;
+            border: 3px solid #00ff88;
+            box-shadow: 0 0 15px #00ff88, 0 4px 0 #00aa55;
+            pointer-events: none;
+        }
+
+        .avatar-frame-gold {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 22px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 15px #ffd700, 0 4px 0 #b38f4a;
+            pointer-events: none;
+        }
+
+        .avatar-frame-event {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 22px;
+            border: 3px solid #ff6b6b;
+            box-shadow: 0 0 15px #ff6b6b, 0 4px 0 #c0392b;
+            pointer-events: none;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+            background-size: 200% 200%;
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .sticker {
@@ -189,6 +305,7 @@
             box-shadow: 0 2px 0 rgba(0,0,0,0.2);
             cursor: move;
             transition: transform 0.2s;
+            z-index: 5;
         }
 
         .sticker:hover {
@@ -211,6 +328,7 @@
             justify-content: center;
             cursor: pointer;
             border-bottom: 2px solid #962d22;
+            z-index: 15;
         }
 
         /* Позиции для стикеров */
@@ -219,6 +337,10 @@
         .sticker-pos-3 { bottom: -10px; left: -10px; }
         .sticker-pos-4 { bottom: -10px; right: -10px; }
         .sticker-pos-5 { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .sticker-pos-6 { top: -10px; left: 50%; transform: translateX(-50%); }
+        .sticker-pos-7 { bottom: -10px; left: 50%; transform: translateX(-50%); }
+        .sticker-pos-8 { left: -10px; top: 50%; transform: translateY(-50%); }
+        .sticker-pos-9 { right: -10px; top: 50%; transform: translateY(-50%); }
 
         .avatar-actions {
             display: flex;
@@ -244,16 +366,110 @@
             border-bottom-width: 1px;
         }
 
-        .prime-badge {
-            background: #ffd966;
-            color: #2c3e50;
-            padding: 6px 12px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border-bottom: 2px solid #b38f4a;
-            width: fit-content;
+        /* Статус */
+        .status-section {
+            margin-bottom: 20px;
         }
+
+        .status-display {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 12px 15px;
+            border-left: 4px solid #4a6fa5;
+            margin-bottom: 10px;
+            font-style: italic;
+            color: #34495e;
+        }
+
+        .status-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 0.95rem;
+        }
+
+        .status-input input:focus {
+            border-color: #4a6fa5;
+            outline: none;
+        }
+
+        .status-input button {
+            background: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid #2c3e50;
+        }
+
+        .status-input button:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
+
+        /* Рамки */
+        .frames-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .frames-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .frames-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .frame-option {
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .frame-option:hover {
+            border-color: #4a6fa5;
+            transform: translateY(-2px);
+        }
+
+        .frame-option.active {
+            border-color: #4a6fa5;
+            background: #eef2f7;
+        }
+
+        .frame-preview {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 5px;
+            border-radius: 10px;
+        }
+
+        .frame-preview.standard { background: #4a6fa5; }
+        .frame-preview.neon { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .frame-preview.gold { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .frame-preview.event { background: linear-gradient(45deg, #ff6b6b, #ffd700); }
 
         /* Секция стикеров */
         .stickers-section {
@@ -271,6 +487,41 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .sticker-url-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .sticker-url-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 0.95rem;
+        }
+
+        .sticker-url-input input:focus {
+            border-color: #4a6fa5;
+            outline: none;
+        }
+
+        .sticker-url-input button {
+            background: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid #2c3e50;
+        }
+
+        .sticker-url-input button:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
         }
 
         .stickers-grid {
@@ -303,15 +554,13 @@
             margin-bottom: 5px;
         }
 
-        .sticker-item span {
+        .sticker-rarity {
             font-size: 0.7rem;
             color: #7f8c8d;
         }
 
-        .sticker-item.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .sticker-rarity.rare { color: #f1c40f; }
+        .sticker-rarity.event { color: #e74c3c; }
 
         .sticker-counter {
             color: #4a6fa5;
@@ -370,7 +619,6 @@
             border-bottom-width: 1px;
         }
 
-        /* Мини-плеер */
         .mini-player {
             background: #f8f9fa;
             border-radius: 16px;
@@ -434,6 +682,49 @@
             border-bottom: 2px solid #b0b0b0;
         }
 
+        /* Реакции */
+        .reactions-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .reactions-title {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .reactions-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .reaction-btn {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            padding: 8px 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .reaction-btn:hover {
+            border-color: #4a6fa5;
+            transform: translateY(-2px);
+        }
+
+        .reaction-count {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
         /* Сообщения */
         .message {
             position: fixed;
@@ -468,12 +759,21 @@
                 align-items: center;
             }
             
-            .track-input {
+            .track-input, .sticker-url-input, .status-input {
                 flex-direction: column;
             }
             
             .mini-player {
                 flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .user-info-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-info-left {
                 justify-content: center;
             }
         }
@@ -509,11 +809,21 @@
         </div>
 
         <div class="profile-content">
+            <!-- Информация о пользователе -->
+            <div class="user-info-bar" id="userInfoBar">
+                <div class="user-info-left">
+                    <span class="user-nickname" id="userNickname">Загрузка...</span>
+                    <span class="user-class" id="userClass"></span>
+                    <span class="user-prime" id="userPrime">👑 Обычный</span>
+                </div>
+                <button class="logout-btn" id="logoutBtn">Выйти</button>
+            </div>
+
             <!-- Кнопка просмотра со стороны -->
             <div class="view-actions">
-                <a href="check_account.html" class="view-profile-btn">
+                <button class="view-profile-btn" id="viewProfileBtn">
                     <span>👁️</span> Посмотреть профиль со стороны
-                </a>
+                </button>
             </div>
 
             <!-- Профиль -->
@@ -521,7 +831,10 @@
                 <div class="profile-header">
                     <!-- Аватар со стикерами -->
                     <div class="avatar-container" id="avatarContainer">
-                        <img src="https://i.pravatar.cc/300" class="avatar" id="avatar" alt="Аватар">
+                        <div class="avatar-wrapper">
+                            <img src="https://i.pravatar.cc/300" class="avatar" id="avatar" alt="Аватар">
+                            <div id="avatarFrame"></div>
+                        </div>
                         <!-- Стикеры будут добавляться сюда -->
                     </div>
 
@@ -530,44 +843,80 @@
                         <button class="change-avatar-btn" id="changeAvatarBtn">
                             <span>📷</span> Сменить аватар
                         </button>
-                        <div class="prime-badge" id="primeBadge">
-                            👑 Обычный аккаунт (1/5 стикеров)
+                    </div>
+                </div>
+
+                <!-- Статус -->
+                <div class="status-section">
+                    <div class="status-display" id="statusDisplay">Статус не установлен</div>
+                    <div class="status-input">
+                        <input type="text" id="statusInput" placeholder="Введите статус (до 50 символов)" maxlength="50">
+                        <button id="updateStatusBtn">Обновить</button>
+                    </div>
+                </div>
+
+                <!-- Рамки -->
+                <div class="frames-section">
+                    <h3><span>🖼️</span> Рамки для аватарки</h3>
+                    <div class="frames-grid" id="framesGrid">
+                        <div class="frame-option" onclick="selectFrame('standard')">
+                            <div class="frame-preview standard"></div>
+                            <div>Обычная</div>
+                        </div>
+                        <div class="frame-option" onclick="selectFrame('neon')">
+                            <div class="frame-preview neon"></div>
+                            <div>Неоновая</div>
+                        </div>
+                        <div class="frame-option" onclick="selectFrame('gold')">
+                            <div class="frame-preview gold"></div>
+                            <div>Золотая</div>
+                            <div style="font-size: 0.7rem; color: #f1c40f;">Prime</div>
+                        </div>
+                        <div class="frame-option" onclick="selectFrame('event')">
+                            <div class="frame-preview event"></div>
+                            <div>Ивентовая</div>
                         </div>
                     </div>
                 </div>
 
-              <!-- Секция стикеров -->
-<div class="stickers-section">
-    <h3>
-        <span>✨</span> Мои стикеры 
-        <span class="sticker-counter" id="stickerCounter">1/5</span>
-    </h3>
-    
-    <!-- Добавьте это поле для ввода URL -->
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <input type="text" id="stickerUrlInput" 
-               placeholder="Вставьте URL стикера" 
-               style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px;">
-        <button id="addStickerByUrlBtn" 
-                style="background: #4a6fa5; color: white; border: none; padding: 12px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; border-bottom: 3px solid #2c3e50;">
-            Добавить
-        </button>
-    </div>
+                <!-- Секция стикеров -->
+                <div class="stickers-section">
+                    <h3>
+                        <span>✨</span> Мои стикеры 
+                        <span class="sticker-counter" id="stickerCounter">0/1</span>
+                    </h3>
+                    
+                    <div class="sticker-url-input">
+                        <input type="text" id="stickerUrlInput" placeholder="Вставьте URL стикера (jpg, png, gif)">
+                        <button id="addStickerByUrlBtn">Добавить</button>
+                    </div>
 
-    <div class="stickers-grid" id="stickersGrid">
-        <!-- Стикеры будут здесь -->
-    </div>
-</div>
+                    <div class="stickers-grid" id="stickersGrid"></div>
+                    
+                    <p style="color: #7f8c8d; font-size: 0.85rem;">
+                        👑 Prime-аккаунт: до 5 стикеров. Нажмите на стикер, чтобы добавить.
+                    </p>
+                </div>
 
                 <!-- Музыкальный блок -->
                 <div class="music-section">
                     <h3><span>🎵</span> Мой трек</h3>
                     <div class="track-input">
-                        <input type="text" id="trackUrl" placeholder="Вставьте ссылку на трек (Spotify, YouTube, Яндекс.Музыка)">
+                        <input type="text" id="trackUrl" placeholder="Ссылка на трек (Spotify, YouTube, Яндекс.Музыка)">
                         <button id="addTrackBtn">Добавить</button>
                     </div>
-                    <div id="playerContainer">
-                        <!-- Плеер появится здесь -->
+                    <div id="playerContainer"></div>
+                </div>
+
+                <!-- Реакции на профиль -->
+                <div class="reactions-section">
+                    <div class="reactions-title">Реакции на профиль</div>
+                    <div class="reactions-grid" id="reactionsGrid">
+                        <div class="reaction-btn" onclick="addReaction('❤️')">❤️ <span class="reaction-count" id="reaction-❤️">0</span></div>
+                        <div class="reaction-btn" onclick="addReaction('🔥')">🔥 <span class="reaction-count" id="reaction-🔥">0</span></div>
+                        <div class="reaction-btn" onclick="addReaction('😎')">😎 <span class="reaction-count" id="reaction-😎">0</span></div>
+                        <div class="reaction-btn" onclick="addReaction('🤡')">🤡 <span class="reaction-count" id="reaction-🤡">0</span></div>
+                        <div class="reaction-btn" onclick="addReaction('💀')">💀 <span class="reaction-count" id="reaction-💀">0</span></div>
                     </div>
                 </div>
             </div>
@@ -576,217 +925,460 @@
 
     <div id="messageContainer"></div>
 
-   <script>
-    // ============================================
-    // СОСТОЯНИЕ ПРОФИЛЯ
-    // ============================================
-    let isPrime = false; // Обычный аккаунт
-    let maxStickers = isPrime ? 5 : 1;
-    let currentStickers = [];
-    let currentTrack = null;
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Позиции для стикеров
-    const stickerPositions = [
-        'sticker-pos-1', 'sticker-pos-2', 'sticker-pos-3', 'sticker-pos-4', 'sticker-pos-5'
-    ];
+        // ============================================
+        // СОСТОЯНИЕ
+        // ============================================
+        let currentUser = null;
+        let currentStickers = [];
+        let maxStickers = 1; // Обычный аккаунт
+        let currentFrame = 'standard';
 
-    // ============================================
-    // ФУНКЦИИ ПОКАЗА СООБЩЕНИЙ
-    // ============================================
-    function showMessage(text, type) {
-        const container = document.getElementById('messageContainer');
-        const msg = document.createElement('div');
-        msg.className = `message ${type}`;
-        msg.textContent = text;
-        container.appendChild(msg);
-        setTimeout(() => msg.remove(), 3000);
-    }
+        const stickerPositions = [
+            'sticker-pos-1', 'sticker-pos-2', 'sticker-pos-3', 'sticker-pos-4', 'sticker-pos-5',
+            'sticker-pos-6', 'sticker-pos-7', 'sticker-pos-8', 'sticker-pos-9'
+        ];
 
-    // ============================================
-    // ДОБАВЛЕНИЕ СТИКЕРА ПО URL
-    // ============================================
-    function addStickerByUrl() {
-        const urlInput = document.getElementById('stickerUrlInput');
-        const url = urlInput.value.trim();
-        
-        if (!url) {
-            showMessage('Введите URL стикера', 'error');
-            return;
-        }
-        
-        // Проверяем, что это похоже на URL картинки
-        if (!url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) && !url.includes('http')) {
-            showMessage('Пожалуйста, введите прямую ссылку на картинку', 'error');
-            return;
-        }
-        
-        // Проверяем лимит
-        if (currentStickers.length >= maxStickers) {
-            showMessage(`Достигнут лимит стикеров (${maxStickers})`, 'error');
-            return;
-        }
-        
-        // Создаем новый стикер
-        const newSticker = {
-            id: Date.now(), // уникальный ID на основе времени
-            url: url,
-            name: 'Стикер',
-            position: stickerPositions[currentStickers.length]
-        };
-        
-        currentStickers.push(newSticker);
-        renderStickers();
-        
-        // Очищаем поле ввода
-        urlInput.value = '';
-        
-        showMessage('Стикер добавлен!', 'success');
-    }
-
-    // ============================================
-    // УДАЛЕНИЕ СТИКЕРА
-    // ============================================
-    function removeSticker(stickerId) {
-        currentStickers = currentStickers.filter(s => s.id !== stickerId);
-        renderStickers();
-        showMessage('Стикер удален', 'success');
-    }
-
-    // ============================================
-    // ОТОБРАЖЕНИЕ СТИКЕРОВ
-    // ============================================
-    function renderStickers() {
-        const container = document.getElementById('avatarContainer');
-        
-        // Удаляем старые стикеры (оставляем только аватар)
-        while (container.children.length > 1) {
-            container.removeChild(container.lastChild);
-        }
-
-        // Добавляем новые стикеры
-        currentStickers.forEach((sticker, index) => {
-            const stickerEl = document.createElement('img');
-            stickerEl.src = sticker.url;
-            stickerEl.className = `sticker ${stickerPositions[index]}`;
-            stickerEl.draggable = false;
+        // ============================================
+        // ПРОВЕРКА АВТОРИЗАЦИИ
+        // ============================================
+        async function checkAuth() {
+            const userId = localStorage.getItem('userId');
             
-            // Кнопка удаления
-            const removeBtn = document.createElement('div');
-            removeBtn.className = 'sticker-remove';
-            removeBtn.innerHTML = '✕';
-            removeBtn.onclick = (e) => {
-                e.stopPropagation();
-                removeSticker(sticker.id);
+            if (!userId) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+
+                if (error || !data) {
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                currentUser = data;
+                maxStickers = data.is_prime ? 5 : 1;
+                
+                // Загружаем данные
+                document.getElementById('userNickname').textContent = data.nickname;
+                document.getElementById('userClass').textContent = data.class;
+                document.getElementById('userPrime').textContent = data.is_prime ? '👑 Prime' : '👑 Обычный';
+                document.getElementById('avatar').src = data.avatar_url || 'https://i.pravatar.cc/300';
+                document.getElementById('statusDisplay').textContent = data.status || 'Статус не установлен';
+                
+                await loadStickers();
+                await loadReactions();
+                await loadMusic();
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+
+        // ============================================
+        // ЗАГРУЗКА СТИКЕРОВ
+        // ============================================
+        async function loadStickers() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('user_stickers')
+                    .select('*')
+                    .eq('user_id', currentUser.id);
+
+                if (error) throw error;
+
+                currentStickers = data || [];
+                renderStickers();
+                
+                document.getElementById('stickerCounter').textContent = 
+                    `${currentStickers.length}/${maxStickers}`;
+
+            } catch (error) {
+                console.error('Ошибка загрузки стикеров:', error);
+            }
+        }
+
+        // ============================================
+        // ДОБАВЛЕНИЕ СТИКЕРА ПО URL
+        // ============================================
+        async function addStickerByUrl() {
+            const urlInput = document.getElementById('stickerUrlInput');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showMessage('Введите URL стикера', 'error');
+                return;
+            }
+
+            if (currentStickers.length >= maxStickers) {
+                showMessage(`Достигнут лимит стикеров (${maxStickers})`, 'error');
+                return;
+            }
+
+            try {
+                const newSticker = {
+                    user_id: currentUser.id,
+                    sticker_url: url,
+                    position: stickerPositions[currentStickers.length],
+                    rarity: 'common'
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('user_stickers')
+                    .insert(newSticker)
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                currentStickers.push(data);
+                renderStickers();
+                urlInput.value = '';
+                
+                showMessage('✅ Стикер добавлен!', 'success');
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // УДАЛЕНИЕ СТИКЕРА
+        // ============================================
+        async function removeSticker(stickerId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('user_stickers')
+                    .delete()
+                    .eq('id', stickerId);
+
+                if (error) throw error;
+
+                currentStickers = currentStickers.filter(s => s.id !== stickerId);
+                renderStickers();
+                showMessage('Стикер удален', 'success');
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // ОТОБРАЖЕНИЕ СТИКЕРОВ
+        // ============================================
+        function renderStickers() {
+            const container = document.getElementById('avatarContainer');
+            
+            // Удаляем старые стикеры (оставляем только аватар и рамку)
+            while (container.children.length > 1) {
+                container.removeChild(container.lastChild);
+            }
+
+            currentStickers.forEach((sticker, index) => {
+                const stickerWrapper = document.createElement('div');
+                stickerWrapper.style.position = 'relative';
+                stickerWrapper.style.display = 'contents';
+                
+                const stickerEl = document.createElement('img');
+                stickerEl.src = sticker.sticker_url;
+                stickerEl.className = `sticker ${sticker.position || stickerPositions[index]}`;
+                stickerEl.onerror = () => stickerEl.remove();
+                
+                const removeBtn = document.createElement('div');
+                removeBtn.className = 'sticker-remove';
+                removeBtn.innerHTML = '✕';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    removeSticker(sticker.id);
+                };
+                
+                container.appendChild(stickerEl);
+                container.appendChild(removeBtn);
+            });
+            
+            document.getElementById('stickerCounter').textContent = 
+                `${currentStickers.length}/${maxStickers}`;
+        }
+
+        // ============================================
+        // ВЫБОР РАМКИ
+        // ============================================
+        function selectFrame(frameType) {
+            currentFrame = frameType;
+            const frameDiv = document.getElementById('avatarFrame');
+            
+            const frames = {
+                standard: '',
+                neon: '<div class="avatar-frame-neon"></div>',
+                gold: '<div class="avatar-frame-gold"></div>',
+                event: '<div class="avatar-frame-event"></div>'
             };
             
-            const stickerWrapper = document.createElement('div');
-            stickerWrapper.style.position = 'relative';
-            stickerWrapper.style.display = 'contents';
-            stickerWrapper.appendChild(stickerEl);
-            stickerWrapper.appendChild(removeBtn);
+            frameDiv.innerHTML = frames[frameType] || '';
             
-            container.appendChild(stickerWrapper);
-        });
-        
-        // Обновляем счетчик
-        document.getElementById('stickerCounter').textContent = `${currentStickers.length}/${maxStickers}`;
-    }
-
-    // ============================================
-    // ПАРСИНГ ССЫЛКИ НА ТРЕК
-    // ============================================
-    function parseTrack(url) {
-        return {
-            title: 'Тестовый трек',
-            artist: 'Исполнитель',
-            cover: 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9',
-            url: url
-        };
-    }
-
-    // ============================================
-    // ОТОБРАЖЕНИЕ ПЛЕЕРА
-    // ============================================
-    function renderPlayer(track) {
-        const container = document.getElementById('playerContainer');
-        
-        container.innerHTML = `
-            <div class="mini-player">
-                <img src="${track.cover}" class="track-cover" alt="Обложка">
-                <div class="track-info">
-                    <div class="track-title">${track.title}</div>
-                    <div class="track-artist">${track.artist}</div>
-                </div>
-                <button class="track-play" onclick="playTrack()">▶</button>
-                <button class="track-remove" onclick="removeTrack()">Удалить</button>
-            </div>
-        `;
-    }
-
-    // ============================================
-    // УПРАВЛЕНИЕ ТРЕКОМ
-    // ============================================
-    function playTrack() {
-        alert('🎵 Воспроизведение трека (демо-режим)');
-    }
-
-    function removeTrack() {
-        currentTrack = null;
-        document.getElementById('playerContainer').innerHTML = '';
-        document.getElementById('trackUrl').value = '';
-        showMessage('Трек удален', 'success');
-    }
-
-    // ============================================
-    // ИНИЦИАЛИЗАЦИЯ
-    // ============================================
-    document.addEventListener('DOMContentLoaded', () => {
-        // Обработчик добавления стикера по URL
-        const addBtn = document.getElementById('addStickerByUrlBtn');
-        if (addBtn) {
-            addBtn.addEventListener('click', addStickerByUrl);
-        }
-
-        // Enter для добавления стикера
-        const urlInput = document.getElementById('stickerUrlInput');
-        if (urlInput) {
-            urlInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addStickerByUrl();
-                }
+            document.querySelectorAll('.frame-option').forEach(el => {
+                el.classList.remove('active');
             });
+            event.target.closest('.frame-option').classList.add('active');
         }
 
-        // Обработчик смены аватара
-        document.getElementById('changeAvatarBtn').addEventListener('click', () => {
-            const newAvatar = prompt('Введите URL новой аватарки:', 'https://i.pravatar.cc/300');
-            if (newAvatar) {
-                document.getElementById('avatar').src = newAvatar;
-                showMessage('Аватар обновлен!', 'success');
+        // ============================================
+        // ОБНОВЛЕНИЕ СТАТУСА
+        // ============================================
+        async function updateStatus() {
+            const status = document.getElementById('statusInput').value.trim();
+            
+            if (status.length > 50) {
+                showMessage('Максимум 50 символов', 'error');
+                return;
             }
-        });
 
-        // Обработчик добавления трека
-        document.getElementById('addTrackBtn').addEventListener('click', () => {
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ status: status })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                currentUser.status = status;
+                document.getElementById('statusDisplay').textContent = status || 'Статус не установлен';
+                document.getElementById('statusInput').value = '';
+                
+                showMessage('✅ Статус обновлен!', 'success');
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // СМЕНА АВАТАРА
+        // ============================================
+        async function changeAvatar() {
+            const url = prompt('Введите URL новой аватарки:', currentUser.avatar_url);
+            if (!url) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ avatar_url: url })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                document.getElementById('avatar').src = url;
+                currentUser.avatar_url = url;
+                showMessage('✅ Аватар обновлен!', 'success');
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // ПАРСИНГ МУЗЫКАЛЬНОЙ ССЫЛКИ
+        // ============================================
+        async function parseMusicUrl(url) {
+            // Здесь будет парсинг ссылок Spotify, YouTube и т.д.
+            // Пока демо-версия
+            return {
+                title: 'Тестовый трек',
+                artist: 'Исполнитель',
+                cover: 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9',
+                url: url
+            };
+        }
+
+        // ============================================
+        // ДОБАВЛЕНИЕ ТРЕКА
+        // ============================================
+        async function addTrack() {
             const url = document.getElementById('trackUrl').value.trim();
             if (!url) {
                 showMessage('Введите ссылку на трек', 'error');
                 return;
             }
 
-            const track = parseTrack(url);
-            currentTrack = track;
-            renderPlayer(track);
-            showMessage('Трек добавлен!', 'success');
-        });
+            try {
+                const musicData = await parseMusicUrl(url);
+                
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ 
+                        music_url: url,
+                        music_data: musicData
+                    })
+                    .eq('id', currentUser.id);
 
-        // Enter для добавления трека
-        document.getElementById('trackUrl').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('addTrackBtn').click();
+                if (error) throw error;
+
+                renderPlayer(musicData);
+                document.getElementById('trackUrl').value = '';
+                showMessage('✅ Трек добавлен!', 'success');
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
             }
+        }
+
+        // ============================================
+        // ЗАГРУЗКА МУЗЫКИ
+        // ============================================
+        async function loadMusic() {
+            if (currentUser.music_data) {
+                renderPlayer(currentUser.music_data);
+            }
+        }
+
+        // ============================================
+        // ОТОБРАЖЕНИЕ ПЛЕЕРА
+        // ============================================
+        function renderPlayer(track) {
+            const container = document.getElementById('playerContainer');
+            
+            container.innerHTML = `
+                <div class="mini-player">
+                    <img src="${track.cover}" class="track-cover" alt="Обложка">
+                    <div class="track-info">
+                        <div class="track-title">${track.title}</div>
+                        <div class="track-artist">${track.artist}</div>
+                    </div>
+                    <button class="track-play" onclick="playTrack('${track.url}')">▶</button>
+                    <button class="track-remove" onclick="removeTrack()">Удалить</button>
+                </div>
+            `;
+        }
+
+        function playTrack(url) {
+            window.open(url, '_blank');
+        }
+
+        async function removeTrack() {
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ music_url: null, music_data: null })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                document.getElementById('playerContainer').innerHTML = '';
+                showMessage('Трек удален', 'success');
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // РЕАКЦИИ
+        // ============================================
+        async function loadReactions() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('profile_reactions')
+                    .select('*')
+                    .eq('user_id', currentUser.id);
+
+                if (error) throw error;
+
+                data?.forEach(r => {
+                    const el = document.getElementById(`reaction-${r.reaction}`);
+                    if (el) el.textContent = r.count;
+                });
+
+            } catch (error) {
+                console.error('Ошибка загрузки реакций:', error);
+            }
+        }
+
+        async function addReaction(reaction) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('profile_reactions')
+                    .upsert({
+                        user_id: currentUser.id,
+                        reaction: reaction,
+                        count: supabaseClient.rpc('increment', { x: 1 })
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                const el = document.getElementById(`reaction-${reaction}`);
+                if (el) el.textContent = data.count;
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        // ============================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+
+            // Обработчики
+            document.getElementById('addStickerByUrlBtn').addEventListener('click', addStickerByUrl);
+            document.getElementById('changeAvatarBtn').addEventListener('click', changeAvatar);
+            document.getElementById('updateStatusBtn').addEventListener('click', updateStatus);
+            document.getElementById('addTrackBtn').addEventListener('click', addTrack);
+            document.getElementById('viewProfileBtn').addEventListener('click', () => {
+                window.open(`check_account.html?id=${currentUser.id}`, '_blank');
+            });
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            });
+
+            // Enter для полей ввода
+            document.getElementById('stickerUrlInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addStickerByUrl();
+            });
+            
+            document.getElementById('statusInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') updateStatus();
+            });
+            
+            document.getElementById('trackUrl').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addTrack();
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
