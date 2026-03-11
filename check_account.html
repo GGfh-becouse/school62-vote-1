@@ -108,7 +108,7 @@
 
         .back-link {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             margin: 0 16px 20px 16px;
         }
 
@@ -133,11 +133,51 @@
             border-bottom-width: 1px;
         }
 
-        /* Профиль */
+        /* Основной контент профиля */
         .profile-content {
             padding: 0 16px 30px 16px;
         }
 
+        /* Информация о пользователе */
+        .user-info-bar {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .user-nickname {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .user-class {
+            background: #4a6fa5;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 3px solid #2c3e50;
+        }
+
+        .user-prime {
+            background: #ffd966;
+            color: #2c3e50;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 3px solid #b38f4a;
+        }
+
+        /* Профиль */
         .profile-card {
             background: white;
             border-radius: 24px;
@@ -155,6 +195,12 @@
             margin: 0 auto 20px;
         }
 
+        .avatar-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
         .avatar {
             width: 100%;
             height: 100%;
@@ -162,6 +208,51 @@
             object-fit: cover;
             border: 3px solid #4a6fa5;
             box-shadow: 0 4px 0 #2c3e50;
+        }
+
+        /* Рамки */
+        .avatar-frame-neon {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 22px;
+            border: 3px solid #00ff88;
+            box-shadow: 0 0 15px #00ff88, 0 4px 0 #00aa55;
+            pointer-events: none;
+        }
+
+        .avatar-frame-gold {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 22px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 15px #ffd700, 0 4px 0 #b38f4a;
+            pointer-events: none;
+        }
+
+        .avatar-frame-event {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 22px;
+            border: 3px solid #ff6b6b;
+            box-shadow: 0 0 15px #ff6b6b, 0 4px 0 #c0392b;
+            pointer-events: none;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+            background-size: 200% 200%;
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .sticker {
@@ -172,6 +263,8 @@
             object-fit: cover;
             border: 2px solid white;
             box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+            pointer-events: none;
+            z-index: 5;
         }
 
         .sticker-pos-1 { top: -10px; left: -10px; }
@@ -179,24 +272,34 @@
         .sticker-pos-3 { bottom: -10px; left: -10px; }
         .sticker-pos-4 { bottom: -10px; right: -10px; }
         .sticker-pos-5 { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .sticker-pos-6 { top: -10px; left: 50%; transform: translateX(-50%); }
+        .sticker-pos-7 { bottom: -10px; left: 50%; transform: translateX(-50%); }
+        .sticker-pos-8 { left: -10px; top: 50%; transform: translateY(-50%); }
+        .sticker-pos-9 { right: -10px; top: 50%; transform: translateY(-50%); }
 
-        .user-name {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 10px;
+        /* Статус */
+        .status-section {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #4a6fa5;
+            font-style: italic;
+            color: #34495e;
+            text-align: left;
         }
 
-        .prime-badge {
-            display: inline-block;
-            background: #ffd966;
-            color: #2c3e50;
-            padding: 6px 15px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            border-bottom: 3px solid #b38f4a;
-            margin-bottom: 25px;
+        .status-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-text {
+            font-size: 1.1rem;
         }
 
         /* Музыкальный блок */
@@ -204,9 +307,8 @@
             background: #f8f9fa;
             border-radius: 20px;
             padding: 20px;
+            margin: 20px 0;
             border: 1px solid #e0e0e0;
-            max-width: 400px;
-            margin: 0 auto;
         }
 
         .music-section h3 {
@@ -215,7 +317,6 @@
             font-size: 1.1rem;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
         }
 
@@ -272,6 +373,154 @@
             border-bottom-width: 1px;
         }
 
+        .listening-status {
+            margin-top: 10px;
+            color: #4a6fa5;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Реакции */
+        .reactions-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .reactions-title {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .reactions-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .reaction-item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            padding: 8px 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .reaction-count {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Мини-карточка профиля (появляется при наведении на ник) */
+        .profile-mini-card {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            border: 2px solid #4a6fa5;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 250px;
+            margin-top: 10px;
+        }
+
+        .user-nickname-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .user-nickname-wrapper:hover .profile-mini-card {
+            display: block;
+        }
+
+        .mini-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #4a6fa5;
+            margin-right: 10px;
+        }
+
+        .mini-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .mini-details {
+            flex: 1;
+        }
+
+        .mini-nickname {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .mini-class {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .mini-sticker {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-right: 5px;
+        }
+
+        .mini-status {
+            font-size: 0.85rem;
+            color: #34495e;
+            font-style: italic;
+            margin: 5px 0;
+        }
+
+        .mini-music {
+            font-size: 0.8rem;
+            color: #4a6fa5;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Сообщения */
+        .message {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 12px 20px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+            z-index: 10001;
+            animation: slideIn 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-bottom: 4px solid rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .message.success { background: #4a6fa5; }
+        .message.error { background: #c0392b; }
+
         /* Адаптивность */
         @media (max-width: 600px) {
             .mini-player {
@@ -281,6 +530,11 @@
             }
             
             .track-info {
+                text-align: center;
+            }
+
+            .user-info-bar {
+                flex-direction: column;
                 text-align: center;
             }
         }
@@ -306,43 +560,62 @@
                         <span class="nav-icon">💬</span>
                         <span class="nav-text">Темки</span>
                     </a>
+                    
+                    <a href="login.html" class="nav-item">
+                        <span class="nav-icon">👤</span>
+                        <span class="nav-text">Войти</span>
+                    </a>
                 </nav>
             </div>
         </div>
 
         <div class="back-link">
-            <a href="your_account.html" class="back-btn">
-                <span>←</span> Вернуться в профиль
+            <a href="javascript:history.back()" class="back-btn">
+                <span>←</span> Назад
             </a>
         </div>
 
         <div class="profile-content">
+            <!-- Информация о пользователе -->
+            <div class="user-info-bar">
+                <div class="user-nickname-wrapper" id="nicknameWrapper">
+                    <span class="user-nickname" id="userNickname">Загрузка...</span>
+                    <!-- Мини-карточка появится здесь -->
+                </div>
+                <span class="user-class" id="userClass"></span>
+                <span class="user-prime" id="userPrime"></span>
+            </div>
+
+            <!-- Профиль -->
             <div class="profile-card">
                 <!-- Аватар со стикерами -->
                 <div class="avatar-container" id="avatarContainer">
-                    <img src="https://i.pravatar.cc/300" class="avatar" id="avatar" alt="Аватар">
-                    <!-- Стикеры из демо-данных -->
-                    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f49c.png" class="sticker sticker-pos-1">
-                    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2b50.png" class="sticker sticker-pos-2">
+                    <div class="avatar-wrapper">
+                        <img src="https://i.pravatar.cc/300" class="avatar" id="avatar" alt="Аватар">
+                        <div id="avatarFrame"></div>
+                    </div>
+                    <!-- Стикеры будут добавлены через JS -->
                 </div>
 
-                <div class="user-name">Аноним</div>
-                
-                <div class="prime-badge">
-                    👑 Обычный аккаунт
+                <!-- Статус -->
+                <div class="status-section">
+                    <div class="status-label">
+                        <span>📝</span> Статус
+                    </div>
+                    <div class="status-text" id="statusDisplay"></div>
                 </div>
 
                 <!-- Музыкальный блок -->
-                <div class="music-section">
+                <div class="music-section" id="musicSection" style="display: none;">
                     <h3><span>🎵</span> Слушает</h3>
-                    <div class="mini-player">
-                        <img src="https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9" class="track-cover" alt="Обложка">
-                        <div class="track-info">
-                            <div class="track-title">Тестовый трек</div>
-                            <div class="track-artist">Исполнитель</div>
-                        </div>
-                        <button class="track-play" onclick="playTrack()">▶</button>
-                    </div>
+                    <div id="playerContainer"></div>
+                    <div class="listening-status" id="listeningStatus"></div>
+                </div>
+
+                <!-- Реакции на профиль -->
+                <div class="reactions-section">
+                    <div class="reactions-title">Реакции</div>
+                    <div class="reactions-grid" id="reactionsGrid"></div>
                 </div>
             </div>
         </div>
@@ -350,21 +623,261 @@
 
     <div id="messageContainer"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        function playTrack() {
-            alert('🎵 Воспроизведение трека (демо-режим)');
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // ============================================
+        // СОСТОЯНИЕ
+        // ============================================
+        let profileUser = null;
+        let currentUserId = localStorage.getItem('userId');
+
+        // ============================================
+        // ЗАГРУЗКА ПРОФИЛЯ
+        // ============================================
+        async function loadProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const profileId = urlParams.get('id');
+
+            if (!profileId) {
+                showMessage('ID пользователя не указан', 'error');
+                setTimeout(() => window.history.back(), 2000);
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', profileId)
+                    .single();
+
+                if (error || !data) {
+                    showMessage('Пользователь не найден', 'error');
+                    setTimeout(() => window.history.back(), 2000);
+                    return;
+                }
+
+                profileUser = data;
+                displayProfile();
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка загрузки профиля', 'error');
+            }
         }
 
-        // В реальной версии здесь будет загрузка данных пользователя
-        document.addEventListener('DOMContentLoaded', () => {
-            // Загрузка профиля по ID из URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get('id');
-            if (userId) {
-                console.log('Загрузка профиля пользователя:', userId);
-                // Здесь будет запрос к базе данных
+        // ============================================
+        // ОТОБРАЖЕНИЕ ПРОФИЛЯ
+        // ============================================
+        async function displayProfile() {
+            // Основная информация
+            document.getElementById('userNickname').textContent = profileUser.nickname;
+            document.getElementById('userClass').textContent = profileUser.class;
+            document.getElementById('userPrime').textContent = profileUser.is_prime ? '👑 Prime' : '👑 Обычный';
+            document.getElementById('avatar').src = profileUser.avatar_url || 'https://i.pravatar.cc/300';
+            document.getElementById('statusDisplay').textContent = profileUser.status || 'Статус не установлен';
+
+            // Загружаем стикеры
+            await loadStickers();
+
+            // Загружаем музыку
+            await loadMusic();
+
+            // Загружаем реакции
+            await loadReactions();
+
+            // Создаем мини-карточку
+            createMiniCard();
+        }
+
+        // ============================================
+        // ЗАГРУЗКА СТИКЕРОВ
+        // ============================================
+        async function loadStickers() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('user_stickers')
+                    .select('*')
+                    .eq('user_id', profileUser.id);
+
+                if (error) throw error;
+
+                const container = document.getElementById('avatarContainer');
+                
+                // Удаляем старые стикеры (оставляем только аватар)
+                while (container.children.length > 1) {
+                    container.removeChild(container.lastChild);
+                }
+
+                // Добавляем стикеры
+                data?.forEach((sticker, index) => {
+                    const stickerEl = document.createElement('img');
+                    stickerEl.src = sticker.sticker_url;
+                    stickerEl.className = `sticker ${sticker.position}`;
+                    stickerEl.onerror = () => stickerEl.remove();
+                    container.appendChild(stickerEl);
+                });
+
+            } catch (error) {
+                console.error('Ошибка загрузки стикеров:', error);
             }
-        });
+        }
+
+        // ============================================
+        // ЗАГРУЗКА МУЗЫКИ
+        // ============================================
+        async function loadMusic() {
+            const musicSection = document.getElementById('musicSection');
+            
+            if (!profileUser.music_data) {
+                musicSection.style.display = 'none';
+                return;
+            }
+
+            musicSection.style.display = 'block';
+            
+            const track = profileUser.music_data;
+            const container = document.getElementById('playerContainer');
+            
+            container.innerHTML = `
+                <div class="mini-player">
+                    <img src="${track.cover}" class="track-cover" alt="Обложка">
+                    <div class="track-info">
+                        <div class="track-title">${track.title}</div>
+                        <div class="track-artist">${track.artist}</div>
+                    </div>
+                    <button class="track-play" onclick="playTrack('${track.url}')">▶</button>
+                </div>
+            `;
+
+            document.getElementById('listeningStatus').innerHTML = 
+                `🎧 слушает: ${track.title} — ${track.artist}`;
+        }
+
+        function playTrack(url) {
+            window.open(url, '_blank');
+        }
+
+        // ============================================
+        // ЗАГРУЗКА РЕАКЦИЙ
+        // ============================================
+        async function loadReactions() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('profile_reactions')
+                    .select('*')
+                    .eq('user_id', profileUser.id);
+
+                if (error) throw error;
+
+                const grid = document.getElementById('reactionsGrid');
+                const reactions = ['❤️', '🔥', '😎', '🤡', '💀'];
+                
+                let html = '';
+                reactions.forEach(reaction => {
+                    const found = data?.find(r => r.reaction === reaction);
+                    const count = found?.count || 0;
+                    
+                    html += `
+                        <div class="reaction-item" onclick="addReaction('${reaction}')">
+                            ${reaction} <span class="reaction-count">${count}</span>
+                        </div>
+                    `;
+                });
+                
+                grid.innerHTML = html;
+
+            } catch (error) {
+                console.error('Ошибка загрузки реакций:', error);
+            }
+        }
+
+        // ============================================
+        // ДОБАВЛЕНИЕ РЕАКЦИИ
+        // ============================================
+        async function addReaction(reaction) {
+            if (!currentUserId) {
+                showMessage('Войдите, чтобы ставить реакции', 'error');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('profile_reactions')
+                    .upsert({
+                        user_id: profileUser.id,
+                        reaction: reaction,
+                        count: supabaseClient.rpc('increment', { x: 1 })
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Обновляем отображение
+                await loadReactions();
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        // ============================================
+        // МИНИ-КАРТОЧКА ПРОФИЛЯ
+        // ============================================
+        async function createMiniCard() {
+            const wrapper = document.getElementById('nicknameWrapper');
+            
+            // Получаем первый стикер для мини-карточки
+            const { data: stickers } = await supabaseClient
+                .from('user_stickers')
+                .select('*')
+                .eq('user_id', profileUser.id)
+                .limit(1);
+
+            const miniCard = document.createElement('div');
+            miniCard.className = 'profile-mini-card';
+            
+            miniCard.innerHTML = `
+                <div class="mini-info">
+                    <img src="${profileUser.avatar_url || 'https://i.pravatar.cc/300'}" class="mini-avatar">
+                    <div class="mini-details">
+                        <div class="mini-nickname">${profileUser.nickname}</div>
+                        <div class="mini-class">${profileUser.class}</div>
+                    </div>
+                    ${stickers?.length ? `<img src="${stickers[0].sticker_url}" class="mini-sticker">` : ''}
+                </div>
+                ${profileUser.status ? `<div class="mini-status">"${profileUser.status}"</div>` : ''}
+                ${profileUser.music_data ? `
+                    <div class="mini-music">
+                        <span>🎵</span> ${profileUser.music_data.title} — ${profileUser.music_data.artist}
+                    </div>
+                ` : ''}
+            `;
+            
+            wrapper.appendChild(miniCard);
+        }
+
+        // ============================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        document.addEventListener('DOMContentLoaded', loadProfile);
     </script>
 </body>
 </html>
