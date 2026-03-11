@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Профиль пользователя - Школа №62</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif !important;
+        }
+
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(145deg, #4a6fa5 0%, #2c3e50 100%);
+            border-radius: 24px;
+            padding: 12px 20px;
+            margin: 16px;
+            box-shadow: 0 6px 0 #1a2a3a;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .school-badge {
+            background: #ffd966;
+            color: #2c3e50;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-bottom: 3px solid #b38f4a;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 3px solid rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-icon {
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            display: flex;
+            justify-content: flex-end;
+            margin: 0 16px 20px 16px;
+        }
+
+        .back-btn {
+            background: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid #2c3e50;
+            transition: all 0.1s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
+
+        /* Профиль */
+        .profile-content {
+            padding: 0 16px 30px 16px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 4px 0 #c0c0c0;
+            text-align: center;
+        }
+
+        /* Аватар со стикерами */
+        .avatar-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 3px solid #4a6fa5;
+            box-shadow: 0 4px 0 #2c3e50;
+        }
+
+        .sticker {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .sticker-pos-1 { top: -10px; left: -10px; }
+        .sticker-pos-2 { top: -10px; right: -10px; }
+        .sticker-pos-3 { bottom: -10px; left: -10px; }
+        .sticker-pos-4 { bottom: -10px; right: -10px; }
+        .sticker-pos-5 { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+        .user-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .prime-badge {
+            display: inline-block;
+            background: #ffd966;
+            color: #2c3e50;
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-bottom: 3px solid #b38f4a;
+            margin-bottom: 25px;
+        }
+
+        /* Музыкальный блок */
+        .music-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .music-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mini-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .track-cover {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid #4a6fa5;
+        }
+
+        .track-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .track-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .track-artist {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        .track-play {
+            background: #4a6fa5;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            border-bottom: 3px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .track-play:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 600px) {
+            .mini-player {
+                flex-wrap: wrap;
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .track-info {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка с навигацией -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>ШКОЛЬНАЯ СТЕНА</h1>
+                    <span class="school-badge">№62</span>
+                </div>
+                
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-item">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">Главная</span>
+                    </a>
+                    
+                    <a href="threads.html" class="nav-item">
+                        <span class="nav-icon">💬</span>
+                        <span class="nav-text">Темки</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="your_account.html" class="back-btn">
+                <span>←</span> Вернуться в профиль
+            </a>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-card">
+                <!-- Аватар со стикерами -->
+                <div class="avatar-container" id="avatarContainer">
+                    <img src="https://i.pravatar.cc/300" class="avatar" id="avatar" alt="Аватар">
+                    <!-- Стикеры из демо-данных -->
+                    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f49c.png" class="sticker sticker-pos-1">
+                    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2b50.png" class="sticker sticker-pos-2">
+                </div>
+
+                <div class="user-name">Аноним</div>
+                
+                <div class="prime-badge">
+                    👑 Обычный аккаунт
+                </div>
+
+                <!-- Музыкальный блок -->
+                <div class="music-section">
+                    <h3><span>🎵</span> Слушает</h3>
+                    <div class="mini-player">
+                        <img src="https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9" class="track-cover" alt="Обложка">
+                        <div class="track-info">
+                            <div class="track-title">Тестовый трек</div>
+                            <div class="track-artist">Исполнитель</div>
+                        </div>
+                        <button class="track-play" onclick="playTrack()">▶</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageContainer"></div>
+
+    <script>
+        function playTrack() {
+            alert('🎵 Воспроизведение трека (демо-режим)');
+        }
+
+        // В реальной версии здесь будет загрузка данных пользователя
+        document.addEventListener('DOMContentLoaded', () => {
+            // Загрузка профиля по ID из URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('id');
+            if (userId) {
+                console.log('Загрузка профиля пользователя:', userId);
+                // Здесь будет запрос к базе данных
+            }
+        });
+    </script>
+</body>
+</html>
