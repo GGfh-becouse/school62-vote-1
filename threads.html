@@ -463,30 +463,86 @@
             div.textContent = text;
             return div.innerHTML;
         }
-
-        // ============================================
-        // ЗАГРУЗКА ВСЕХ ТЕМОК
-        // ============================================
-        async function loadAllThreads() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('threads')
-                    .select('*')
-                    .order('bump_time', { ascending: false });
-                
-                if (error) throw error;
-                
-                // Обновляем последний ID
-                if (data && data.length > 0) {
-                    lastThreadId = Math.max(...data.map(t => t.id));
-                }
-                
-                return data || [];
-            } catch (error) {
-                console.error('Ошибка загрузки темок:', error);
-                return [];
-            }
+// ============================================
+// ЗАГРУЗКА ТРЕДОВ (ИСПРАВЛЕНО)
+// ============================================
+async function loadThreads() {
+    const threadsList = document.getElementById('threadsList');
+    const loader = document.getElementById('threadsLoader');
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('threads')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        loader.style.display = 'none';
+        
+        if (!data || data.length === 0) {
+            threadsList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                    <div class="emoji" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">💬</div>
+                    <p>Пока нет темок. Создайте первую!</p>
+                </div>
+            `;
+            return;
         }
+        
+        // Для каждого треда получаем количество ответов
+        let html = '';
+        for (const thread of data) {
+            const date = new Date(thread.created_at).toLocaleString('ru', {
+                day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+            });
+            
+            // Получаем количество ответов из thread_messages
+            const { count, error: countError } = await supabaseClient
+                .from('thread_messages')
+                .select('*', { count: 'exact', head: true })
+                .eq('thread_id', thread.id);
+            
+            const replyCount = countError ? 0 : (count || 0);
+            
+            // Проверяем, премиумный ли тред
+            const isPremium = isPremiumThread(thread.id);
+            const premiumClass = isPremium ? 'premium-thread' : '';
+            const premiumBadge = isPremium ? '<span class="premium-badge">👑 PREMIUM</span>' : '';
+            
+            html += `
+                <div class="thread-item ${premiumClass}" onclick="openThread(${thread.id})">
+                    <div class="thread-title">
+                        ${escapeHtml(thread.title)}
+                        ${premiumBadge}
+                    </div>
+                    <div class="thread-meta">
+                        <span><span class="emoji">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
+                        <span><span class="emoji">🕐</span> ${date}</span>
+                        ${thread.is_pinned ? '<span><span class="emoji">📌</span> Закреплено</span>' : ''}
+                        ${thread.is_hot ? '<span><span class="emoji">🔥</span> Горячее</span>' : ''}
+                    </div>
+                    <div class="thread-stats">
+                        <span class="thread-stat"><span class="emoji">💬</span> ${replyCount}</span>
+                        <span class="thread-stat"><span class="emoji">👁️</span> ${thread.views || 0}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        threadsList.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Ошибка загрузки темок:', error);
+        loader.style.display = 'none';
+        threadsList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #c0392b;">
+                <div class="emoji" style="font-size: 48px; margin-bottom: 15px;">❌</div>
+                <p>Ошибка загрузки темок: ${error.message}</p>
+            </div>
+        `;
+    }
+}
 
         // ============================================
         // ЗАГРУЗКА НОВЫХ ТЕМОК
