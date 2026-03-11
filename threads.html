@@ -538,21 +538,6 @@ async function loadThreads() {
             </div>
         `;
     });
-    
-    threadsList.innerHTML = html;
-        
-    } catch (error) {
-        console.error('Ошибка загрузки темок:', error);
-        loader.style.display = 'none';
-        threadsList.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #c0392b;">
-                <div class="emoji" style="font-size: 48px; margin-bottom: 15px;">❌</div>
-                <p>Ошибка загрузки темок: ${error.message}</p>
-            </div>
-        `;
-    }
-}
-
         // ============================================
         // ЗАГРУЗКА НОВЫХ ТЕМОК
         // ============================================
