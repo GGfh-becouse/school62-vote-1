@@ -129,7 +129,7 @@
         }
 
         .agreement-button {
-            background: #afb4bd !important;
+            background: #4a6fa5 !important;
             color: white !important;
             border: none !important;
             width: 100% !important;
@@ -139,7 +139,7 @@
             border-radius: 40px !important;
             cursor: pointer !important;
             transition: all 0.2s !important;
-            border-bottom: 4px solid #afb4bd !important;
+            border-bottom: 4px solid #2c3e50 !important;
             font-family: 'Roboto', sans-serif !important;
         }
 
@@ -205,7 +205,7 @@
 }
 
 .logo h1 {
-    color: white;
+    color: white !important; /* Возвращаем белый цвет */
     font-size: 1.3rem;
     font-weight: 700;
     margin: 0;
@@ -254,8 +254,8 @@
 }
 
 .nav-item.active {
-    background: #ffd966;
-    color: #2c3e50;
+    background: #ffd966 !important; /* Возвращаем желтый для активного */
+    color: #2c3e50 !important;
     border-bottom-color: #b38f4a;
     animation: glow 2s infinite;
 }
@@ -374,6 +374,42 @@
     opacity: 1;
     visibility: visible;
     bottom: -25px;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 600px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .main-nav {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .nav-item {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .nav-text {
+        display: none; /* На мобильных скрываем текст, оставляем иконки */
+    }
+    
+    .nav-item:hover .nav-text {
+        display: inline; /* Показываем при наведении */
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
 }
 
 /* Адаптивность для мобильных */
@@ -1120,10 +1156,38 @@
     <!-- ОСНОВНОЙ КОНТЕНТ -->
     <div class="container">
         <div class="main-content" id="mainContent">
-            <!-- Шапка -->
-            <div class="header">
-                <h1>ШКОЛЬНАЯ СТЕНКА <small>Школа №62</small></h1>
-            </div>
+           <!-- Шапка -->
+<div class="header">
+    <div class="header-content">
+        <div class="logo">
+            <h1>ШКОЛЬНАЯ СТЕНА</h1>
+            <span class="school-badge">№62</span>
+        </div>
+        
+        <!-- Горизонтальное меню -->
+        <nav class="main-nav">
+            <a href="index.html" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Главная</span>
+                <span class="nav-glow"></span>
+            </a>
+            
+            <a href="threads.html" class="nav-item" data-tooltip="Обсуждения по темам">
+                <span class="nav-icon">💬</span>
+                <span class="nav-text">Темки</span>
+                <span class="nav-badge">new</span>
+                <span class="nav-glow"></span>
+            </a>
+            
+            <a href="#" class="nav-item disabled">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Аккаунт</span>
+                <span class="nav-badge dev">soon</span>
+                <span class="nav-glow"></span>
+            </a>
+        </nav>
+    </div>
+</div>
 
             <!-- Статистика -->
             <div class="user-stats">
