@@ -127,6 +127,18 @@
             cursor: not-allowed;
         }
 
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+
+        .login-link a {
+            color: #4a6fa5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
         .message {
             position: fixed;
             top: 16px;
@@ -160,23 +172,37 @@
         
         <div class="form-group">
             <label>Настоящее имя</label>
-            <input type="text" id="realName" class="form-control" placeholder="Его не будет видно остальным. Только админ" maxlength="30">
+            <input type="text" id="realName" class="form-control" placeholder="Иванов Иван" maxlength="50">
         </div>
 
         <div class="form-group">
             <label>Никнейм (латиница и цифры, до 10 символов)</label>
-            <input type="text" id="nickname" class="form-control" placeholder="StenKa2026" maxlength="10" pattern="[A-Za-z0-9]+">
+            <input type="text" id="nickname" class="form-control" placeholder="john2007" maxlength="10">
             <div class="hint" id="nicknameHint">Только латиница и цифры</div>
         </div>
 
         <div class="form-group">
+            <label>Пароль (минимум 6 символов)</label>
+            <input type="password" id="password" class="form-control" placeholder="••••••••" maxlength="50">
+            <div class="hint" id="passwordHint">Минимум 6 символов</div>
+        </div>
+
+        <div class="form-group">
+            <label>Повторите пароль</label>
+            <input type="password" id="passwordConfirm" class="form-control" placeholder="••••••••" maxlength="50">
+            <div class="hint" id="passwordConfirmHint"></div>
+        </div>
+
+        <div class="form-group">
             <label>Класс</label>
-            <div class="class-select" id="classSelect">
-                <!-- Классы будут добавлены через JS -->
-            </div>
+            <div class="class-select" id="classSelect"></div>
         </div>
 
         <button class="register-btn" id="registerBtn" disabled>ЗАРЕГИСТРИРОВАТЬСЯ</button>
+
+        <div class="login-link">
+            Уже есть аккаунт? <a href="login.html">Войти</a>
+        </div>
     </div>
 
     <div id="messageContainer"></div>
@@ -187,9 +213,10 @@
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const classes = ['6А', ':6Б', '7А', '7Б', '8А', '8Б', '9А', '9Б', '10А', '11А'];
+        const classes = ['7А', '7Б', '8А', '8Б', '9А', '9Б', '10А', '11А'];
         let selectedClass = '';
         let isNicknameValid = false;
+        let isPasswordValid = false;
 
         // Заполняем классы
         const classSelect = document.getElementById('classSelect');
@@ -215,7 +242,6 @@
             const value = e.target.value;
             const hint = document.getElementById('nicknameHint');
             
-            // Проверка на латиницу и цифры
             const regex = /^[A-Za-z0-9]+$/;
             if (value && !regex.test(value)) {
                 hint.textContent = '❌ Только латиница и цифры';
@@ -238,12 +264,49 @@
             checkForm();
         });
 
+        // Проверка пароля
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('passwordConfirm').value;
+            const hint = document.getElementById('passwordHint');
+            const confirmHint = document.getElementById('passwordConfirmHint');
+
+            // Проверка длины пароля
+            if (password.length < 6) {
+                hint.textContent = '❌ Минимум 6 символов';
+                hint.style.color = '#c0392b';
+                isPasswordValid = false;
+            } else {
+                hint.textContent = '✅ Минимум 6 символов';
+                hint.style.color = '#27ae60';
+                isPasswordValid = true;
+            }
+
+            // Проверка совпадения
+            if (confirm) {
+                if (password !== confirm) {
+                    confirmHint.textContent = '❌ Пароли не совпадают';
+                    confirmHint.style.color = '#c0392b';
+                    isPasswordValid = false;
+                } else {
+                    confirmHint.textContent = '✅ Пароли совпадают';
+                    confirmHint.style.color = '#27ae60';
+                }
+            } else {
+                confirmHint.textContent = '';
+            }
+
+            checkForm();
+        }
+
+        document.getElementById('password').addEventListener('input', checkPassword);
+        document.getElementById('passwordConfirm').addEventListener('input', checkPassword);
+
         function checkForm() {
             const realName = document.getElementById('realName').value.trim();
-            const nickname = document.getElementById('nickname').value.trim();
             const btn = document.getElementById('registerBtn');
             
-            btn.disabled = !(realName && isNicknameValid && selectedClass);
+            btn.disabled = !(realName && isNicknameValid && isPasswordValid && selectedClass);
         }
 
         function showMessage(text, type) {
@@ -258,6 +321,7 @@
         document.getElementById('registerBtn').addEventListener('click', async () => {
             const realName = document.getElementById('realName').value.trim();
             const nickname = document.getElementById('nickname').value.trim();
+            const password = document.getElementById('password').value.trim();
             
             try {
                 // Проверка уникальности ника
@@ -278,6 +342,7 @@
                     .insert({
                         real_name: realName,
                         nickname: nickname,
+                        password: password,
                         class: selectedClass,
                         avatar_url: 'https://i.pravatar.cc/300',
                         status: '',
@@ -290,6 +355,8 @@
 
                 // Сохраняем ID пользователя
                 localStorage.setItem('userId', data.id);
+                localStorage.setItem('userNickname', data.nickname);
+                localStorage.setItem('userClass', data.class);
                 
                 showMessage('✅ Регистрация успешна!', 'success');
                 
