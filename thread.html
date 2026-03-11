@@ -528,61 +528,93 @@
             }
         }
 
-        // ============================================
-        // ОТПРАВКА ОТВЕТА
-        // ============================================
-        async function submitReply() {
-            const content = document.getElementById('replyContent').value.trim();
+// ============================================
+// ОТПРАВКА ОТВЕТА (ИСПРАВЛЕННАЯ СРОЧНО)
+// ============================================
+async function submitReply() {
+    const content = document.getElementById('replyContent').value.trim();
+    
+    if (!content) {
+        showMessage('Напишите ответ', 'error');
+        return;
+    }
+    
+    if (content.length < 2) {
+        showMessage('Слишком короткий ответ', 'error');
+        return;
+    }
+    
+    try {
+        if (!userIp) await getUserIp();
+        
+        const now = new Date().toISOString();
+        
+        // 1. Сохраняем ответ
+        const { error: insertError } = await supabaseClient
+            .from('thread_messages')
+            .insert({
+                thread_id: threadId,
+                content: content,
+                author: verifiedUser || 'Аноним',
+                ip_address: userIp,
+                user_agent: navigator.userAgent,
+                is_first: false,
+                created_at: now
+            });
+        
+        if (insertError) {
+            console.error('Ошибка при создании ответа:', insertError);
+            showMessage('Ошибка: ' + insertError.message, 'error');
+            return;
+        }
+        
+        // 2. Получаем текущие значения (БЕЗ raw)
+        const { data: thread, error: fetchError } = await supabaseClient
+            .from('threads')
+            .select('reply_count')
+            .eq('id', threadId)
+            .single();
+        
+        if (fetchError) {
+            console.error('Ошибка при получении данных темы:', fetchError);
+        } else {
+            // 3. Обновляем счетчик и время (ОБЫЧНЫМ СПОСОБОМ)
+            const newReplyCount = (thread.reply_count || 0) + 1;
             
-            if (!content) {
-                showMessage('Напишите ответ', 'error');
-                return;
-            }
+            const { error: updateError } = await supabaseClient
+                .from('threads')
+                .update({ 
+                    reply_count: newReplyCount,
+                    bump_time: now,
+                    last_activity: now
+                })
+                .eq('id', threadId);
             
-            if (content.length < 2) {
-                showMessage('Слишком короткий ответ', 'error');
-                return;
-            }
-            
-            try {
-                if (!userIp) await getUserIp();
-                
-                // Сохраняем ответ
-                const { error } = await supabaseClient
-                    .from('thread_messages')
-                    .insert({
-                        thread_id: threadId,
-                        content: content,
-                        author: verifiedUser || 'Аноним',
-                        ip_address: userIp,
-                        user_agent: navigator.userAgent,
-                        is_first: false
-                    });
-                
-                if (error) throw error;
-                
-                // Обновляем счетчик и время последней активности в треде
-                await supabaseClient
-                    .from('threads')
-                    .update({ 
-                        messages_count: supabaseClient.raw('messages_count + 1'),
-                        last_activity: new Date().toISOString()
-                    })
-                    .eq('id', threadId);
-                
-                // Очищаем поле
-                document.getElementById('replyContent').value = '';
-                
-                showMessage('✅ Ответ отправлен!', 'success');
-                
-                // Перезагружаем ответы
-                loadReplies();
-                
-            } catch (error) {
-                console.error('Ошибка отправки ответа:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
+            if (updateError) {
+                console.error('Ошибка при обновлении счетчика:', updateError);
             }
         }
+        
+        // 4. Очищаем поле
+        document.getElementById('replyContent').value = '';
+        
+        showMessage('✅ Ответ отправлен!', 'success');
+        
+        // 5. Перезагружаем ответы
+        await loadReplies();
+        
+        // 6. Обновляем счетчик ответов в заголовке
+        const repliesCount = document.getElementById('repliesCount');
+        if (repliesCount) {
+            const currentCount = parseInt(repliesCount.textContent) || 0;
+            repliesCount.textContent = currentCount + 1;
+        }
+        
+    } catch (error) {
+        console.error('Ошибка отправки ответа:', error);
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+}
 
         // ============================================
         // ИНИЦИАЛИЗАЦИЯ
