@@ -463,55 +463,88 @@
     }
 
     // ============================================
-    // ЗАГРУЗКА ТЕМОК (ИСПРАВЛЕНО - БЕЗ loadAllThreads)
-    // ============================================
-    async function loadThreads() {
-        const threadsList = document.getElementById('threadsList');
-        const loader = document.getElementById('threadsLoader');
+// ЗАГРУЗКА ТЕМОК (С ПРАВИЛЬНЫМ ПОДСЧЕТОМ ОТВЕТОВ)
+// ============================================
+async function loadThreads() {
+    const threadsList = document.getElementById('threadsList');
+    const loader = document.getElementById('threadsLoader');
+    
+    try {
+        console.log('Загрузка темок...');
         
-        try {
-            console.log('Загрузка темок...');
-            
-            // Загружаем все треды
-            const { data: threads, error: threadsError } = await supabaseClient
-                .from('threads')
-                .select('*')
-                .order('created_at', { ascending: false });
-            
-            if (threadsError) throw threadsError;
-            
-            loader.style.display = 'none';
-            
-            if (!threads || threads.length === 0) {
-                threadsList.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #7f8c8d;">
-                        <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">💬</div>
-                        <p>Пока нет темок. Создайте первую!</p>
-                    </div>
-                `;
-                return;
+        // Загружаем все треды
+        const { data: threads, error: threadsError } = await supabaseClient
+            .from('threads')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (threadsError) throw threadsError;
+        
+        // Загружаем все сообщения для подсчета ответов
+        const { data: messages, error: messagesError } = await supabaseClient
+            .from('thread_messages')
+            .select('thread_id, is_first');
+        
+        if (messagesError) throw messagesError;
+        
+        // Считаем ответы для каждого треда
+        const replyCounts = {};
+        messages?.forEach(msg => {
+            // Если это не первое сообщение, считаем как ответ
+            if (!msg.is_first) {
+                replyCounts[msg.thread_id] = (replyCounts[msg.thread_id] || 0) + 1;
             }
-            
-            let html = '';
-            threads.forEach(thread => {
-                const date = new Date(thread.created_at).toLocaleString('ru', {
-                    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
-                });
-                
-                html += `
-                    <div class="thread-item" onclick="openThread(${thread.id})">
-                        <div class="thread-title">${escapeHtml(thread.title)}</div>
-                        <div class="thread-meta">
-                            <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
-                            <span><span style="font-size: 1rem;">🕐</span> ${date}</span>
-                        </div>
-                        <div class="thread-stats">
-                            <span class="thread-stat"><span style="font-size: 1rem;">💬</span> ${thread.reply_count || 0} ответов</span>
-                            <span class="thread-stat"><span style="font-size: 1rem;">👁️</span> ${thread.views || 0} просмотров</span>
-                        </div>
-                    </div>
-                `;
+        });
+        
+        loader.style.display = 'none';
+        
+        if (!threads || threads.length === 0) {
+            threadsList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                    <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">💬</div>
+                    <p>Пока нет темок. Создайте первую!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        threads.forEach(thread => {
+            const date = new Date(thread.created_at).toLocaleString('ru', {
+                day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
             });
+            
+            // Получаем количество ответов из нашего подсчета
+            const replyCount = replyCounts[thread.id] || 0;
+            
+            html += `
+                <div class="thread-item" onclick="openThread(${thread.id})">
+                    <div class="thread-title">${escapeHtml(thread.title)}</div>
+                    <div class="thread-meta">
+                        <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
+                        <span><span style="font-size: 1rem;">🕐</span> ${date}</span>
+                    </div>
+                    <div class="thread-stats">
+                        <span class="thread-stat"><span style="font-size: 1rem;">💬</span> ${replyCount} ${replyCount === 1 ? 'ответ' : replyCount > 1 && replyCount < 5 ? 'ответа' : 'ответов'}</span>
+                        <span class="thread-stat"><span style="font-size: 1rem;">👁️</span> ${thread.views || 0} ${thread.views === 1 ? 'просмотр' : thread.views > 1 && thread.views < 5 ? 'просмотра' : 'просмотров'}</span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        threadsList.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Ошибка загрузки темок:', error);
+        loader.style.display = 'none';
+        threadsList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #c0392b;">
+                <div style="font-size: 48px; margin-bottom: 15px;">❌</div>
+                <p>Ошибка загрузки темок: ${error.message}</p>
+            </div>
+        `;
+    }
+}
             
             threadsList.innerHTML = html;
             
