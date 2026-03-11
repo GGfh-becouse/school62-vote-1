@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Треды - Школа №62</title>
-    <!-- Подключаем шрифт как в ВК -->
+    <title>Тема - Школа №62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="utf-8">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif !important;
         }
 
         body {
@@ -77,7 +76,6 @@
             border-bottom: 3px solid #b38f4a;
         }
 
-        /* Горизонтальное меню */
         .main-nav {
             display: flex;
             gap: 8px;
@@ -100,12 +98,6 @@
             transition: all 0.3s ease;
         }
 
-        .nav-item.active {
-            background: #ffd966;
-            color: #2c3e50;
-            border-bottom-color: #b38f4a;
-        }
-
         .nav-item:hover {
             transform: translateY(-2px);
             background: rgba(255, 255, 255, 0.2);
@@ -115,191 +107,158 @@
             font-size: 1.1rem;
         }
 
-        /* Кнопка создания треда */
-        .create-thread-btn {
-            background: #4a6fa5;
-            color: white;
-            border: none;
-            width: calc(100% - 32px);
-            margin: 0 16px 20px 16px;
-            padding: 16px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 40px;
-            cursor: pointer;
-            border-bottom: 4px solid #2c3e50;
-            transition: all 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+        .back-btn {
+            background: #ffd966;
+            color: #2c3e50;
+            border-bottom-color: #b38f4a;
         }
 
-        .create-thread-btn:active {
-            transform: translateY(3px);
-            border-bottom-width: 2px;
-        }
-
-        /* Список тредов */
-        .threads-container {
-            padding: 0 16px;
-            margin-bottom: 30px;
-        }
-
-        .thread-item {
+        /* Основной пост */
+        .main-post {
             background: white;
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 15px;
-            border: 2px solid #e0e0e0;
-            box-shadow: 0 4px 0 #c0c0c0;
-            cursor: pointer;
-            transition: all 0.2s;
+            border-radius: 24px;
+            padding: 20px;
+            margin: 0 16px 20px 16px;
+            border: 2px solid #4a6fa5;
+            box-shadow: 0 4px 0 #2c3e50;
         }
 
-        .thread-item:hover {
-            border-color: #4a6fa5;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #a0a0a0;
-        }
-
-        .thread-title {
-            font-size: 1.2rem;
+        .post-title {
+            font-size: 1.5rem;
             font-weight: 700;
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
         }
 
-        .thread-meta {
+        .post-meta {
             display: flex;
             gap: 20px;
             color: #7f8c8d;
             font-size: 0.9rem;
+            margin-bottom: 15px;
             flex-wrap: wrap;
-            margin-bottom: 10px;
         }
 
-        .thread-meta span {
+        .post-meta span {
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-        .thread-meta i {
-            color: #4a6fa5;
+        .post-content {
+            color: #2c3e50;
+            line-height: 1.6;
+            font-size: 1rem;
+            white-space: pre-wrap;
         }
 
-        .thread-stats {
-            display: flex;
-            gap: 15px;
-            padding-top: 10px;
-            border-top: 1px solid #e0e0e0;
+        /* Ответы */
+        .replies-section {
+            margin: 20px 16px;
         }
 
-        .thread-stat {
+        .replies-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
+            gap: 10px;
+        }
+
+        .replies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .reply-item {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 15px;
+            border-left: 4px solid #4a6fa5;
+        }
+
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
             gap: 5px;
+        }
+
+        .reply-author {
+            font-weight: 700;
             color: #2c3e50;
-            font-weight: 500;
-            font-size: 0.9rem;
+            background: #ffd966;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .thread-stat i {
-            color: #4a6fa5;
+        .reply-date {
+            color: #7f8c8d;
+            font-size: 0.7rem;
         }
 
-        /* Модальное окно создания треда */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 10001;
-            backdrop-filter: blur(5px);
+        .reply-content {
+            color: #34495e;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
         }
 
-        .modal-content {
-            background: white;
-            border-radius: 32px;
-            max-width: 500px;
-            width: 90%;
-            margin: 50px auto;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 2px solid #4a6fa5;
+        /* Форма ответа */
+        .reply-form {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
         }
 
-        .modal-content h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #4a6fa5;
-        }
-
-        .modal-input {
+        .reply-form textarea {
             width: 100%;
             padding: 14px 16px;
             border: 2px solid #e0e0e0;
             border-radius: 16px;
             font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        .modal-input:focus {
-            border-color: #4a6fa5;
-            outline: none;
-        }
-
-        .modal-textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            min-height: 120px;
-            margin-bottom: 20px;
+            min-height: 100px;
+            margin-bottom: 15px;
             font-family: inherit;
             resize: vertical;
         }
 
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
+        .reply-form textarea:focus {
+            border-color: #4a6fa5;
+            outline: none;
         }
 
-        .modal-btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 700;
-            cursor: pointer;
-            border-bottom: 4px solid;
-            transition: all 0.1s;
-        }
-
-        .modal-btn.create {
+        .reply-btn {
             background: #4a6fa5;
             color: white;
-            border-bottom-color: #2c3e50;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border-bottom: 4px solid #2c3e50;
+            width: 100%;
         }
 
-        .modal-btn.cancel {
-            background: #e0e0e0;
-            color: #2c3e50;
-            border-bottom-color: #b0b0b0;
-        }
-
-        .modal-btn:active {
+        .reply-btn:active {
             transform: translateY(2px);
             border-bottom-width: 2px;
         }
 
-        /* Сообщения */
         .message {
             position: fixed;
             top: 16px;
@@ -322,7 +281,6 @@
         .message.success { background: #4a6fa5; }
         .message.error { background: #c0392b; }
 
-        /* Индикатор загрузки */
         .loader {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #4a6fa5;
@@ -337,6 +295,10 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .emoji {
+            font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Android Emoji', 'EmojiOne Color', sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -349,74 +311,56 @@
                     <span class="school-badge">№62</span>
                 </div>
                 
-                <!-- Горизонтальное меню -->
                 <nav class="main-nav">
                     <a href="index.html" class="nav-item">
                         <span class="nav-icon">🏠</span>
                         <span class="nav-text">Главная</span>
                     </a>
                     
-                    <a href="threads.html" class="nav-item active">
-                        <span class="nav-icon">📢</span>
-                        <span class="nav-text">Треды</span>
-                    </a>
-                    
-                    <a href="#" class="nav-item" style="opacity: 0.6; pointer-events: none;">
-                        <span class="nav-icon">👤</span>
-                        <span class="nav-text">Аккаунт</span>
+                    <a href="threads.html" class="nav-item back-btn">
+                        <span class="nav-icon">←</span>
+                        <span class="nav-text">К темкам</span>
                     </a>
                 </nav>
             </div>
         </div>
 
-        <!-- Кнопка создания треда -->
-        <button class="create-thread-btn" id="createThreadBtn">
-            <i class="fas fa-plus-circle"></i> СОЗДАТЬ ТРЕД
-        </button>
-
-        <!-- Список тредов -->
-        <div class="threads-container" id="threadsList">
-            <div class="loader" id="threadsLoader"></div>
+        <!-- Основной пост -->
+        <div class="main-post" id="mainPost">
+            <div class="loader" id="postLoader"></div>
         </div>
-    </div>
 
-    <!-- Модальное окно создания треда -->
-    <div class="modal" id="createThreadModal">
-        <div class="modal-content">
-            <h2>📢 СОЗДАТЬ НОВЫЙ ТРЕД</h2>
+        <!-- Ответы -->
+        <div class="replies-section">
+            <div class="replies-title">
+                <span style="font-size: 1.3rem;">💬</span> Ответы (<span id="repliesCount">0</span>)
+            </div>
             
-            <input type="text" id="threadTitle" class="modal-input" placeholder="Название треда" maxlength="100">
-            
-            <textarea id="threadContent" class="modal-textarea" placeholder="Текст сообщения..." maxlength="2000"></textarea>
-            
-            <div class="modal-buttons">
-                <button class="modal-btn create" id="submitThread">СОЗДАТЬ</button>
-                <button class="modal-btn cancel" id="cancelThread">ОТМЕНА</button>
+            <div class="replies-list" id="repliesList">
+                <div class="loader" id="repliesLoader"></div>
+            </div>
+
+            <!-- Форма ответа -->
+            <div class="reply-form">
+                <textarea id="replyContent" placeholder="Написать ответ..." maxlength="1000"></textarea>
+                <button class="reply-btn" id="submitReply">📨 ОТПРАВИТЬ</button>
             </div>
         </div>
     </div>
 
-    <!-- Контейнер для сообщений -->
     <div id="messageContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================
-        // SUPABASE КОНФИГ
-        // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ============================================
-        // ПЕРЕМЕННЫЕ
-        // ============================================
         let userIp = null;
         let verifiedUser = null;
+        let threadId = null;
+        let threadData = null;
 
-        // ============================================
-        // ПОЛУЧЕНИЕ IP
-        // ============================================
         async function getUserIp() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -429,9 +373,6 @@
             }
         }
 
-        // ============================================
-        // ПОКАЗ СООБЩЕНИЙ
-        // ============================================
         function showMessage(text, type) {
             const container = document.getElementById('messageContainer');
             const msg = document.createElement('div');
@@ -441,9 +382,6 @@
             setTimeout(() => msg.remove(), 3000);
         }
 
-        // ============================================
-        // ЭКРАНИРОВАНИЕ HTML
-        // ============================================
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -451,216 +389,234 @@
             return div.innerHTML;
         }
 
-        // ============================================
-        // ЗАГРУЗКА ТРЕДОВ (ИСПРАВЛЕНО ПОД ВАШУ ТАБЛИЦУ)
-        // ============================================
-        async function loadThreads() {
-            const threadsList = document.getElementById('threadsList');
-            const loader = document.getElementById('threadsLoader');
+        function getThreadIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        async function loadThread() {
+            threadId = getThreadIdFromUrl();
+            
+            if (!threadId) {
+                window.location.href = 'threads.html';
+                return;
+            }
             
             try {
                 const { data, error } = await supabaseClient
                     .from('threads')
                     .select('*')
-                    .order('bump_time', { ascending: false }); // Сортируем по bump_time
+                    .eq('id', threadId)
+                    .single();
                 
                 if (error) throw error;
                 
-                loader.style.display = 'none';
+                threadData = data;
                 
-                if (!data || data.length === 0) {
-                    threadsList.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: #7f8c8d;">
-                            <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
-                            <p>Пока нет тредов. Создайте первый!</p>
+                // Увеличиваем счетчик просмотров
+                await supabaseClient
+                    .from('threads')
+                    .update({ views: (data.views || 0) + 1 })
+                    .eq('id', threadId);
+                
+                displayMainPost(data);
+                loadReplies();
+                
+            } catch (error) {
+                console.error('Ошибка загрузки темы:', error);
+                document.getElementById('postLoader').style.display = 'none';
+                document.getElementById('mainPost').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #c0392b;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">❌</div>
+                        <p>Тема не найдена</p>
+                        <a href="threads.html" style="color: #4a6fa5; text-decoration: none;">Вернуться к темкам</a>
+                    </div>
+                `;
+            }
+        }
+
+        function displayMainPost(thread) {
+            const postLoader = document.getElementById('postLoader');
+            postLoader.style.display = 'none';
+            
+            const date = new Date(thread.created_at).toLocaleString('ru', {
+                day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+            });
+            
+            document.getElementById('mainPost').innerHTML = `
+                <div class="post-title">${escapeHtml(thread.title)}</div>
+                <div class="post-meta">
+                    <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
+                    <span><span style="font-size: 1rem;">🕐</span> ${date}</span>
+                    <span><span style="font-size: 1rem;">👁️</span> ${thread.views || 0} просмотров</span>
+                </div>
+                <div class="post-content">${escapeHtml(thread.content || '')}</div>
+            `;
+        }
+
+        async function loadReplies() {
+            const repliesList = document.getElementById('repliesList');
+            const repliesLoader = document.getElementById('repliesLoader');
+            const repliesCount = document.getElementById('repliesCount');
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('thread_messages')
+                    .select('*')
+                    .eq('thread_id', threadId)
+                    .order('created_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                repliesLoader.style.display = 'none';
+                
+                const replies = data?.filter(m => !m.is_first) || [];
+                repliesCount.textContent = replies.length;
+                
+                if (replies.length === 0) {
+                    repliesList.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: #7f8c8d;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">💭</div>
+                            <p>Пока нет ответов. Будьте первым!</p>
                         </div>
                     `;
                     return;
                 }
                 
                 let html = '';
-                data.forEach(thread => {
-                    const date = new Date(thread.created_at).toLocaleString('ru', {
+                replies.forEach(reply => {
+                    const date = new Date(reply.created_at).toLocaleString('ru', {
                         day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
                     });
                     
                     html += `
-                        <div class="thread-item" onclick="openThread(${thread.id})">
-                            <div class="thread-title">${escapeHtml(thread.title)}</div>
-                            <div class="thread-meta">
-                                <span><i class="fas fa-user"></i> ${escapeHtml(thread.author_name || 'Аноним')}</span>
-                                <span><i class="fas fa-clock"></i> ${date}</span>
-                                ${thread.is_pinned ? '<span><i class="fas fa-thumbtack"></i> Закреплено</span>' : ''}
-                                ${thread.is_hot ? '<span><i class="fas fa-fire"></i> Горячее</span>' : ''}
+                        <div class="reply-item">
+                            <div class="reply-header">
+                                <span class="reply-author">
+                                    <span style="font-size: 0.9rem;">👤</span> ${escapeHtml(reply.author || 'Аноним')}
+                                </span>
+                                <span class="reply-date">${date}</span>
                             </div>
-                            <div class="thread-stats">
-                                <span class="thread-stat"><i class="fas fa-comment"></i> ${thread.reply_count || 0} ответов</span>
-                                <span class="thread-stat"><i class="fas fa-eye"></i> ${thread.views || 0} просмотров</span>
-                            </div>
+                            <div class="reply-content">${escapeHtml(reply.content)}</div>
                         </div>
                     `;
                 });
                 
-                threadsList.innerHTML = html;
+                repliesList.innerHTML = html;
                 
             } catch (error) {
-                console.error('Ошибка загрузки тредов:', error);
-                loader.style.display = 'none';
-                threadsList.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #c0392b;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                        <p>Ошибка загрузки тредов</p>
+                console.error('Ошибка загрузки ответов:', error);
+                repliesLoader.style.display = 'none';
+                repliesList.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #c0392b;">
+                        <div style="font-size: 32px; margin-bottom: 10px;">❌</div>
+                        <p>Ошибка загрузки ответов</p>
                     </div>
                 `;
             }
         }
 
         // ============================================
-        // ОТКРЫТИЕ ТРЕДА
+        // ОТПРАВКА ОТВЕТА (ИСПРАВЛЕНО)
         // ============================================
-        function openThread(threadId) {
-            window.location.href = `thread.html?id=${threadId}`;
-        }
-
-        // ============================================
-        // СОЗДАНИЕ ТРЕДА (ИСПРАВЛЕНО ПОД ВАШУ ТАБЛИЦУ)
-        // ============================================
-        async function createThread() {
-            console.log('Функция createThread вызвана');
+        async function submitReply() {
+            const content = document.getElementById('replyContent').value.trim();
             
-            const title = document.getElementById('threadTitle').value.trim();
-            const content = document.getElementById('threadContent').value.trim();
-            
-            if (!title) {
-                showMessage('Введите название треда', 'error');
+            if (!content) {
+                showMessage('Напишите ответ', 'error');
                 return;
             }
             
-            if (!content) {
-                showMessage('Введите сообщение', 'error');
+            if (content.length < 2) {
+                showMessage('Слишком короткий ответ', 'error');
                 return;
             }
             
             try {
-                // Получаем IP
                 if (!userIp) await getUserIp();
                 
                 const now = new Date().toISOString();
                 
-                // Создаем тред с правильными названиями полей
-                const threadData = {
-                    title: title,
-                    content: content,
-                    author_name: verifiedUser || 'Аноним',
-                    author_ip: userIp,
-                    user_agent: navigator.userAgent,
-                    reply_count: 1,
-                    views: 0,
-                    bump_time: now,
-                    last_activity: now,
-                    created_at: now,
-                    is_pinned: false,
-                    is_hot: false
-                };
-                
-                console.log('Отправляемые данные:', threadData);
-                
-                const { data: thread, error: threadError } = await supabaseClient
-                    .from('threads')
-                    .insert(threadData)
-                    .select()
-                    .single();
-                
-                if (threadError) {
-                    console.error('Ошибка при создании треда:', threadError);
-                    showMessage('Ошибка: ' + threadError.message, 'error');
-                    return;
-                }
-                
-                console.log('Тред создан:', thread);
-                
-                // Создаем первое сообщение
-                const { error: messageError } = await supabaseClient
+                // Сохраняем ответ
+                const { error: insertError } = await supabaseClient
                     .from('thread_messages')
                     .insert({
-                        thread_id: thread.id,
+                        thread_id: threadId,
                         content: content,
                         author: verifiedUser || 'Аноним',
                         ip_address: userIp,
                         user_agent: navigator.userAgent,
-                        is_first: true,
+                        is_first: false,
                         created_at: now
                     });
                 
-                if (messageError) {
-                    console.error('Ошибка при создании сообщения:', messageError);
-                } else {
-                    console.log('Первое сообщение создано');
+                if (insertError) {
+                    console.error('Ошибка при создании ответа:', insertError);
+                    showMessage('Ошибка: ' + insertError.message, 'error');
+                    return;
                 }
                 
-                // Закрываем модалку и очищаем поля
-                document.getElementById('createThreadModal').style.display = 'none';
-                document.getElementById('threadTitle').value = '';
-                document.getElementById('threadContent').value = '';
+                // Получаем текущие значения
+                const { data: thread, error: fetchError } = await supabaseClient
+                    .from('threads')
+                    .select('reply_count')
+                    .eq('id', threadId)
+                    .single();
                 
-                showMessage('✅ Тред создан!', 'success');
+                if (fetchError) {
+                    console.error('Ошибка при получении данных темы:', fetchError);
+                } else {
+                    // Обновляем счетчик и время
+                    const newReplyCount = (thread.reply_count || 0) + 1;
+                    
+                    const { error: updateError } = await supabaseClient
+                        .from('threads')
+                        .update({ 
+                            reply_count: newReplyCount,
+                            bump_time: now,
+                            last_activity: now
+                        })
+                        .eq('id', threadId);
+                    
+                    if (updateError) {
+                        console.error('Ошибка при обновлении счетчика:', updateError);
+                    }
+                }
                 
-                // Перезагружаем список тредов
-                loadThreads();
+                // Очищаем поле
+                document.getElementById('replyContent').value = '';
+                
+                showMessage('✅ Ответ отправлен!', 'success');
+                
+                // Перезагружаем ответы
+                await loadReplies();
+                
+                // Обновляем счетчик ответов в заголовке
+                const repliesCount = document.getElementById('repliesCount');
+                if (repliesCount) {
+                    const currentCount = parseInt(repliesCount.textContent) || 0;
+                    repliesCount.textContent = currentCount + 1;
+                }
                 
             } catch (error) {
-                console.error('Ошибка создания треда:', error);
+                console.error('Ошибка отправки ответа:', error);
                 showMessage('Ошибка: ' + error.message, 'error');
             }
         }
 
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================
+        // Инициализация
         document.addEventListener('DOMContentLoaded', async () => {
-            console.log('Страница загружена');
-            
             await getUserIp();
-            loadThreads();
+            await loadThread();
             
-            // Кнопка создания треда
-            const createBtn = document.getElementById('createThreadBtn');
-            if (createBtn) {
-                createBtn.addEventListener('click', () => {
-                    console.log('Клик по кнопке создания треда');
-                    document.getElementById('createThreadModal').style.display = 'block';
-                });
-            }
+            document.getElementById('submitReply').addEventListener('click', submitReply);
             
-            // Кнопка отправки
-            const submitBtn = document.getElementById('submitThread');
-            if (submitBtn) {
-                submitBtn.addEventListener('click', (e) => {
+            document.getElementById('replyContent').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
                     e.preventDefault();
-                    console.log('Клик по кнопке отправки');
-                    createThread();
-                });
-            }
-            
-            // Кнопка отмены
-            const cancelBtn = document.getElementById('cancelThread');
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', () => {
-                    document.getElementById('createThreadModal').style.display = 'none';
-                    document.getElementById('threadTitle').value = '';
-                    document.getElementById('threadContent').value = '';
-                });
-            }
-            
-            // Закрытие по клику на фон
-            const modal = document.getElementById('createThreadModal');
-            if (modal) {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            }
+                    submitReply();
+                }
+            });
         });
     </script>
 </body>
