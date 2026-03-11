@@ -464,52 +464,57 @@
             return div.innerHTML;
         }
 // ============================================
-// ЗАГРУЗКА ТРЕДОВ (ИСПРАВЛЕНО)
+// ЗАГРУЗКА ТЕМОК (ИСПРАВЛЕНО)
 // ============================================
 async function loadThreads() {
     const threadsList = document.getElementById('threadsList');
     const loader = document.getElementById('threadsLoader');
     
     try {
-        const { data, error } = await supabaseClient
+        console.log('Загрузка темок...');
+        
+        // Загружаем все треды
+        const { data: threads, error: threadsError } = await supabaseClient
             .from('threads')
             .select('*')
-            .order('created_at', { ascending: false });
+            .order('bump_time', { ascending: false });
         
-        if (error) throw error;
+        if (threadsError) throw threadsError;
+        
+        // Загружаем все сообщения для подсчета ответов
+        const { data: messages, error: messagesError } = await supabaseClient
+            .from('thread_messages')
+            .select('thread_id, is_first');
+        
+        if (messagesError) throw messagesError;
+        
+        // Считаем ответы для каждого треда (исключая первое сообщение)
+        const replyCounts = {};
+        messages?.forEach(msg => {
+            if (!msg.is_first) { // Не считаем первое сообщение
+                replyCounts[msg.thread_id] = (replyCounts[msg.thread_id] || 0) + 1;
+            }
+        });
         
         loader.style.display = 'none';
         
-        if (!data || data.length === 0) {
+        if (!threads || threads.length === 0) {
             threadsList.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: #7f8c8d;">
-                    <div class="emoji" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">💬</div>
+                    <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">💬</div>
                     <p>Пока нет темок. Создайте первую!</p>
                 </div>
             `;
             return;
         }
         
-        // Получаем все сообщения для подсчета ответов
-        const { data: messages, error: messagesError } = await supabaseClient
-            .from('thread_messages')
-            .select('thread_id');
-        
-        const replyCounts = {};
-        if (!messagesError && messages) {
-            messages.forEach(msg => {
-                replyCounts[msg.thread_id] = (replyCounts[msg.thread_id] || 0) + 1;
-            });
-        }
-        
         let html = '';
-        data.forEach(thread => {
+        threads.forEach(thread => {
             const date = new Date(thread.created_at).toLocaleString('ru', {
                 day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
             });
             
-            // Вычитаем первое сообщение, чтобы получить только ответы
-            const replyCount = Math.max(0, (replyCounts[thread.id] || 1) - 1);
+            const replyCount = replyCounts[thread.id] || 0;
             
             html += `
                 <div class="thread-item" onclick="openThread(${thread.id})">
@@ -534,7 +539,7 @@ async function loadThreads() {
         threadsList.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #c0392b;">
                 <div style="font-size: 48px; margin-bottom: 15px;">❌</div>
-                <p>Ошибка загрузки темок</p>
+                <p>Ошибка загрузки темок: ${error.message}</p>
             </div>
         `;
     }
