@@ -490,46 +490,55 @@ async function loadThreads() {
             return;
         }
         
-        // Для каждого треда получаем количество ответов
+        // Получаем все сообщения для подсчета ответов
+        const { data: messages, error: messagesError } = await supabaseClient
+            .from('thread_messages')
+            .select('thread_id');
+        
+        const replyCounts = {};
+        if (!messagesError && messages) {
+            messages.forEach(msg => {
+                replyCounts[msg.thread_id] = (replyCounts[msg.thread_id] || 0) + 1;
+            });
+        }
+        
         let html = '';
-        for (const thread of data) {
+        data.forEach(thread => {
             const date = new Date(thread.created_at).toLocaleString('ru', {
                 day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
             });
             
-            // Получаем количество ответов из thread_messages
-            const { count, error: countError } = await supabaseClient
-                .from('thread_messages')
-                .select('*', { count: 'exact', head: true })
-                .eq('thread_id', thread.id);
-            
-            const replyCount = countError ? 0 : (count || 0);
-            
-            // Проверяем, премиумный ли тред
-            const isPremium = isPremiumThread(thread.id);
-            const premiumClass = isPremium ? 'premium-thread' : '';
-            const premiumBadge = isPremium ? '<span class="premium-badge">👑 PREMIUM</span>' : '';
+            // Вычитаем первое сообщение, чтобы получить только ответы
+            const replyCount = Math.max(0, (replyCounts[thread.id] || 1) - 1);
             
             html += `
-                <div class="thread-item ${premiumClass}" onclick="openThread(${thread.id})">
-                    <div class="thread-title">
-                        ${escapeHtml(thread.title)}
-                        ${premiumBadge}
-                    </div>
+                <div class="thread-item" onclick="openThread(${thread.id})">
+                    <div class="thread-title">${escapeHtml(thread.title)}</div>
                     <div class="thread-meta">
-                        <span><span class="emoji">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
-                        <span><span class="emoji">🕐</span> ${date}</span>
-                        ${thread.is_pinned ? '<span><span class="emoji">📌</span> Закреплено</span>' : ''}
-                        ${thread.is_hot ? '<span><span class="emoji">🔥</span> Горячее</span>' : ''}
+                        <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
+                        <span><span style="font-size: 1rem;">🕐</span> ${date}</span>
                     </div>
                     <div class="thread-stats">
-                        <span class="thread-stat"><span class="emoji">💬</span> ${replyCount}</span>
-                        <span class="thread-stat"><span class="emoji">👁️</span> ${thread.views || 0}</span>
+                        <span class="thread-stat"><span style="font-size: 1rem;">💬</span> ${replyCount} ответов</span>
+                        <span class="thread-stat"><span style="font-size: 1rem;">👁️</span> ${thread.views || 0} просмотров</span>
                     </div>
                 </div>
             `;
-        }
+        });
         
+        threadsList.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Ошибка загрузки темок:', error);
+        loader.style.display = 'none';
+        threadsList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #c0392b;">
+                <div style="font-size: 48px; margin-bottom: 15px;">❌</div>
+                <p>Ошибка загрузки темок</p>
+            </div>
+        `;
+    }
+}
         threadsList.innerHTML = html;
         
     } catch (error) {
