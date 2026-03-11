@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Тред - Школа №62</title>
-    <!-- Подключаем шрифт как в ВК -->
+    <title>Тема - Школа №62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif !important;
         }
 
         body {
@@ -40,59 +38,78 @@
         .header {
             background: linear-gradient(145deg, #4a6fa5 0%, #2c3e50 100%);
             border-radius: 24px;
-            padding: 18px 20px;
+            padding: 12px 20px;
             margin: 16px;
             box-shadow: 0 6px 0 #1a2a3a;
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .header h1 {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .header h1 small {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            display: block;
-            margin-top: 4px;
-        }
-
-        .nav-menu {
+        .logo {
             display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .nav-btn {
-            background: rgba(255,255,255,0.2);
+        .logo h1 {
             color: white;
-            border: none;
-            padding: 8px 16px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .school-badge {
+            background: #ffd966;
+            color: #2c3e50;
+            padding: 4px 12px;
             border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 3px solid rgba(0,0,0,0.2);
-            transition: all 0.1s;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-bottom: 3px solid #b38f4a;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            color: white;
             text-decoration: none;
-            display: inline-block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 3px solid rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .nav-btn:active {
-            transform: translateY(2px);
-            border-bottom-width: 1px;
+        .nav-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .back-btn {
             background: #ffd966;
             color: #2c3e50;
             border-bottom-color: #b38f4a;
+        }
+
+        .nav-icon {
+            font-size: 1.1rem;
         }
 
         /* Основной пост */
@@ -241,36 +258,6 @@
             border-bottom-width: 2px;
         }
 
-        /* PREMIUM-бейдж */
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #4a6fa5;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            margin-left: 8px;
-        }
-
-        /* Индикатор загрузки */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4a6fa5;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Сообщения */
         .message {
             position: fixed;
             top: 16px;
@@ -292,18 +279,44 @@
 
         .message.success { background: #4a6fa5; }
         .message.error { background: #c0392b; }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4a6fa5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Шапка с навигацией -->
         <div class="header">
-            <div>
-                <h1>ШКОЛЬНАЯ СТЕНКА <small>Обсуждение</small></h1>
-            </div>
-            <div class="nav-menu">
-                <a href="index.html" class="nav-btn">🏠 Главная</a>
-                <a href="threads.html" class="nav-btn back-btn">← К тредам</a>
+            <div class="header-content">
+                <div class="logo">
+                    <h1>ШКОЛЬНАЯ СТЕНА</h1>
+                    <span class="school-badge">№62</span>
+                </div>
+                
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-item">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">Главная</span>
+                    </a>
+                    
+                    <a href="threads.html" class="nav-item back-btn">
+                        <span class="nav-icon">←</span>
+                        <span class="nav-text">К темкам</span>
+                    </a>
+                </nav>
             </div>
         </div>
 
@@ -315,11 +328,11 @@
         <!-- Ответы -->
         <div class="replies-section">
             <div class="replies-title">
-                <i class="fas fa-comments"></i> Ответы (<span id="repliesCount">0</span>)
+                <span style="font-size: 1.3rem;">💬</span> Ответы (<span id="repliesCount">0</span>)
             </div>
             
             <div class="replies-list" id="repliesList">
-                <div class="loader" id="repliesLoader"></div>
+                <!-- Loader будет добавлен через JS -->
             </div>
 
             <!-- Форма ответа -->
@@ -330,29 +343,19 @@
         </div>
     </div>
 
-    <!-- Контейнер для сообщений -->
     <div id="messageContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================
-        // SUPABASE КОНФИГ
-        // ============================================
         const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ============================================
-        // ПЕРЕМЕННЫЕ
-        // ============================================
         let userIp = null;
         let verifiedUser = null;
         let threadId = null;
         let threadData = null;
 
-        // ============================================
-        // ПОЛУЧЕНИЕ IP
-        // ============================================
         async function getUserIp() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -365,9 +368,6 @@
             }
         }
 
-        // ============================================
-        // ПОКАЗ СООБЩЕНИЙ
-        // ============================================
         function showMessage(text, type) {
             const container = document.getElementById('messageContainer');
             const msg = document.createElement('div');
@@ -377,9 +377,6 @@
             setTimeout(() => msg.remove(), 3000);
         }
 
-        // ============================================
-        // ЭКРАНИРОВАНИЕ HTML
-        // ============================================
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -387,17 +384,11 @@
             return div.innerHTML;
         }
 
-        // ============================================
-        // ПОЛУЧЕНИЕ ID ТРЕДА ИЗ URL
-        // ============================================
         function getThreadIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('id');
         }
 
-        // ============================================
-        // ЗАГРУЗКА ТРЕДА
-        // ============================================
         async function loadThread() {
             threadId = getThreadIdFromUrl();
             
@@ -423,31 +414,25 @@
                     .update({ views: (data.views || 0) + 1 })
                     .eq('id', threadId);
                 
-                // Отображаем основной пост
                 displayMainPost(data);
-                
-                // Загружаем ответы
                 loadReplies();
                 
             } catch (error) {
-                console.error('Ошибка загрузки треда:', error);
+                console.error('Ошибка загрузки темы:', error);
                 document.getElementById('postLoader').style.display = 'none';
                 document.getElementById('mainPost').innerHTML = `
                     <div style="text-align: center; padding: 40px; color: #c0392b;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                        <p>Тред не найден</p>
-                        <a href="threads.html" style="color: #4a6fa5; text-decoration: none;">Вернуться к тредам</a>
+                        <div style="font-size: 48px; margin-bottom: 15px;">❌</div>
+                        <p>Тема не найдена</p>
+                        <a href="threads.html" style="color: #4a6fa5; text-decoration: none;">Вернуться к темкам</a>
                     </div>
                 `;
             }
         }
 
-        // ============================================
-        // ОТОБРАЖЕНИЕ ОСНОВНОГО ПОСТА
-        // ============================================
         function displayMainPost(thread) {
             const postLoader = document.getElementById('postLoader');
-            postLoader.style.display = 'none';
+            if (postLoader) postLoader.style.display = 'none';
             
             const date = new Date(thread.created_at).toLocaleString('ru', {
                 day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
@@ -456,23 +441,24 @@
             document.getElementById('mainPost').innerHTML = `
                 <div class="post-title">${escapeHtml(thread.title)}</div>
                 <div class="post-meta">
-                    <span><i class="fas fa-user"></i> ${escapeHtml(thread.created_by || 'Аноним')}</span>
-                    <span><i class="fas fa-clock"></i> ${date}</span>
-                    <span><i class="fas fa-eye"></i> ${thread.views || 0} просмотров</span>
+                    <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
+                    <span><span style="font-size: 1rem;">🕐</span> ${date}</span>
+                    <span><span style="font-size: 1rem;">👁️</span> ${thread.views || 0} просмотров</span>
                 </div>
                 <div class="post-content">${escapeHtml(thread.content || '')}</div>
             `;
         }
 
-        // ============================================
-        // ЗАГРУЗКА ОТВЕТОВ
-        // ============================================
         async function loadReplies() {
             const repliesList = document.getElementById('repliesList');
-            const repliesLoader = document.getElementById('repliesLoader');
             const repliesCount = document.getElementById('repliesCount');
             
+            if (!repliesList) return;
+            
             try {
+                // Показываем загрузку
+                repliesList.innerHTML = '<div class="loader"></div>';
+                
                 const { data, error } = await supabaseClient
                     .from('thread_messages')
                     .select('*')
@@ -481,15 +467,13 @@
                 
                 if (error) throw error;
                 
-                repliesLoader.style.display = 'none';
-                
-                // Обновляем счетчик ответов (исключая первое сообщение)
                 const replies = data?.filter(m => !m.is_first) || [];
-                repliesCount.textContent = replies.length;
+                if (repliesCount) repliesCount.textContent = replies.length;
                 
                 if (replies.length === 0) {
                     repliesList.innerHTML = `
                         <div style="text-align: center; padding: 20px; color: #7f8c8d;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">💭</div>
                             <p>Пока нет ответов. Будьте первым!</p>
                         </div>
                     `;
@@ -506,7 +490,7 @@
                         <div class="reply-item">
                             <div class="reply-header">
                                 <span class="reply-author">
-                                    ${escapeHtml(reply.author || 'Аноним')}
+                                    <span style="font-size: 0.9rem;">👤</span> ${escapeHtml(reply.author || 'Аноним')}
                                 </span>
                                 <span class="reply-date">${date}</span>
                             </div>
@@ -519,114 +503,86 @@
                 
             } catch (error) {
                 console.error('Ошибка загрузки ответов:', error);
-                repliesLoader.style.display = 'none';
                 repliesList.innerHTML = `
                     <div style="text-align: center; padding: 20px; color: #c0392b;">
+                        <div style="font-size: 32px; margin-bottom: 10px;">❌</div>
                         <p>Ошибка загрузки ответов</p>
                     </div>
                 `;
             }
         }
 
-// ============================================
-// ОТПРАВКА ОТВЕТА (ИСПРАВЛЕННАЯ СРОЧНО)
-// ============================================
-async function submitReply() {
-    const content = document.getElementById('replyContent').value.trim();
-    
-    if (!content) {
-        showMessage('Напишите ответ', 'error');
-        return;
-    }
-    
-    if (content.length < 2) {
-        showMessage('Слишком короткий ответ', 'error');
-        return;
-    }
-    
-    try {
-        if (!userIp) await getUserIp();
-        
-        const now = new Date().toISOString();
-        
-        // 1. Сохраняем ответ
-        const { error: insertError } = await supabaseClient
-            .from('thread_messages')
-            .insert({
-                thread_id: threadId,
-                content: content,
-                author: verifiedUser || 'Аноним',
-                ip_address: userIp,
-                user_agent: navigator.userAgent,
-                is_first: false,
-                created_at: now
-            });
-        
-        if (insertError) {
-            console.error('Ошибка при создании ответа:', insertError);
-            showMessage('Ошибка: ' + insertError.message, 'error');
-            return;
-        }
-        
-        // 2. Получаем текущие значения (БЕЗ raw)
-        const { data: thread, error: fetchError } = await supabaseClient
-            .from('threads')
-            .select('reply_count')
-            .eq('id', threadId)
-            .single();
-        
-        if (fetchError) {
-            console.error('Ошибка при получении данных темы:', fetchError);
-        } else {
-            // 3. Обновляем счетчик и время (ОБЫЧНЫМ СПОСОБОМ)
-            const newReplyCount = (thread.reply_count || 0) + 1;
+        // ============================================
+        // ОТПРАВКА ОТВЕТА (ИСПРАВЛЕНО)
+        // ============================================
+        async function submitReply() {
+            const content = document.getElementById('replyContent').value.trim();
             
-            const { error: updateError } = await supabaseClient
-                .from('threads')
-                .update({ 
-                    reply_count: newReplyCount,
-                    bump_time: now,
-                    last_activity: now
-                })
-                .eq('id', threadId);
+            if (!content) {
+                showMessage('Напишите ответ', 'error');
+                return;
+            }
             
-            if (updateError) {
-                console.error('Ошибка при обновлении счетчика:', updateError);
+            if (content.length < 2) {
+                showMessage('Слишком короткий ответ', 'error');
+                return;
+            }
+            
+            try {
+                if (!userIp) await getUserIp();
+                
+                const now = new Date().toISOString();
+                
+                // Сохраняем ответ
+                const { error: insertError } = await supabaseClient
+                    .from('thread_messages')
+                    .insert({
+                        thread_id: threadId,
+                        content: content,
+                        author: verifiedUser || 'Аноним',
+                        ip_address: userIp,
+                        user_agent: navigator.userAgent,
+                        is_first: false,
+                        created_at: now
+                    });
+                
+                if (insertError) {
+                    console.error('Ошибка при создании ответа:', insertError);
+                    showMessage('Ошибка: ' + insertError.message, 'error');
+                    return;
+                }
+                
+                // Обновляем счетчик в треде
+                await supabaseClient
+                    .from('threads')
+                    .update({ 
+                        reply_count: supabaseClient.rpc ? null : (threadData?.reply_count || 0) + 1,
+                        bump_time: now,
+                        last_activity: now
+                    })
+                    .eq('id', threadId);
+                
+                // Очищаем поле
+                document.getElementById('replyContent').value = '';
+                
+                showMessage('✅ Ответ отправлен!', 'success');
+                
+                // Перезагружаем ответы
+                await loadReplies();
+                
+            } catch (error) {
+                console.error('Ошибка отправки ответа:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
             }
         }
-        
-        // 4. Очищаем поле
-        document.getElementById('replyContent').value = '';
-        
-        showMessage('✅ Ответ отправлен!', 'success');
-        
-        // 5. Перезагружаем ответы
-        await loadReplies();
-        
-        // 6. Обновляем счетчик ответов в заголовке
-        const repliesCount = document.getElementById('repliesCount');
-        if (repliesCount) {
-            const currentCount = parseInt(repliesCount.textContent) || 0;
-            repliesCount.textContent = currentCount + 1;
-        }
-        
-    } catch (error) {
-        console.error('Ошибка отправки ответа:', error);
-        showMessage('Ошибка: ' + error.message, 'error');
-    }
-}
 
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================
+        // Инициализация
         document.addEventListener('DOMContentLoaded', async () => {
             await getUserIp();
             await loadThread();
             
-            // Кнопка отправки ответа
             document.getElementById('submitReply').addEventListener('click', submitReply);
             
-            // Enter для отправки (Ctrl+Enter)
             document.getElementById('replyContent').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && e.ctrlKey) {
                     e.preventDefault();
