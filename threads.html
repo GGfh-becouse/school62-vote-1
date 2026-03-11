@@ -618,6 +618,32 @@
                 }
             });
         });
-    </script>
+
+        <script>
+// Глобальный блокиратор перезагрузок
+(function() {
+    // Блокируем все клики по ссылкам с пустым href
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('a');
+        if (target && (target.getAttribute('href') === '#' || target.getAttribute('href') === '')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Блокируем все отправки форм
+    document.addEventListener('submit', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Для всех кнопок без типа устанавливаем type="button"
+    document.querySelectorAll('button:not([type])').forEach(btn => {
+        btn.setAttribute('type', 'button');
+    });
+    
+    console.log('Блокиратор перезагрузок активирован');
+})();
+</script>
 </body>
 </html>
