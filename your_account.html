@@ -536,19 +536,28 @@
                     </div>
                 </div>
 
-                <!-- Секция стикеров -->
-                <div class="stickers-section">
-                    <h3>
-                        <span>✨</span> Мои стикеры 
-                        <span class="sticker-counter" id="stickerCounter">1/5</span>
-                    </h3>
-                    <div class="stickers-grid" id="stickersGrid">
-                        <!-- Стикеры для выбора -->
-                    </div>
-                    <p style="color: #7f8c8d; font-size: 0.85rem;">
-                        👑 Prime-аккаунт: до 5 стикеров. Нажмите на стикер, чтобы добавить на аватар.
-                    </p>
-                </div>
+              <!-- Секция стикеров -->
+<div class="stickers-section">
+    <h3>
+        <span>✨</span> Мои стикеры 
+        <span class="sticker-counter" id="stickerCounter">1/5</span>
+    </h3>
+    
+    <!-- Добавьте это поле для ввода URL -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input type="text" id="stickerUrlInput" 
+               placeholder="Вставьте URL стикера" 
+               style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px;">
+        <button id="addStickerByUrlBtn" 
+                style="background: #4a6fa5; color: white; border: none; padding: 12px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; border-bottom: 3px solid #2c3e50;">
+            Добавить
+        </button>
+    </div>
+
+    <div class="stickers-grid" id="stickersGrid">
+        <!-- Стикеры будут здесь -->
+    </div>
+</div>
 
                 <!-- Музыкальный блок -->
                 <div class="music-section">
@@ -567,227 +576,217 @@
 
     <div id="messageContainer"></div>
 
-    <script>
-        // ============================================
-        // СОСТОЯНИЕ ПРОФИЛЯ
-        // ============================================
-        let isPrime = false; // Обычный аккаунт
-        let maxStickers = isPrime ? 5 : 1;
-        let currentStickers = [];
-        let currentTrack = null;
+   <script>
+    // ============================================
+    // СОСТОЯНИЕ ПРОФИЛЯ
+    // ============================================
+    let isPrime = false; // Обычный аккаунт
+    let maxStickers = isPrime ? 5 : 1;
+    let currentStickers = [];
+    let currentTrack = null;
 
-        // Доступные стикеры
-        const availableStickers = [
-            { id: 1, url: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f49c.png', name: '❤️' },
-            { id: 2, url: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2b50.png', name: '⭐' },
-            { id: 3, url: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f525.png', name: '🔥' },
-            { id: 4, url: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f389.png', name: '🎉' },
-            { id: 5, url: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f451.png', name: '👑' },
-        ];
+    // Позиции для стикеров
+    const stickerPositions = [
+        'sticker-pos-1', 'sticker-pos-2', 'sticker-pos-3', 'sticker-pos-4', 'sticker-pos-5'
+    ];
 
-        // Позиции для стикеров
-        const stickerPositions = [
-            'sticker-pos-1', 'sticker-pos-2', 'sticker-pos-3', 'sticker-pos-4', 'sticker-pos-5'
-        ];
+    // ============================================
+    // ФУНКЦИИ ПОКАЗА СООБЩЕНИЙ
+    // ============================================
+    function showMessage(text, type) {
+        const container = document.getElementById('messageContainer');
+        const msg = document.createElement('div');
+        msg.className = `message ${type}`;
+        msg.textContent = text;
+        container.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+    }
 
-        // ============================================
-        // ФУНКЦИИ ПОКАЗА СООБЩЕНИЙ
-        // ============================================
-        function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            const msg = document.createElement('div');
-            msg.className = `message ${type}`;
-            msg.textContent = text;
-            container.appendChild(msg);
-            setTimeout(() => msg.remove(), 3000);
+    // ============================================
+    // ДОБАВЛЕНИЕ СТИКЕРА ПО URL
+    // ============================================
+    function addStickerByUrl() {
+        const urlInput = document.getElementById('stickerUrlInput');
+        const url = urlInput.value.trim();
+        
+        if (!url) {
+            showMessage('Введите URL стикера', 'error');
+            return;
+        }
+        
+        // Проверяем, что это похоже на URL картинки
+        if (!url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) && !url.includes('http')) {
+            showMessage('Пожалуйста, введите прямую ссылку на картинку', 'error');
+            return;
+        }
+        
+        // Проверяем лимит
+        if (currentStickers.length >= maxStickers) {
+            showMessage(`Достигнут лимит стикеров (${maxStickers})`, 'error');
+            return;
+        }
+        
+        // Создаем новый стикер
+        const newSticker = {
+            id: Date.now(), // уникальный ID на основе времени
+            url: url,
+            name: 'Стикер',
+            position: stickerPositions[currentStickers.length]
+        };
+        
+        currentStickers.push(newSticker);
+        renderStickers();
+        
+        // Очищаем поле ввода
+        urlInput.value = '';
+        
+        showMessage('Стикер добавлен!', 'success');
+    }
+
+    // ============================================
+    // УДАЛЕНИЕ СТИКЕРА
+    // ============================================
+    function removeSticker(stickerId) {
+        currentStickers = currentStickers.filter(s => s.id !== stickerId);
+        renderStickers();
+        showMessage('Стикер удален', 'success');
+    }
+
+    // ============================================
+    // ОТОБРАЖЕНИЕ СТИКЕРОВ
+    // ============================================
+    function renderStickers() {
+        const container = document.getElementById('avatarContainer');
+        
+        // Удаляем старые стикеры (оставляем только аватар)
+        while (container.children.length > 1) {
+            container.removeChild(container.lastChild);
         }
 
-        // ============================================
-        // ЗАГРУЗКА СТИКЕРОВ
-        // ============================================
-        function loadStickersGrid() {
-            const grid = document.getElementById('stickersGrid');
-            let html = '';
+        // Добавляем новые стикеры
+        currentStickers.forEach((sticker, index) => {
+            const stickerEl = document.createElement('img');
+            stickerEl.src = sticker.url;
+            stickerEl.className = `sticker ${stickerPositions[index]}`;
+            stickerEl.draggable = false;
             
-            availableStickers.forEach(sticker => {
-                const isAdded = currentStickers.some(s => s.id === sticker.id);
-                const disabledClass = (!isPrime && currentStickers.length >= 1 && !isAdded) ? 'disabled' : '';
-                
-                html += `
-                    <div class="sticker-item ${disabledClass}" onclick="addSticker(${sticker.id}, '${sticker.url}')">
-                        <img src="${sticker.url}" alt="${sticker.name}">
-                        <span>${sticker.name}</span>
-                    </div>
-                `;
-            });
-            
-            grid.innerHTML = html;
-            document.getElementById('stickerCounter').textContent = `${currentStickers.length}/${maxStickers}`;
-        }
-
-        // ============================================
-        // ДОБАВЛЕНИЕ СТИКЕРА
-        // ============================================
-        function addSticker(stickerId, stickerUrl) {
-            // Проверяем, не добавлен ли уже такой стикер
-            if (currentStickers.some(s => s.id === stickerId)) {
-                showMessage('Этот стикер уже добавлен', 'error');
-                return;
-            }
-
-            // Проверяем лимит
-            if (currentStickers.length >= maxStickers) {
-                showMessage(`Достигнут лимит стикеров (${maxStickers})`, 'error');
-                return;
-            }
-
-            // Определяем позицию для нового стикера
-            const position = stickerPositions[currentStickers.length];
-            
-            // Создаем стикер
-            const sticker = {
-                id: stickerId,
-                url: stickerUrl,
-                position: position,
-                element: null
+            // Кнопка удаления
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'sticker-remove';
+            removeBtn.innerHTML = '✕';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                removeSticker(sticker.id);
             };
-
-            currentStickers.push(sticker);
-            renderStickers();
-            loadStickersGrid();
-            showMessage('Стикер добавлен!', 'success');
-        }
-
-        // ============================================
-        // УДАЛЕНИЕ СТИКЕРА
-        // ============================================
-        function removeSticker(stickerId) {
-            currentStickers = currentStickers.filter(s => s.id !== stickerId);
-            renderStickers();
-            loadStickersGrid();
-            showMessage('Стикер удален', 'success');
-        }
-
-        // ============================================
-        // ОТОБРАЖЕНИЕ СТИКЕРОВ
-        // ============================================
-        function renderStickers() {
-            const container = document.getElementById('avatarContainer');
             
-            // Удаляем старые стикеры (оставляем только аватар)
-            while (container.children.length > 1) {
-                container.removeChild(container.lastChild);
-            }
-
-            // Добавляем новые стикеры
-            currentStickers.forEach((sticker, index) => {
-                const stickerEl = document.createElement('img');
-                stickerEl.src = sticker.url;
-                stickerEl.className = `sticker ${stickerPositions[index]}`;
-                stickerEl.draggable = false;
-                
-                // Кнопка удаления
-                const removeBtn = document.createElement('div');
-                removeBtn.className = 'sticker-remove';
-                removeBtn.innerHTML = '✕';
-                removeBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    removeSticker(sticker.id);
-                };
-                
-                const stickerWrapper = document.createElement('div');
-                stickerWrapper.style.position = 'relative';
-                stickerWrapper.style.display = 'contents';
-                stickerWrapper.appendChild(stickerEl);
-                stickerWrapper.appendChild(removeBtn);
-                
-                container.appendChild(stickerWrapper);
-            });
-        }
-
-        // ============================================
-        // ПАРСИНГ ССЫЛКИ НА ТРЕК
-        // ============================================
-        function parseTrack(url) {
-            // Демо-версия: всегда возвращаем тестовый трек
-            return {
-                title: 'Тестовый трек',
-                artist: 'Исполнитель',
-                cover: 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9',
-                url: url
-            };
-        }
-
-        // ============================================
-        // ОТОБРАЖЕНИЕ ПЛЕЕРА
-        // ============================================
-        function renderPlayer(track) {
-            const container = document.getElementById('playerContainer');
+            const stickerWrapper = document.createElement('div');
+            stickerWrapper.style.position = 'relative';
+            stickerWrapper.style.display = 'contents';
+            stickerWrapper.appendChild(stickerEl);
+            stickerWrapper.appendChild(removeBtn);
             
-            container.innerHTML = `
-                <div class="mini-player">
-                    <img src="${track.cover}" class="track-cover" alt="Обложка">
-                    <div class="track-info">
-                        <div class="track-title">${track.title}</div>
-                        <div class="track-artist">${track.artist}</div>
-                    </div>
-                    <button class="track-play" onclick="playTrack()">▶</button>
-                    <button class="track-remove" onclick="removeTrack()">Удалить</button>
-                </div>
-            `;
-        }
-
-        // ============================================
-        // УПРАВЛЕНИЕ ТРЕКОМ
-        // ============================================
-        function playTrack() {
-            alert('🎵 Воспроизведение трека (демо-режим)');
-        }
-
-        function removeTrack() {
-            currentTrack = null;
-            document.getElementById('playerContainer').innerHTML = '';
-            document.getElementById('trackUrl').value = '';
-            showMessage('Трек удален', 'success');
-        }
-
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================
-        document.addEventListener('DOMContentLoaded', () => {
-            // Загружаем сетку стикеров
-            loadStickersGrid();
-            
-            // Обработчик смены аватара
-            document.getElementById('changeAvatarBtn').addEventListener('click', () => {
-                const newAvatar = prompt('Введите URL новой аватарки:', 'https://i.pravatar.cc/300');
-                if (newAvatar) {
-                    document.getElementById('avatar').src = newAvatar;
-                    showMessage('Аватар обновлен!', 'success');
-                }
-            });
-
-            // Обработчик добавления трека
-            document.getElementById('addTrackBtn').addEventListener('click', () => {
-                const url = document.getElementById('trackUrl').value.trim();
-                if (!url) {
-                    showMessage('Введите ссылку на трек', 'error');
-                    return;
-                }
-
-                const track = parseTrack(url);
-                currentTrack = track;
-                renderPlayer(track);
-                showMessage('Трек добавлен!', 'success');
-            });
-
-            // Enter для добавления трека
-            document.getElementById('trackUrl').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    document.getElementById('addTrackBtn').click();
-                }
-            });
+            container.appendChild(stickerWrapper);
         });
-    </script>
+        
+        // Обновляем счетчик
+        document.getElementById('stickerCounter').textContent = `${currentStickers.length}/${maxStickers}`;
+    }
+
+    // ============================================
+    // ПАРСИНГ ССЫЛКИ НА ТРЕК
+    // ============================================
+    function parseTrack(url) {
+        return {
+            title: 'Тестовый трек',
+            artist: 'Исполнитель',
+            cover: 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9',
+            url: url
+        };
+    }
+
+    // ============================================
+    // ОТОБРАЖЕНИЕ ПЛЕЕРА
+    // ============================================
+    function renderPlayer(track) {
+        const container = document.getElementById('playerContainer');
+        
+        container.innerHTML = `
+            <div class="mini-player">
+                <img src="${track.cover}" class="track-cover" alt="Обложка">
+                <div class="track-info">
+                    <div class="track-title">${track.title}</div>
+                    <div class="track-artist">${track.artist}</div>
+                </div>
+                <button class="track-play" onclick="playTrack()">▶</button>
+                <button class="track-remove" onclick="removeTrack()">Удалить</button>
+            </div>
+        `;
+    }
+
+    // ============================================
+    // УПРАВЛЕНИЕ ТРЕКОМ
+    // ============================================
+    function playTrack() {
+        alert('🎵 Воспроизведение трека (демо-режим)');
+    }
+
+    function removeTrack() {
+        currentTrack = null;
+        document.getElementById('playerContainer').innerHTML = '';
+        document.getElementById('trackUrl').value = '';
+        showMessage('Трек удален', 'success');
+    }
+
+    // ============================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        // Обработчик добавления стикера по URL
+        const addBtn = document.getElementById('addStickerByUrlBtn');
+        if (addBtn) {
+            addBtn.addEventListener('click', addStickerByUrl);
+        }
+
+        // Enter для добавления стикера
+        const urlInput = document.getElementById('stickerUrlInput');
+        if (urlInput) {
+            urlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addStickerByUrl();
+                }
+            });
+        }
+
+        // Обработчик смены аватара
+        document.getElementById('changeAvatarBtn').addEventListener('click', () => {
+            const newAvatar = prompt('Введите URL новой аватарки:', 'https://i.pravatar.cc/300');
+            if (newAvatar) {
+                document.getElementById('avatar').src = newAvatar;
+                showMessage('Аватар обновлен!', 'success');
+            }
+        });
+
+        // Обработчик добавления трека
+        document.getElementById('addTrackBtn').addEventListener('click', () => {
+            const url = document.getElementById('trackUrl').value.trim();
+            if (!url) {
+                showMessage('Введите ссылку на трек', 'error');
+                return;
+            }
+
+            const track = parseTrack(url);
+            currentTrack = track;
+            renderPlayer(track);
+            showMessage('Трек добавлен!', 'success');
+        });
+
+        // Enter для добавления трека
+        document.getElementById('trackUrl').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('addTrackBtn').click();
+            }
+        });
+    });
+</script>
 </body>
 </html>
