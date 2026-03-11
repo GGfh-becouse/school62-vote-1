@@ -452,7 +452,7 @@
         }
 
         // ============================================
-        // ЗАГРУЗКА ТРЕДОВ
+        // ЗАГРУЗКА ТРЕДОВ (ИСПРАВЛЕНО ПОД ВАШУ ТАБЛИЦУ)
         // ============================================
         async function loadThreads() {
             const threadsList = document.getElementById('threadsList');
@@ -462,7 +462,7 @@
                 const { data, error } = await supabaseClient
                     .from('threads')
                     .select('*')
-                    .order('created_at', { ascending: false });
+                    .order('bump_time', { ascending: false }); // Сортируем по bump_time
                 
                 if (error) throw error;
                 
@@ -488,11 +488,13 @@
                         <div class="thread-item" onclick="openThread(${thread.id})">
                             <div class="thread-title">${escapeHtml(thread.title)}</div>
                             <div class="thread-meta">
-                                <span><i class="fas fa-user"></i> ${escapeHtml(thread.created_by || 'Аноним')}</span>
+                                <span><i class="fas fa-user"></i> ${escapeHtml(thread.author_name || 'Аноним')}</span>
                                 <span><i class="fas fa-clock"></i> ${date}</span>
+                                ${thread.is_pinned ? '<span><i class="fas fa-thumbtack"></i> Закреплено</span>' : ''}
+                                ${thread.is_hot ? '<span><i class="fas fa-fire"></i> Горячее</span>' : ''}
                             </div>
                             <div class="thread-stats">
-                                <span class="thread-stat"><i class="fas fa-comment"></i> ${thread.messages_count || 0} ответов</span>
+                                <span class="thread-stat"><i class="fas fa-comment"></i> ${thread.reply_count || 0} ответов</span>
                                 <span class="thread-stat"><i class="fas fa-eye"></i> ${thread.views || 0} просмотров</span>
                             </div>
                         </div>
@@ -521,7 +523,7 @@
         }
 
         // ============================================
-        // СОЗДАНИЕ ТРЕДА - ЭТО ОСНОВНАЯ ФУНКЦИЯ
+        // СОЗДАНИЕ ТРЕДА (ИСПРАВЛЕНО ПОД ВАШУ ТАБЛИЦУ)
         // ============================================
         async function createThread() {
             console.log('Функция createThread вызвана');
@@ -543,16 +545,29 @@
                 // Получаем IP
                 if (!userIp) await getUserIp();
                 
-                // Создаем тред
+                const now = new Date().toISOString();
+                
+                // Создаем тред с правильными названиями полей
+                const threadData = {
+                    title: title,
+                    content: content,
+                    author_name: verifiedUser || 'Аноним',
+                    author_ip: userIp,
+                    user_agent: navigator.userAgent,
+                    reply_count: 1,
+                    views: 0,
+                    bump_time: now,
+                    last_activity: now,
+                    created_at: now,
+                    is_pinned: false,
+                    is_hot: false
+                };
+                
+                console.log('Отправляемые данные:', threadData);
+                
                 const { data: thread, error: threadError } = await supabaseClient
                     .from('threads')
-                    .insert({
-                        title: title,
-                        content: content,
-                        created_by: verifiedUser || 'Аноним',
-                        ip_address: userIp,
-                        user_agent: navigator.userAgent
-                    })
+                    .insert(threadData)
                     .select()
                     .single();
                 
@@ -572,11 +587,15 @@
                         content: content,
                         author: verifiedUser || 'Аноним',
                         ip_address: userIp,
-                        user_agent: navigator.userAgent
+                        user_agent: navigator.userAgent,
+                        is_first: true,
+                        created_at: now
                     });
                 
                 if (messageError) {
                     console.error('Ошибка при создании сообщения:', messageError);
+                } else {
+                    console.log('Первое сообщение создано');
                 }
                 
                 // Закрываем модалку и очищаем поля
