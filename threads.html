@@ -462,8 +462,8 @@
         return div.innerHTML;
     }
 
-    // ============================================
-// ЗАГРУЗКА ТЕМОК (С ПРАВИЛЬНЫМ ПОДСЧЕТОМ ОТВЕТОВ)
+// ============================================
+// ЗАГРУЗКА ТЕМОК (С ДИАГНОСТИКОЙ)
 // ============================================
 async function loadThreads() {
     const threadsList = document.getElementById('threadsList');
@@ -480,21 +480,41 @@ async function loadThreads() {
         
         if (threadsError) throw threadsError;
         
-        // Загружаем все сообщения для подсчета ответов
+        console.log('Треды:', threads);
+        
+        // Загружаем все сообщения
         const { data: messages, error: messagesError } = await supabaseClient
             .from('thread_messages')
-            .select('thread_id, is_first');
+            .select('*');
         
         if (messagesError) throw messagesError;
         
-        // Считаем ответы для каждого треда
+        console.log('Сообщения:', messages);
+        
+        // Считаем ответы
         const replyCounts = {};
-        messages?.forEach(msg => {
-            // Если это не первое сообщение, считаем как ответ
-            if (!msg.is_first) {
-                replyCounts[msg.thread_id] = (replyCounts[msg.thread_id] || 0) + 1;
-            }
-        });
+        if (messages) {
+            messages.forEach(msg => {
+                // Ключ - ID треда
+                const threadId = msg.thread_id;
+                if (!replyCounts[threadId]) {
+                    replyCounts[threadId] = {
+                        total: 0,
+                        first: false
+                    };
+                }
+                
+                // Считаем общее количество
+                replyCounts[threadId].total++;
+                
+                // Отмечаем, есть ли первое сообщение
+                if (msg.is_first) {
+                    replyCounts[threadId].first = true;
+                }
+            });
+        }
+        
+        console.log('Статистика по тредам:', replyCounts);
         
         loader.style.display = 'none';
         
@@ -510,23 +530,34 @@ async function loadThreads() {
         
         let html = '';
         threads.forEach(thread => {
-            const date = new Date(thread.created_at).toLocaleString('ru', {
+            const date = thread.created_at ? new Date(thread.created_at).toLocaleString('ru', {
                 day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
-            });
+            }) : 'Дата неизвестна';
             
-            // Получаем количество ответов из нашего подсчета
-            const replyCount = replyCounts[thread.id] || 0;
+            // Получаем статистику по этому треду
+            const stats = replyCounts[thread.id] || { total: 0, first: false };
+            
+            // Количество ответов = всего сообщений минус 1 (если есть первое сообщение)
+            const replyCount = stats.first ? stats.total - 1 : stats.total;
+            
+            // Имя автора
+            const authorName = thread.author_name || thread.created_by || 'Аноним';
+            
+            // Просмотры
+            const views = thread.views || 0;
+            
+            console.log(`Тред ${thread.id}: всего сообщений ${stats.total}, первое: ${stats.first}, ответов: ${replyCount}`);
             
             html += `
                 <div class="thread-item" onclick="openThread(${thread.id})">
-                    <div class="thread-title">${escapeHtml(thread.title)}</div>
+                    <div class="thread-title">${escapeHtml(thread.title || 'Без названия')}</div>
                     <div class="thread-meta">
-                        <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
+                        <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(authorName)}</span>
                         <span><span style="font-size: 1rem;">🕐</span> ${date}</span>
                     </div>
                     <div class="thread-stats">
-                        <span class="thread-stat"><span style="font-size: 1rem;">💬</span> ${replyCount} ${replyCount === 1 ? 'ответ' : replyCount > 1 && replyCount < 5 ? 'ответа' : 'ответов'}</span>
-                        <span class="thread-stat"><span style="font-size: 1rem;">👁️</span> ${thread.views || 0} ${thread.views === 1 ? 'просмотр' : thread.views > 1 && thread.views < 5 ? 'просмотра' : 'просмотров'}</span>
+                        <span class="thread-stat"><span style="font-size: 1rem;">💬</span> ${replyCount} ${replyCount === 1 ? 'ответ' : 'ответов'}</span>
+                        <span class="thread-stat"><span style="font-size: 1rem;">👁️</span> ${views} ${views === 1 ? 'просмотр' : 'просмотров'}</span>
                     </div>
                 </div>
             `;
@@ -545,9 +576,6 @@ async function loadThreads() {
         `;
     }
 }
-            
-            threadsList.innerHTML = html;
-
 
     // ============================================
     // ОТКРЫТИЕ ТЕМКИ
