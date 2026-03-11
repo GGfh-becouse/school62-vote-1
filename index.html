@@ -1322,12 +1322,129 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ============================================
-        // СОГЛАШЕНИЕ - УСИЛЕННАЯ ВЕРСИЯ
-        // ============================================
-        const agreementScreen = document.getElementById('agreementScreen');
-        const mainContent = document.getElementById('mainContent');
-        const schoolCheckbox = document.getElementById('schoolCheckbox');
-        const enterBtn = document.getElementById('enterSiteBtn');
+// СОГЛАШЕНИЕ - ПРОВЕРКА ПО IP
+// ============================================
+const agreementScreen = document.getElementById('agreementScreen');
+const mainContent = document.getElementById('mainContent');
+const schoolCheckbox = document.getElementById('schoolCheckbox');
+const enterBtn = document.getElementById('enterSiteBtn');
+
+// Функция для проверки, принимал ли этот IP соглашение
+async function checkAgreementByIP() {
+    try {
+        // Получаем текущий IP
+        if (!userIp) await getUserIp();
+        
+        console.log('Проверка IP для соглашения:', userIp);
+        
+        // Проверяем в базе данных
+        const { data, error } = await supabaseClient
+            .from('user_agreements')
+            .select('*')
+            .eq('ip_address', userIp)
+            .maybeSingle();
+        
+        if (error) {
+            console.error('Ошибка проверки соглашения:', error);
+            // В случае ошибки показываем соглашение
+            showAgreement();
+            return;
+        }
+        
+        if (data) {
+            // IP уже принимал соглашение - скрываем окно
+            console.log('IP уже принимал соглашение');
+            agreementScreen.style.display = 'none';
+            mainContent.style.display = 'block';
+            initApp();
+        } else {
+            // Новый IP - показываем соглашение
+            console.log('Новый IP, показываем соглашение');
+            showAgreement();
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showAgreement();
+    }
+}
+
+// Функция показа соглашения
+function showAgreement() {
+    agreementScreen.style.display = 'flex';
+    mainContent.style.display = 'none';
+}
+
+// Функция сохранения соглашения
+async function saveAgreement() {
+    try {
+        if (!userIp) await getUserIp();
+        
+        console.log('Сохраняем соглашение для IP:', userIp);
+        
+        const { error } = await supabaseClient
+            .from('user_agreements')
+            .insert({
+                ip_address: userIp,
+                user_agent: navigator.userAgent,
+                accepted_at: new Date().toISOString()
+            });
+        
+        if (error) {
+            console.error('Ошибка сохранения соглашения:', error);
+        } else {
+            console.log('Соглашение сохранено');
+        }
+        
+        // Скрываем соглашение и показываем контент
+        agreementScreen.style.display = 'none';
+        mainContent.style.display = 'block';
+        initApp();
+        
+    } catch (error) {
+        console.error('Ошибка:', error);
+        agreementScreen.style.display = 'none';
+        mainContent.style.display = 'block';
+        initApp();
+    }
+}
+
+// Обработчик чекбокса
+if (schoolCheckbox) {
+    schoolCheckbox.addEventListener('change', function() {
+        enterBtn.disabled = !this.checked;
+        // Меняем цвет кнопки когда активна
+        if (this.checked) {
+            enterBtn.style.background = '#4a6fa5';
+            enterBtn.style.borderBottomColor = '#2c3e50';
+        } else {
+            enterBtn.style.background = '#ccc';
+            enterBtn.style.borderBottomColor = '#999';
+        }
+    });
+}
+
+// Обработчик кнопки
+if (enterBtn) {
+    enterBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        if (schoolCheckbox && schoolCheckbox.checked) {
+            await saveAgreement();
+        }
+    });
+}
+
+// Запускаем проверку при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    // Сначала скрываем соглашение и показываем загрузку
+    agreementScreen.style.display = 'none';
+    mainContent.style.display = 'block';
+    
+    // Показываем заглушку загрузки
+    mainContent.innerHTML = '<div style="text-align: center; padding: 50px;"><div class="loader"></div><p>Проверка доступа...</p></div>';
+    
+    // Проверяем IP
+    checkAgreementByIP();
+});
 
         // Функция для входа на сайт
 function enterSite() {
