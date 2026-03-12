@@ -1091,6 +1091,21 @@
             margin-left: 10px;
             font-size: 0.85rem;
         }
+.poll-item:hover {
+    transform: translateY(-2px);
+    transition: all 0.2s;
+}
+
+.poll-item .yes-option:hover:not(.disabled) {
+    background: #d4edda;
+    border-color: #27ae60;
+}
+
+.poll-item .no-option:hover:not(.disabled) {
+    background: #f8d7da;
+    border-color: #c0392b;
+}
+        
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -1189,6 +1204,30 @@
     </div>
 </div>
 
+<!-- БЛОК С ГОЛОСОВАНИЯМИ -->
+<div class="polls-container" style="margin-bottom: 20px;">
+
+    <!-- Форма создания опроса -->
+    <div class="create-poll" style="background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 2px solid #e0e0e0; box-shadow: 0 4px 0 #c0c0c0;">
+        <h3 style="color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+            <span>📊</span> Создать опрос
+        </h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="text" id="pollQuestion" placeholder="Короткий вопрос (до 120 символов)" maxlength="120" 
+                   style="flex: 1; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 16px; font-size: 0.95rem; min-width: 200px;">
+            <button id="createPollBtn" style="background: #4a6fa5; color: white; border: none; padding: 14px 25px; border-radius: 40px; font-weight: 700; cursor: pointer; border-bottom: 4px solid #2c3e50;">
+                ➕ Создать
+            </button>
+        </div>
+        <div style="color: #7f8c8d; font-size: 0.8rem; margin-top: 8px;">
+            Только честные вопросы ✨
+        </div>
+    </div>
+
+    <!-- Список опросов -->
+    <div id="pollsList"></div>
+</div>
+            
             <!-- Статистика -->
             <div class="user-stats">
                 <div class="stat-items">
@@ -2222,7 +2261,220 @@ document.addEventListener('DOMContentLoaded', function() {
             await loadUserVotes();
             await loadCandidates();
             await loadComments();
+            await loadPolls(); 
         }
+
+        // ============================================
+// СИСТЕМА ГОЛОСОВАНИЙ (ОПРОСЫ)
+// ============================================
+
+let polls = [];
+let votedPolls = new Set();
+let lastPollTime = 0;
+
+// Загрузка опросов
+async function loadPolls() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('polls')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        polls = data || [];
+        
+        await loadVotedPolls();
+        displayPolls();
+        
+    } catch (error) {
+        console.error('Ошибка загрузки опросов:', error);
+    }
+}
+
+// Загрузка проголосованных опросов
+async function loadVotedPolls() {
+    if (!userIp) return;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('poll_votes')
+            .select('poll_id')
+            .eq('ip_address', userIp);
+
+        if (error) throw error;
+
+        votedPolls.clear();
+        data?.forEach(v => votedPolls.add(v.poll_id));
+        
+    } catch (error) {
+        console.error('Ошибка загрузки голосований:', error);
+    }
+}
+
+// Отображение опросов
+function displayPolls() {
+    const pollsList = document.getElementById('pollsList');
+    if (!pollsList) return;
+    
+    if (!polls || polls.length === 0) {
+        pollsList.innerHTML = `
+            <div style="text-align:center; padding:30px; color:#7f8c8d;">
+                <div style="font-size:48px; margin-bottom:10px;">📊</div>
+                <p>Пока нет опросов. Создайте первый!</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    polls.forEach(poll => {
+        const totalVotes = (poll.yes_votes || 0) + (poll.no_votes || 0);
+        const yesPercent = totalVotes > 0 ? Math.round((poll.yes_votes / totalVotes) * 100) : 50;
+        const noPercent = totalVotes > 0 ? Math.round((poll.no_votes / totalVotes) * 100) : 50;
+        
+        const hasVoted = votedPolls.has(poll.id);
+        const votedClass = hasVoted ? 'voted' : '';
+        
+        html += `
+            <div class="poll-item" style="background: white; border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 2px solid #e0e0e0; box-shadow: 0 4px 0 #c0c0c0; ${hasVoted ? 'opacity: 0.9; background: #f8f9fa;' : ''}">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                    <div style="font-weight: 700; color: #2c3e50;">${escapeHtml(poll.question)}</div>
+                    <div style="color: #7f8c8d; font-size: 0.85rem;">👤 ${escapeHtml(poll.author || 'Аноним')}</div>
+                </div>
+                
+                <div style="color: #4a6fa5; font-weight: 600; margin-bottom: 10px;">Всего голосов: ${totalVotes}</div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div onclick="${!hasVoted ? `vote(${poll.id}, 'yes')` : ''}" 
+                         style="flex: 1; background: ${hasVoted ? '#f8f9fa' : '#f8f9fa'}; border: 2px solid ${hasVoted ? '#e0e0e0' : '#e0e0e0'}; border-radius: 12px; padding: 10px; cursor: ${hasVoted ? 'default' : 'pointer'}; text-align: center; transition: all 0.2s; ${!hasVoted ? 'hover:background: #d4edda; hover:border-color: #27ae60;' : ''}">
+                        <div style="font-weight: 700; margin-bottom: 5px;">✅ ДА</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #2c3e50;">${yesPercent}%</div>
+                        <div style="font-size: 0.8rem; color: #7f8c8d;">${poll.yes_votes || 0} голосов</div>
+                    </div>
+                    
+                    <div onclick="${!hasVoted ? `vote(${poll.id}, 'no')` : ''}" 
+                         style="flex: 1; background: ${hasVoted ? '#f8f9fa' : '#f8f9fa'}; border: 2px solid ${hasVoted ? '#e0e0e0' : '#e0e0e0'}; border-radius: 12px; padding: 10px; cursor: ${hasVoted ? 'default' : 'pointer'}; text-align: center; transition: all 0.2s; ${!hasVoted ? 'hover:background: #f8d7da; hover:border-color: #c0392b;' : ''}">
+                        <div style="font-weight: 700; margin-bottom: 5px;">❌ НЕТ</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #2c3e50;">${noPercent}%</div>
+                        <div style="font-size: 0.8rem; color: #7f8c8d;">${poll.no_votes || 0} голосов</div>
+                    </div>
+                </div>
+                
+                <div style="height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; display: flex;">
+                    <div style="height: 100%; width: ${yesPercent}%; background: linear-gradient(90deg, #27ae60, #2ecc71); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600;">${yesPercent}%</div>
+                    <div style="height: 100%; width: ${noPercent}%; background: linear-gradient(90deg, #c0392b, #e74c3c); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600;">${noPercent}%</div>
+                </div>
+            </div>
+        `;
+    });
+    
+    pollsList.innerHTML = html;
+}
+
+// Голосование
+window.vote = async function(pollId, choice) {
+    if (votedPolls.has(pollId)) {
+        showMessage('Вы уже голосовали в этом опросе', 'error');
+        return;
+    }
+
+    try {
+        const poll = polls.find(p => p.id === pollId);
+        
+        // Обновляем в базе
+        if (choice === 'yes') {
+            await supabaseClient
+                .from('polls')
+                .update({ yes_votes: (poll.yes_votes || 0) + 1 })
+                .eq('id', pollId);
+            poll.yes_votes = (poll.yes_votes || 0) + 1;
+        } else {
+            await supabaseClient
+                .from('polls')
+                .update({ no_votes: (poll.no_votes || 0) + 1 })
+                .eq('id', pollId);
+            poll.no_votes = (poll.no_votes || 0) + 1;
+        }
+
+        // Сохраняем голос
+        await supabaseClient
+            .from('poll_votes')
+            .insert({
+                poll_id: pollId,
+                ip_address: userIp,
+                choice: choice
+            });
+
+        votedPolls.add(pollId);
+        displayPolls();
+        showMessage('✅ Голос учтён!', 'success');
+        
+    } catch (error) {
+        console.error('Ошибка голосования:', error);
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+};
+
+// Создание опроса
+document.getElementById('createPollBtn').addEventListener('click', async function() {
+    const question = document.getElementById('pollQuestion').value.trim();
+    
+    if (!question) {
+        showMessage('Введите вопрос', 'error');
+        return;
+    }
+
+    if (question.length < 5) {
+        showMessage('Слишком короткий вопрос', 'error');
+        return;
+    }
+
+    if (question.length > 120) {
+        showMessage('Максимум 120 символов', 'error');
+        return;
+    }
+
+    // Антиспам - 30 секунд
+    const now = Date.now();
+    if (now - lastPollTime < 30000) {
+        showMessage('Подождите 30 секунд перед созданием нового опроса', 'error');
+        return;
+    }
+
+    try {
+        if (!userIp) await getUserIp();
+
+        const { data, error } = await supabaseClient
+            .from('polls')
+            .insert({
+                question: question,
+                author: verifiedUser || 'Аноним',
+                ip_address: userIp,
+                yes_votes: 0,
+                no_votes: 0
+            })
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        polls.unshift(data);
+        lastPollTime = now;
+        
+        document.getElementById('pollQuestion').value = '';
+        displayPolls();
+        showMessage('✅ Опрос создан!', 'success');
+        
+    } catch (error) {
+        console.error('Ошибка создания опроса:', error);
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+});
+
+// Загружаем опросы при инициализации
+// Добавьте эту строку в функцию initApp() после getUserIp():
+// await loadPolls();
     </script>
 <!-- ЕДИНСТВЕННАЯ КНОПКА ДЛЯ СВЯЗИ С АДМИНИСТРАЦИЕЙ -->
 <button class="suggest-button" id="adminBtn" style="position: fixed; bottom: 20px; right: 20px; background: #4a6fa5; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; border-bottom: 4px solid #2c3e50; display: flex; justify-content: center; align-items: center;">📨</button>
