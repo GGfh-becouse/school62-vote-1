@@ -697,36 +697,33 @@
         // ============================================
         // ЗАГРУЗКА СТИКЕРОВ
         // ============================================
-        async function loadStickers() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('user_stickers')
-                    .select('*')
-                    .eq('user_id', profileUser.id);
+       async function loadStickers() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('user_stickers')
+            .select('*')
+            .eq('user_id', profileUser.id);
 
-                if (error) throw error;
+        if (error) throw error;
 
-                const container = document.getElementById('avatarContainer');
-                
-                // Удаляем старые стикеры (оставляем только аватар)
-                while (container.children.length > 1) {
-                    container.removeChild(container.lastChild);
-                }
-
-                // Добавляем стикеры
-                data?.forEach((sticker, index) => {
-                    const stickerEl = document.createElement('img');
-                    stickerEl.src = sticker.sticker_url;
-                    stickerEl.className = `sticker ${sticker.position}`;
-                    stickerEl.onerror = () => stickerEl.remove();
-                    container.appendChild(stickerEl);
-                });
-
-            } catch (error) {
-                console.error('Ошибка загрузки стикеров:', error);
-            }
+        const container = document.getElementById('avatarContainer');
+        
+        while (container.children.length > 1) {
+            container.removeChild(container.lastChild);
         }
 
+        data?.forEach((sticker, index) => {
+            const stickerEl = document.createElement('img');
+            stickerEl.src = sticker.sticker_url;
+            stickerEl.className = `sticker ${sticker.position}`;
+            stickerEl.onerror = () => stickerEl.remove();
+            container.appendChild(stickerEl);
+        });
+
+    } catch (error) {
+        console.error('Ошибка загрузки стикеров:', error);
+    }
+}
         // ============================================
         // ЗАГРУЗКА МУЗЫКИ
         // ============================================
