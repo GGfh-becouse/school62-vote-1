@@ -1396,39 +1396,7 @@
             return bannedWords.some(word => lowerText.includes(word));
         }
 
-        // ============================================
-        // СОГЛАШЕНИЕ
-        // ============================================
-        const agreementScreen = document.getElementById('agreementScreen');
-        const mainContent = document.getElementById('mainContent');
-        const schoolCheckbox = document.getElementById('schoolCheckbox');
-        const enterBtn = document.getElementById('enterSiteBtn');
-
-        function enterSite() {
-            localStorage.setItem('agreement62', 'accepted');
-            if (agreementScreen) agreementScreen.style.display = 'none';
-            if (mainContent) mainContent.style.display = 'block';
-            initApp();
-        }
-
-        if (localStorage.getItem('agreement62') === 'accepted') {
-            agreementScreen.style.display = 'none';
-            mainContent.style.display = 'block';
-            initApp();
-        }
-
-        if (schoolCheckbox) {
-            schoolCheckbox.addEventListener('change', function() {
-                enterBtn.disabled = !this.checked;
-            });
-        }
-
-        if (enterBtn) {
-            enterBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (schoolCheckbox?.checked) enterSite();
-            });
-        }
+     
 
         // ============================================
         // ПОЛУЧЕНИЕ IP
