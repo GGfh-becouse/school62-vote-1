@@ -1204,6 +1204,41 @@
     </div>
 </div>
 
+<!-- ТОП-1 ДЕВОЧЕК ШКОЛЫ -->
+<div class="top-girl-container" style="background: linear-gradient(145deg, #ffd1dc, #ffb6c1); border-radius: 24px; padding: 15px; margin: 16px; box-shadow: 0 6px 0 #d48c9c; border: 2px solid #ff69b4;">
+    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <!-- Коронка и аватар -->
+        <div style="position: relative;">
+            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 2rem; filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2));">👑</div>
+            <img src="https://i.pravatar.cc/80" id="topGirlAvatar" style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid gold; box-shadow: 0 4px 0 #b38f4a;">
+        </div>
+        
+        <!-- Информация о лидере -->
+        <div style="flex: 1;">
+            <div style="color: #2c3e50; font-size: 0.9rem; font-weight: 500; margin-bottom: 5px;">🏆 ТОП-1 ДЕВОЧКА ШКОЛЫ</div>
+            <div style="font-size: 1.8rem; font-weight: 700; color: #2c3e50; line-height: 1.2;" id="topGirlName">Загрузка...</div>
+            <div style="display: flex; gap: 15px; margin-top: 8px;">
+                <div style="background: white; padding: 5px 15px; border-radius: 30px; font-weight: 600; color: #4a6fa5; border-bottom: 3px solid #d48c9c;">
+                    <span id="topGirlVotes">0</span> ❤️ голосов
+                </div>
+                <div style="background: white; padding: 5px 15px; border-radius: 30px; font-weight: 600; color: #4a6fa5; border-bottom: 3px solid #d48c9c;">
+                    🏅 1 место
+                </div>
+            </div>
+        </div>
+        
+        <!-- Блестящая анимация -->
+        <div style="font-size: 2rem; animation: sparkle 1.5s infinite;">✨</div>
+    </div>
+</div>
+
+<style>
+@keyframes sparkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+}
+</style>
+            
 <!-- БЛОК С ГОЛОСОВАНИЯМИ -->
 <div class="polls-container" style="margin-bottom: 20px;">
 
@@ -2004,6 +2039,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const rarityNames = { common: 'Обычная', rare: 'Редкая', epic: 'Эпическая', legendary: 'Легендарная' };
 
+        // ============================================
+// ТОП-1 ДЕВОЧЕК ШКОЛЫ
+// ============================================
+async function updateTopGirl() {
+    try {
+        // Получаем всех кандидатов, отсортированных по голосам
+        const { data, error } = await supabaseClient
+            .from('candidates')
+            .select('*')
+            .order('votes', { ascending: false })
+            .limit(1);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            const topGirl = data[0];
+            
+            // Обновляем элементы на странице
+            document.getElementById('topGirlName').textContent = topGirl.name;
+            document.getElementById('topGirlVotes').textContent = topGirl.votes || 0;
+            
+            // Обновляем аватар (если есть фото)
+            if (topGirl.photo_url) {
+                document.getElementById('topGirlAvatar').src = topGirl.photo_url;
+            }
+            
+            console.log('ТОП-1 девочка:', topGirl.name);
+        } else {
+            // Если нет кандидатов, показываем заглушку
+            document.getElementById('topGirlName').textContent = 'Пока нет';
+            document.getElementById('topGirlVotes').textContent = '0';
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки ТОП-1:', error);
+    }
+}
+
+// Добавьте вызов функции в initApp
+async function initApp() {
+    await getUserIp();
+    await loadUserVotes();
+    await loadCandidates();
+    await loadComments();
+    await updateTopGirl(); // ← Добавьте эту строку
+}
         // ============================================
         // ЗАГРУЗКА ГОЛОСОВ
         // ============================================
