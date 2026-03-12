@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Prime вход - Школа №62</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .prime-login-card {
+            background: white;
+            border-radius: 32px;
+            max-width: 450px;
+            width: 100%;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            border: 3px solid gold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prime-login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,215,0,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .prime-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: gold;
+            color: #2c3e50;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 0 #b38f4a;
+            transform: rotate(5deg);
+            animation: float 2s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(5deg) translateY(0); }
+            50% { transform: rotate(5deg) translateY(-5px); }
+        }
+
+        .prime-login-card h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .prime-login-card h2 span {
+            font-size: 1.8rem;
+        }
+
+        .prime-subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .prime-features {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .prime-features h3 {
+            color: gold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 1px 1px 0 #b38f4a;
+        }
+
+        .prime-features ul {
+            list-style: none;
+        }
+
+        .prime-features li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #2c3e50;
+        }
+
+        .prime-features li span {
+            color: gold;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: gold;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
+        }
+
+        .prime-btn {
+            background: linear-gradient(135deg, gold, #ffd700);
+            color: #2c3e50;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 40px;
+            cursor: pointer;
+            border-bottom: 4px solid #b38f4a;
+            transition: all 0.1s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .prime-btn:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+
+        .regular-login {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+
+        .regular-login a {
+            color: #4a6fa5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .message {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 12px 20px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+            z-index: 10001;
+            animation: slideIn 0.2s;
+            border-bottom: 4px solid rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .message.success { background: #4a6fa5; }
+        .message.error { background: #c0392b; }
+        .message.prime { background: gold; color: #2c3e50; }
+
+        @media (max-width: 600px) {
+            .prime-login-card {
+                padding: 25px 20px;
+            }
+            
+            .prime-badge {
+                position: static;
+                transform: none;
+                margin-bottom: 15px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="prime-login-card">
+        <div class="prime-badge">👑 PREMIUM</div>
+        
+        <h2>
+            <span>👑</span> Prime вход
+        </h2>
+        <div class="prime-subtitle">Войдите в свой премиум-аккаунт</div>
+
+        <div class="prime-features">
+            <h3>✨ Ваши преимущества</h3>
+            <ul>
+                <li><span>✅</span> 5 стикеров на аватар</li>
+                <li><span>✅</span> Золотая рамка</li>
+                <li><span>✅</span> Эксклюзивные реакции</li>
+                <li><span>✅</span> Приоритетная поддержка</li>
+                <li><span>✅</span> Специальный статус в профиле</li>
+            </ul>
+        </div>
+        
+        <div class="form-group">
+            <label>👤 Никнейм (премиум)</label>
+            <input type="text" id="primeNickname" class="form-control" placeholder="Ваш премиум-ник">
+        </div>
+
+        <div class="form-group">
+            <label>🔐 Пароль</label>
+            <input type="password" id="primePassword" class="form-control" placeholder="••••••••">
+        </div>
+
+        <button class="prime-btn" id="primeLoginBtn">
+            <span>👑</span> ВОЙТИ В PREMIUM
+        </button>
+
+        <div class="regular-login">
+            Обычный вход? <a href="login.html">Войти как обычно</a>
+        </div>
+    </div>
+
+    <div id="messageContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        document.getElementById('primeLoginBtn').addEventListener('click', async () => {
+            const nickname = document.getElementById('primeNickname').value.trim();
+            const password = document.getElementById('primePassword').value.trim();
+
+            if (!nickname || !password) {
+                showMessage('Введите ник и пароль', 'error');
+                return;
+            }
+
+            try {
+                // Сначала проверяем в таблице verified_users
+                const { data: primeData, error: primeError } = await supabaseClient
+                    .from('verified_users')
+                    .select('*')
+                    .eq('username', nickname)
+                    .eq('password', password)
+                    .maybeSingle();
+
+                if (primeError) throw primeError;
+
+                if (!primeData) {
+                    showMessage('Неверный премиум-ник или пароль', 'error');
+                    return;
+                }
+
+                // Проверяем, есть ли уже такой пользователь в users
+                let { data: userData, error: userError } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('nickname', nickname)
+                    .maybeSingle();
+
+                if (userError) throw userError;
+
+                if (!userData) {
+                    // Создаем нового пользователя с премиум-статусом
+                    const { data: newUser, error: createError } = await supabaseClient
+                        .from('users')
+                        .insert({
+                            nickname: nickname,
+                            real_name: primeData.real_name || nickname,
+                            password: password,
+                            class: primeData.class || '11А',
+                            avatar_url: 'https://i.pravatar.cc/300',
+                            status: '👑 Премиум пользователь',
+                            is_prime: true,
+                            display_name: nickname
+                        })
+                        .select()
+                        .single();
+
+                    if (createError) throw createError;
+                    userData = newUser;
+                } else {
+                    // Обновляем статус на премиум
+                    const { error: updateError } = await supabaseClient
+                        .from('users')
+                        .update({ is_prime: true })
+                        .eq('id', userData.id);
+
+                    if (updateError) throw updateError;
+                    userData.is_prime = true;
+                }
+
+                // Сохраняем данные
+                localStorage.setItem('userId', userData.id);
+                localStorage.setItem('userNickname', userData.nickname);
+                localStorage.setItem('userPrime', 'true');
+                localStorage.setItem('primeLogin', 'true');
+
+                // Сохраняем расширенные данные профиля
+                const profileData = {
+                    id: userData.id,
+                    nickname: userData.nickname,
+                    display_name: userData.display_name || userData.nickname,
+                    class: userData.class,
+                    avatar_url: userData.avatar_url,
+                    status: userData.status,
+                    is_prime: true,
+                    prime_features: {
+                        max_stickers: 5,
+                        gold_frame: true,
+                        exclusive_reactions: true
+                    }
+                };
+                localStorage.setItem('profileData', JSON.stringify(profileData));
+
+                showMessage('👑 Добро пожаловать в PREMIUM!', 'prime');
+
+                setTimeout(() => {
+                    window.location.href = 'your_account.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        });
+
+        // Enter для отправки
+        document.getElementById('primePassword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('primeLoginBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
