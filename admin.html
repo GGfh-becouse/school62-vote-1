@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Стили (оставьте как есть) */
         * {
             margin: 0;
             padding: 0;
@@ -487,12 +486,16 @@
             <!-- Статистика -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>🗳️ Всего голосов</h3>
-                    <div class="stat-number" id="totalVotes">-</div>
+                    <h3>🗳️ Всего опросов</h3>
+                    <div class="stat-number" id="totalPolls">-</div>
                 </div>
                 <div class="stat-card">
                     <h3>💬 Комментариев</h3>
                     <div class="stat-number" id="totalComments">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>📊 Голосов</h3>
+                    <div class="stat-number" id="totalPollVotes">-</div>
                 </div>
                 <div class="stat-card">
                     <h3>👥 Уникальных IP</h3>
@@ -514,7 +517,8 @@
 
             <!-- Вкладки -->
             <div class="tabs">
-                <div class="tab active" onclick="switchTab('comments')">💬 Комментарии</div>
+                <div class="tab active" onclick="switchTab('polls')">📊 Опросы</div>
+                <div class="tab" onclick="switchTab('comments')">💬 Комментарии</div>
                 <div class="tab" onclick="switchTab('duplicates')">🔄 Дубликаты</div>
                 <div class="tab" onclick="switchTab('feedback')">📨 Обратная связь</div>
                 <div class="tab" onclick="switchTab('verified')">👑 PREMIUM</div>
@@ -524,8 +528,31 @@
                 <div class="tab" onclick="switchTab('suspicious')">⚠️ Подозрения</div>
             </div>
 
+            <!-- Панель опросов -->
+            <div id="pollsPanel" class="panel active">
+                <h2>📊 Опросы пользователей</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Вопрос</th>
+                                <th>Автор</th>
+                                <th>✅ ДА</th>
+                                <th>❌ НЕТ</th>
+                                <th>Всего</th>
+                                <th>IP</th>
+                                <th>Дата</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pollsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Панель комментариев -->
-            <div id="commentsPanel" class="panel active">
+            <div id="commentsPanel" class="panel">
                 <h2>💬 Комментарии пользователей</h2>
                 <div class="warning-banner" id="duplicateWarning" style="display: none;">
                     <span>🔍 Обнаружены повторяющиеся комментарии с одного IP!</span>
@@ -563,11 +590,17 @@
 
             <!-- Панель обратной связи -->
             <div id="feedbackPanel" class="panel">
-                <h2>📨 Обратная связь</h2>
+                <h2>📨 ВСЕ ОБРАЩЕНИЯ (feedback + suggestions)</h2>
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Тип</th><th>Имя</th><th>Сообщение</th><th>IP</th><th>Дата</th></tr>
+                            <tr>
+                                <th>Тип</th>
+                                <th>Имя</th>
+                                <th>Сообщение</th>
+                                <th>IP</th>
+                                <th>Дата</th>
+                            </tr>
                         </thead>
                         <tbody id="feedbackBody"></tbody>
                     </table>
@@ -594,9 +627,9 @@
                 </div>
             </div>
 
-            <!-- Панель голосов -->
+            <!-- Панель голосов (кандидаты) -->
             <div id="votesPanel" class="panel">
-                <h2>🗳️ История голосований</h2>
+                <h2>🗳️ Голоса за кандидатов</h2>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -623,11 +656,11 @@
 
             <!-- Панель предложений -->
             <div id="suggestionsPanel" class="panel">
-                <h2>📝 Предложения кандидатов</h2>
+                <h2>📝 Предложения</h2>
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Дата</th><th>Имя</th><th>Описание</th><th>Статус</th><th>Действия</th></tr>
+                            <tr><th>Дата</th><th>Имя</th><th>Сообщение</th><th>Тип</th><th>Статус</th><th>Действия</th></tr>
                         </thead>
                         <tbody id="suggestionsBody"></tbody>
                     </table>
@@ -702,7 +735,7 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             
-            const tabs = ['comments', 'duplicates', 'feedback', 'verified', 'votes', 'candidates', 'suggestions', 'suspicious'];
+            const tabs = ['polls', 'comments', 'duplicates', 'feedback', 'verified', 'votes', 'candidates', 'suggestions', 'suspicious'];
             const index = tabs.indexOf(tab);
             document.querySelectorAll('.tab')[index].classList.add('active');
             document.getElementById(tab + 'Panel').classList.add('active');
@@ -718,6 +751,7 @@
         async function loadAllData() {
             try {
                 await loadStats();
+                await loadPolls();
                 await loadComments();
                 await loadFeedback();
                 await loadVerified();
@@ -736,8 +770,8 @@
         // ============================================
         async function loadStats() {
             try {
-                const { count: votes } = await supabaseClient
-                    .from('votes')
+                const { count: polls } = await supabaseClient
+                    .from('polls')
                     .select('*', { count: 'exact', head: true });
                     
                 const { count: comments } = await supabaseClient
@@ -752,19 +786,64 @@
                     .from('verified_users')
                     .select('*', { count: 'exact', head: true });
                 
+                const { data: pollVotes } = await supabaseClient
+                    .from('poll_votes')
+                    .select('*', { count: 'exact', head: true });
+                
                 const { data: ips } = await supabaseClient
                     .from('votes')
                     .select('ip_address');
                     
                 const uniqueIPs = new Set(ips?.map(v => v.ip_address) || []).size;
 
-                document.getElementById('totalVotes').textContent = votes || 0;
+                document.getElementById('totalPolls').textContent = polls || 0;
                 document.getElementById('totalComments').textContent = comments || 0;
+                document.getElementById('totalPollVotes').textContent = pollVotes?.length || 0;
                 document.getElementById('uniqueIPs').textContent = uniqueIPs;
                 document.getElementById('totalCandidates').textContent = candidates || 0;
                 document.getElementById('totalVerified').textContent = verified || 0;
             } catch (error) {
                 console.error('Ошибка загрузки статистики:', error);
+            }
+        }
+
+        // ============================================
+        // ЗАГРУЗКА ОПРОСОВ
+        // ============================================
+        async function loadPolls() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('polls')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                let html = '';
+                if (data && data.length > 0) {
+                    data.forEach(poll => {
+                        const totalVotes = (poll.yes_votes || 0) + (poll.no_votes || 0);
+                        html += `
+                            <tr>
+                                <td>${poll.id}</td>
+                                <td><strong>${escapeHtml(poll.question)}</strong></td>
+                                <td>${escapeHtml(poll.author || 'Аноним')}</td>
+                                <td style="color: #27ae60; font-weight: 600;">${poll.yes_votes || 0}</td>
+                                <td style="color: #c0392b; font-weight: 600;">${poll.no_votes || 0}</td>
+                                <td>${totalVotes}</td>
+                                <td>${poll.ip_address || '-'}</td>
+                                <td>${poll.created_at ? new Date(poll.created_at).toLocaleString() : '-'}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" onclick="deletePoll(${poll.id})">🗑️</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+                document.getElementById('pollsBody').innerHTML = html || '<tr><td colspan="9">Нет опросов</td></tr>';
+            } catch (error) {
+                console.error('Ошибка загрузки опросов:', error);
+                document.getElementById('pollsBody').innerHTML = '<tr><td colspan="9">Ошибка загрузки</td></tr>';
             }
         }
 
@@ -936,119 +1015,94 @@
             }
         };
 
-// ============================================
-// ЗАГРУЗКА ОБРАТНОЙ СВЯЗИ - ВСЕ СООБЩЕНИЯ
-// ============================================
-async function loadFeedback() {
-    try {
-        console.log('Загрузка обратной связи...');
-        
-        // Загружаем ВСЕ сообщения из feedback
-        const { data: feedbackData, error: feedbackError } = await supabaseClient
-            .from('feedback')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        // Также загружаем из suggestions для полноты
-        const { data: suggestionsData, error: suggestionsError } = await supabaseClient
-            .from('suggestions')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        let allMessages = [];
-        
-        // Добавляем сообщения из feedback
-        if (feedbackData && !feedbackError) {
-            const formattedFeedback = feedbackData.map(item => ({
-                id: 'fb_' + item.id,
-                type: item.type || 'feedback',
-                sub_type: item.sub_type || 'message',
-                name: item.name || 'Аноним',
-                message: item.message || '-',
-                ip_address: item.ip_address || '-',
-                created_at: item.created_at,
-                source: '📨 feedback'
-            }));
-            allMessages = [...allMessages, ...formattedFeedback];
-            console.log(`Загружено ${formattedFeedback.length} из feedback`);
-        }
-        
-        // Добавляем сообщения из suggestions
-        if (suggestionsData && !suggestionsError) {
-            const formattedSuggestions = suggestionsData.map(item => ({
-                id: 'sug_' + item.id,
-                type: item.type || 'suggestion',
-                sub_type: item.type || 'other',
-                name: item.name || 'Аноним',
-                message: item.message || '-',
-                ip_address: item.ip_address || '-',
-                created_at: item.created_at,
-                source: '📝 suggestions',
-                status: item.status
-            }));
-            allMessages = [...allMessages, ...formattedSuggestions];
-            console.log(`Загружено ${formattedSuggestions.length} из suggestions`);
-        }
-        
-        // Сортируем по дате (новые сверху)
-        allMessages.sort((a, b) => {
-            return new Date(b.created_at) - new Date(a.created_at);
-        });
-        
-        console.log(`Всего сообщений: ${allMessages.length}`);
-        
-        let html = '';
-        
-        if (allMessages.length === 0) {
-            html = '<tr><td colspan="6" style="text-align:center; padding:30px;">Нет сообщений</td></tr>';
-        } else {
-            allMessages.forEach(msg => {
-                // Определяем иконку в зависимости от типа
-                let typeIcon = '📌';
-                if (msg.type === 'question' || msg.sub_type === 'question') typeIcon = '❓';
-                else if (msg.type === 'problem' || msg.sub_type === 'problem') typeIcon = '⚠️';
-                else if (msg.type === 'suggestion' || msg.sub_type === 'suggestion') typeIcon = '💡';
-                else if (msg.type === 'bug' || msg.sub_type === 'bug') typeIcon = '🐛';
-                else if (msg.type === 'candidate' || msg.sub_type === 'candidate') typeIcon = '👩';
+        // ============================================
+        // ЗАГРУЗКА ОБРАТНОЙ СВЯЗИ
+        // ============================================
+        async function loadFeedback() {
+            try {
+                const { data: feedbackData, error: feedbackError } = await supabaseClient
+                    .from('feedback')
+                    .select('*')
+                    .order('created_at', { ascending: false });
                 
-                // Сокращаем длинные сообщения
-                let shortMessage = msg.message;
-                if (shortMessage && shortMessage.length > 100) {
-                    shortMessage = shortMessage.substring(0, 100) + '...';
+                const { data: suggestionsData, error: suggestionsError } = await supabaseClient
+                    .from('suggestions')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                let allMessages = [];
+                
+                if (feedbackData && !feedbackError) {
+                    const formattedFeedback = feedbackData.map(item => ({
+                        id: 'fb_' + item.id,
+                        type: item.type || 'feedback',
+                        sub_type: item.sub_type || 'message',
+                        name: item.name || 'Аноним',
+                        message: item.message || '-',
+                        ip_address: item.ip_address || '-',
+                        created_at: item.created_at,
+                        source: '📨 feedback'
+                    }));
+                    allMessages = [...allMessages, ...formattedFeedback];
                 }
                 
-                // Статус для suggestions
-                let statusBadge = '';
-                if (msg.status === 'pending') statusBadge = '<span class="badge warning">⏳</span>';
-                else if (msg.status === 'approved') statusBadge = '<span class="badge success">✅</span>';
-                else if (msg.status === 'rejected') statusBadge = '<span class="badge danger">❌</span>';
+                if (suggestionsData && !suggestionsError) {
+                    const formattedSuggestions = suggestionsData.map(item => ({
+                        id: 'sug_' + item.id,
+                        type: item.type || 'suggestion',
+                        sub_type: item.type || 'other',
+                        name: item.name || 'Аноним',
+                        message: item.message || '-',
+                        ip_address: item.ip_address || '-',
+                        created_at: item.created_at,
+                        source: '📝 suggestions',
+                        status: item.status
+                    }));
+                    allMessages = [...allMessages, ...formattedSuggestions];
+                }
                 
-                html += `<tr>
-                    <td>
-                        <span style="display: flex; align-items: center; gap: 5px;">
-                            ${typeIcon} 
-                            <span class="badge ${msg.type}">${msg.sub_type || msg.type || 'message'}</span>
-                            <small style="color: #7f8c8d;">${msg.source}</small>
-                            ${statusBadge}
-                        </span>
-                    </td>
-                    <td>${escapeHtml(msg.name)}</td>
-                    <td>
-                        <div title="${escapeHtml(msg.message)}">${escapeHtml(shortMessage)}</div>
-                    </td>
-                    <td>${msg.ip_address}</td>
-                    <td>${msg.created_at ? new Date(msg.created_at).toLocaleString() : '-'}</td>
-                </tr>`;
-            });
+                allMessages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                
+                let html = '';
+                
+                if (allMessages.length === 0) {
+                    html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет сообщений</td></tr>';
+                } else {
+                    allMessages.forEach(msg => {
+                        let typeIcon = '📌';
+                        if (msg.type === 'question' || msg.sub_type === 'question') typeIcon = '❓';
+                        else if (msg.type === 'problem' || msg.sub_type === 'problem') typeIcon = '⚠️';
+                        else if (msg.type === 'suggestion' || msg.sub_type === 'suggestion') typeIcon = '💡';
+                        else if (msg.type === 'bug' || msg.sub_type === 'bug') typeIcon = '🐛';
+                        
+                        let shortMessage = msg.message;
+                        if (shortMessage && shortMessage.length > 100) {
+                            shortMessage = shortMessage.substring(0, 100) + '...';
+                        }
+                        
+                        html += `<tr>
+                            <td>
+                                <span style="display: flex; align-items: center; gap: 5px;">
+                                    ${typeIcon} 
+                                    <span class="badge">${msg.sub_type || msg.type || 'message'}</span>
+                                    <small style="color: #7f8c8d;">${msg.source}</small>
+                                </span>
+                            </td>
+                            <td>${escapeHtml(msg.name)}</td>
+                            <td title="${escapeHtml(msg.message)}">${escapeHtml(shortMessage)}</td>
+                            <td>${msg.ip_address}</td>
+                            <td>${msg.created_at ? new Date(msg.created_at).toLocaleString() : '-'}</td>
+                        </tr>`;
+                    });
+                }
+                
+                document.getElementById('feedbackBody').innerHTML = html;
+            } catch (error) {
+                console.error('Ошибка загрузки обратной связи:', error);
+                document.getElementById('feedbackBody').innerHTML = '<tr><td colspan="5">Ошибка загрузки</td></tr>';
+            }
         }
-        
-        document.getElementById('feedbackBody').innerHTML = html;
-        
-    } catch (error) {
-        console.error('Ошибка загрузки обратной связи:', error);
-        document.getElementById('feedbackBody').innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
-    }
-}
+
         // ============================================
         // ЗАГРУЗКА PREMIUM
         // ============================================
@@ -1115,7 +1169,7 @@ async function loadFeedback() {
         };
 
         // ============================================
-        // ЗАГРУЗКА ГОЛОСОВ
+        // ЗАГРУЗКА ГОЛОСОВ (за кандидатов)
         // ============================================
         async function loadVotes() {
             try {
@@ -1190,140 +1244,71 @@ async function loadFeedback() {
         // ============================================
         async function loadSuggestions() {
             try {
-                console.log('Загрузка предложений...');
-                
                 const { data, error } = await supabaseClient
                     .from('suggestions')
                     .select('*')
                     .order('created_at', { ascending: false });
                 
-                if (error) {
-                    console.error('Ошибка Supabase:', error);
-                    throw error;
-                }
-                
-                console.log('Получены данные:', data);
+                if (error) throw error;
                 
                 let html = '';
                 
                 if (!data || data.length === 0) {
-                    html = '<tr><td colspan="5" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
+                    html = '<tr><td colspan="6" style="text-align:center; padding:30px;">Нет предложений</td></tr>';
                 } else {
                     data.forEach(s => {
                         let statusBadge = '';
                         let statusText = s.status || 'pending';
                         
-                        if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳ Ожидает</span>';
-                        else if (statusText === 'approved') statusBadge = '<span class="badge success">✅ Одобрено</span>';
-                        else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌ Отклонено</span>';
-                        
-                        let displayMessage = s.message || '-';
-                        let candidateName = 'Не указан';
-                        let description = displayMessage;
-                        
-                        const nameMatch = displayMessage.match(/Кандидат:\s*(.+?)(?:\n|$)/);
-                        if (nameMatch) {
-                            candidateName = nameMatch[1].trim();
-                            description = displayMessage.replace(/Кандидат:.*?\n/, '').replace(/Описание:\s*/, '');
-                        }
-                        
-                        if (description.length > 100) {
-                            description = description.substring(0, 100) + '...';
-                        }
+                        if (statusText === 'pending') statusBadge = '<span class="badge warning">⏳</span>';
+                        else if (statusText === 'approved') statusBadge = '<span class="badge success">✅</span>';
+                        else if (statusText === 'rejected') statusBadge = '<span class="badge danger">❌</span>';
                         
                         html += `<tr>
                             <td>${s.created_at ? new Date(s.created_at).toLocaleString() : '-'}</td>
                             <td>${escapeHtml(s.name || 'Аноним')}</td>
-                            <td>
-                                <strong>${escapeHtml(candidateName)}</strong><br>
-                                <small>${escapeHtml(description)}</small>
-                            </td>
+                            <td>${escapeHtml(s.message || '-')}</td>
+                            <td>${escapeHtml(s.type || 'other')}</td>
                             <td>${statusBadge}</td>
                             <td>
-                                ${statusText === 'pending' ? `
-                                    <button class="btn btn-sm btn-success" onclick="approveSuggestion('${s.id}')">✅ Одобрить</button>
-                                    <button class="btn btn-sm btn-danger" onclick="rejectSuggestion('${s.id}')">❌ Отклонить</button>
-                                ` : '-'}
+                                <button class="btn btn-sm btn-danger" onclick="deleteSuggestion(${s.id})">🗑️</button>
                             </td>
                         </tr>`;
                     });
                 }
                 
                 document.getElementById('suggestionsBody').innerHTML = html;
-                
             } catch (error) {
                 console.error('Ошибка загрузки предложений:', error);
-                document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#c0392b;">Ошибка загрузки: ' + error.message + '</td></tr>';
+                document.getElementById('suggestionsBody').innerHTML = '<tr><td colspan="6">Ошибка загрузки</td></tr>';
             }
         }
 
-        // ============================================
-        // ОДОБРЕНИЕ ПРЕДЛОЖЕНИЯ
-        // ============================================
-        window.approveSuggestion = async (id) => {
-            try {
-                const { data: suggestion, error: fetchError } = await supabaseClient
-                    .from('suggestions')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
-                
-                if (fetchError || !suggestion) {
-                    showMessage('Предложение не найдено', 'error');
-                    return;
+        window.deleteSuggestion = async (id) => {
+            if (confirm('Удалить предложение?')) {
+                try {
+                    await supabaseClient.from('suggestions').delete().eq('id', id);
+                    showMessage('Предложение удалено', 'success');
+                    loadSuggestions();
+                } catch (error) {
+                    showMessage('Ошибка: ' + error.message, 'error');
                 }
-                
-                const message = suggestion.message || '';
-                let name = 'Новый кандидат';
-                
-                const nameMatch = message.match(/Кандидат:\s*(.+?)(?:\n|$)/);
-                if (nameMatch) {
-                    name = nameMatch[1].trim();
-                }
-                
-                const { error: insertError } = await supabaseClient
-                    .from('candidates')
-                    .insert({ 
-                        name: name,
-                        class: 'Предложенный кандидат',
-                        votes: 0,
-                        photo_url: 'https://i.pravatar.cc/300'
-                    });
-                
-                if (insertError) {
-                    showMessage('Ошибка при добавлении кандидата: ' + insertError.message, 'error');
-                    return;
-                }
-                
-                await supabaseClient
-                    .from('suggestions')
-                    .update({ status: 'approved' })
-                    .eq('id', id);
-                
-                showMessage('✅ Кандидат добавлен!', 'success');
-                loadSuggestions();
-                loadCandidates();
-                
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
             }
         };
 
         // ============================================
-        // ОТКЛОНЕНИЕ ПРЕДЛОЖЕНИЯ
+        // УДАЛЕНИЕ ОПРОСА
         // ============================================
-        window.rejectSuggestion = async (id) => {
-            try {
-                await supabaseClient
-                    .from('suggestions')
-                    .update({ status: 'rejected' })
-                    .eq('id', id);
-                    
-                showMessage('❌ Предложение отклонено', 'info');
-                loadSuggestions();
-            } catch (error) {
-                showMessage('Ошибка: ' + error.message, 'error');
+        window.deletePoll = async (id) => {
+            if (confirm('Удалить опрос? Будут удалены все голоса в нём.')) {
+                try {
+                    await supabaseClient.from('polls').delete().eq('id', id);
+                    showMessage('Опрос удалён', 'success');
+                    loadPolls();
+                    loadStats();
+                } catch (error) {
+                    showMessage('Ошибка: ' + error.message, 'error');
+                }
             }
         };
 
