@@ -1056,6 +1056,47 @@
         }
     }
 
+// ============================================
+// ПРЕМИУМ ФУНКЦИИ
+// ============================================
+function applyPrimeFeatures() {
+    if (!currentUser.is_prime) return;
+    
+    // Увеличиваем лимит стикеров
+    maxStickers = 5;
+    document.getElementById('stickerCounter').textContent = `${currentStickers.length}/${maxStickers}`;
+    
+    // Добавляем премиум-рамку по умолчанию
+    selectFrame('gold');
+    
+    // Показываем премиум-приветствие
+    const primeWelcome = document.createElement('div');
+    primeWelcome.className = 'prime-welcome';
+    primeWelcome.style.cssText = `
+        background: gold;
+        color: #2c3e50;
+        padding: 10px;
+        border-radius: 30px;
+        margin-bottom: 15px;
+        text-align: center;
+        font-weight: 700;
+        animation: pulse 2s infinite;
+    `;
+    primeWelcome.innerHTML = '👑 Добро пожаловать в PREMIUM! Доступно 5 стикеров';
+    
+    const userInfoBar = document.querySelector('.user-info-bar');
+    if (userInfoBar && !document.querySelector('.prime-welcome')) {
+        userInfoBar.insertAdjacentElement('afterend', primeWelcome);
+    }
+}
+
+// Добавляем эксклюзивные реакции для премиум
+function getPrimeReactions() {
+    const baseReactions = ['❤️', '🔥', '😎', '🤡', '💀'];
+    const primeReactions = ['👑', '⭐', '💎', '⚡', '🎯'];
+    return currentUser.is_prime ? [...baseReactions, ...primeReactions] : baseReactions;
+}
+        
     // ============================================
     // ПРОВЕРКА АВТОРИЗАЦИИ
     // ============================================
