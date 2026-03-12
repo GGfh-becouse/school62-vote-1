@@ -1728,32 +1728,44 @@ async function addMusicTrack() {
     try {
         showMessage('⏳ Получаем информацию о треке...', 'info');
         
-        const trackInfo = await getTrackInfo(url);
+  async function getTrackInfo(url) {
+    try {
+        // Парсим ссылку на месте без API
+        let title = 'Музыкальный трек';
+        let artist = 'Исполнитель';
         
-        const container = document.getElementById('musicContainer') || document.getElementById('playerContainer');
-        if (container) {
-            container.innerHTML = `
-                <div style="background: #f8f9fa; border-radius: 16px; padding: 15px; margin-top: 15px; border: 1px solid #e0e0e0;">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="${trackInfo.cover}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 2px solid #4a6fa5;">
-                        <div style="flex: 1;">
-                            <div style="font-weight: 700; color: #2c3e50;">${trackInfo.title}</div>
-                            <div style="color: #7f8c8d;">${trackInfo.artist}</div>
-                        </div>
-                        <button onclick="window.open('${url}', '_blank')" style="background: #4a6fa5; color: white; border: none; width: 40px; height: 40px; border-radius: 20px; cursor: pointer; border-bottom: 3px solid #2c3e50;">▶</button>
-                    </div>
-                </div>
-            `;
+        // Определяем платформу и пытаемся извлечь информацию из URL
+        if (url.includes('spotify.com/track/')) {
+            // Для Spotify показываем ID трека
+            const trackId = url.split('track/')[1].split('?')[0];
+            title = `Spotify Track (${trackId.slice(0, 8)}...)`;
+            artist = 'Откройте в Spotify';
+        }
+        else if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) {
+            // Для YouTube показываем, что это видео
+            title = 'YouTube Video';
+            artist = 'Откройте в YouTube';
+        }
+        else if (url.includes('music.yandex.ru')) {
+            title = 'Яндекс.Музыка';
+            artist = 'Откройте в Яндекс.Музыке';
         }
         
-        urlInput.value = '';
-        showMessage('✅ Трек добавлен!', 'success');
+        return {
+            title: title,
+            artist: artist,
+            cover: 'https://picsum.photos/200/200?random=' + Math.random()
+        };
         
     } catch (error) {
-        showMessage('Ошибка: ' + error.message, 'error');
+        console.error('Ошибка:', error);
+        return {
+            title: 'Музыкальный трек',
+            artist: 'Исполнитель',
+            cover: 'https://picsum.photos/200/200?random=' + Math.random()
+        };
     }
 }
-
 // Добавляем обработчик после загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
     const addBtn = document.getElementById('addMusicBtn');
