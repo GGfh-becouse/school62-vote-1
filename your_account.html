@@ -925,15 +925,15 @@
                     </p>
                 </div>
 
-                <!-- Музыкальный блок -->
-                <div class="music-section">
-                    <h3><span>🎵</span> Мой трек</h3>
-                    <div class="track-input">
-                        <input type="text" id="trackUrl" placeholder="Ссылка на трек (Spotify, YouTube, Яндекс.Музыка)">
-                        <button id="addTrackBtn">Добавить</button>
-                    </div>
-                    <div id="playerContainer"></div>
-                </div>
+             <!-- Музыкальный блок -->
+<div class="music-section">
+    <h3><span>🎵</span> Мой трек</h3>
+    <div class="track-input">
+        <input type="text" id="trackUrl" placeholder="Вставьте ссылку на трек (Spotify, YouTube...)" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px;">
+        <button id="addMusicBtn" style="background: #4a6fa5; color: white; border: none; padding: 12px 25px; border-radius: 40px; font-weight: 600; cursor: pointer; border-bottom: 3px solid #2c3e50; margin-top: 10px;">➕ Добавить</button>
+    </div>
+    <div id="playerContainer"></div>
+</div>
 
                 <!-- Реакции на профиль -->
                 <div class="reactions-section">
@@ -1656,6 +1656,121 @@ async function loadReactions() {
             if (e.key === 'Enter') addTrack();
         });
     });
+</script>
+<script>
+// ============================================
+// МУЗЫКАЛЬНЫЙ ПЛЕЕР С OPENAI
+// ============================================
+
+const OPENAI_API_KEY = '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';
+
+async function getTrackInfo(url) {
+    try {
+        console.log('Получаем информацию о треке:', url);
+        
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: 'gpt-3.5-turbo',
+                messages: [
+                    {
+                        role: 'system',
+                        content: `Ты помощник, который извлекает информацию о музыке из ссылок.
+                        По ссылке на трек определи название и исполнителя.
+                        Ответ дай ТОЛЬКО в формате JSON: {"title": "название", "artist": "исполнитель"}`
+                    },
+                    {
+                        role: 'user',
+                        content: `Определи информацию о треке по ссылке: ${url}`
+                    }
+                ],
+                temperature: 0.3,
+                max_tokens: 150
+            })
+        });
+
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+        const jsonMatch = content.match(/\{.*\}/s);
+        
+        if (!jsonMatch) throw new Error('Неверный формат ответа');
+        
+        const trackInfo = JSON.parse(jsonMatch[0]);
+        trackInfo.cover = 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9';
+        
+        return trackInfo;
+        
+    } catch (error) {
+        console.error('Ошибка:', error);
+        return {
+            title: 'Музыкальный трек',
+            artist: 'Исполнитель',
+            cover: 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9'
+        };
+    }
+}
+
+async function addMusicTrack() {
+    const urlInput = document.getElementById('trackUrl');
+    if (!urlInput) return;
+    
+    const url = urlInput.value.trim();
+    
+    if (!url) {
+        showMessage('Введите ссылку на трек', 'error');
+        return;
+    }
+    
+    try {
+        showMessage('⏳ Получаем информацию о треке...', 'info');
+        
+        const trackInfo = await getTrackInfo(url);
+        
+        const container = document.getElementById('musicContainer') || document.getElementById('playerContainer');
+        if (container) {
+            container.innerHTML = `
+                <div style="background: #f8f9fa; border-radius: 16px; padding: 15px; margin-top: 15px; border: 1px solid #e0e0e0;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="${trackInfo.cover}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 2px solid #4a6fa5;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; color: #2c3e50;">${trackInfo.title}</div>
+                            <div style="color: #7f8c8d;">${trackInfo.artist}</div>
+                        </div>
+                        <button onclick="window.open('${url}', '_blank')" style="background: #4a6fa5; color: white; border: none; width: 40px; height: 40px; border-radius: 20px; cursor: pointer; border-bottom: 3px solid #2c3e50;">▶</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        urlInput.value = '';
+        showMessage('✅ Трек добавлен!', 'success');
+        
+    } catch (error) {
+        showMessage('Ошибка: ' + error.message, 'error');
+    }
+}
+
+// Добавляем обработчик после загрузки страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const addBtn = document.getElementById('addMusicBtn');
+    if (addBtn) {
+        addBtn.addEventListener('click', addMusicTrack);
+    }
+    
+    // Enter для отправки
+    const urlInput = document.getElementById('trackUrl');
+    if (urlInput) {
+        urlInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addMusicTrack();
+            }
+        });
+    }
+});
 </script>
 </body>
 </html>
