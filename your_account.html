@@ -1555,36 +1555,35 @@ function getPrimeReactions() {
     // ============================================
     // РЕАКЦИИ
     // ============================================
-    async function loadReactions() {
-        try {
-            const { data, error } = await supabaseClient
-                .from('profile_reactions')
-                .select('*')
-                .eq('user_id', currentUser.id);
+async function loadReactions() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('profile_reactions')
+            .select('*')
+            .eq('user_id', currentUser.id);
 
-            if (error) throw error;
+        if (error) throw error;
 
-            const reactions = ['❤️', '🔥', '😎', '🤡', '💀'];
-            const grid = document.getElementById('reactionsGrid');
-            
-            let html = '';
-            reactions.forEach(reaction => {
-                const found = data?.find(r => r.reaction === reaction);
-                const count = found?.count || 0;
-                html += `
-                    <div class="reaction-btn" onclick="addReaction('${reaction}')">
-                        ${reaction} <span class="reaction-count">${count}</span>
-                    </div>
-                `;
-            });
-            
-            grid.innerHTML = html;
+        const reactions = getPrimeReactions(); // Используем новую функцию
+        const grid = document.getElementById('reactionsGrid');
+        
+        let html = '';
+        reactions.forEach(reaction => {
+            const found = data?.find(r => r.reaction === reaction);
+            const count = found?.count || 0;
+            html += `
+                <div class="reaction-btn" onclick="addReaction('${reaction}')">
+                    ${reaction} <span class="reaction-count">${count}</span>
+                </div>
+            `;
+        });
+        
+        grid.innerHTML = html;
 
-        } catch (error) {
-            console.error('Ошибка загрузки реакций:', error);
-        }
+    } catch (error) {
+        console.error('Ошибка загрузки реакций:', error);
     }
-
+}
     async function addReaction(reaction) {
         try {
             const { data, error } = await supabaseClient
