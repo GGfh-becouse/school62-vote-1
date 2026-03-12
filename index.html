@@ -2039,43 +2039,62 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const rarityNames = { common: 'Обычная', rare: 'Редкая', epic: 'Эпическая', legendary: 'Легендарная' };
 
-        // ============================================
-// ТОП-1 ДЕВОЧЕК ШКОЛЫ
+       // ============================================
+// ТОП-1 ДЕВОЧЕК ШКОЛЫ (из таблицы candidates)
 // ============================================
 async function updateTopGirl() {
     try {
-        // Получаем всех кандидатов, отсортированных по голосам
+        console.log('Загружаем ТОП-1 девушку...');
+        
+        // Получаем всех кандидатов, отсортированных по голосам (по убыванию)
         const { data, error } = await supabaseClient
             .from('candidates')
             .select('*')
             .order('votes', { ascending: false })
             .limit(1);
 
-        if (error) throw error;
+        if (error) {
+            console.error('Ошибка при загрузке кандидатов:', error);
+            return;
+        }
 
+        // Проверяем, есть ли данные
         if (data && data.length > 0) {
             const topGirl = data[0];
             
+            console.log('ТОП-1 девушка:', topGirl.name, 'с голосами:', topGirl.votes);
+            
             // Обновляем элементы на странице
-            document.getElementById('topGirlName').textContent = topGirl.name;
-            document.getElementById('topGirlVotes').textContent = topGirl.votes || 0;
+            const nameElement = document.getElementById('topGirlName');
+            const votesElement = document.getElementById('topGirlVotes');
+            const avatarElement = document.getElementById('topGirlAvatar');
+            
+            if (nameElement) nameElement.textContent = topGirl.name;
+            if (votesElement) votesElement.textContent = topGirl.votes || 0;
             
             // Обновляем аватар (если есть фото)
-            if (topGirl.photo_url) {
-                document.getElementById('topGirlAvatar').src = topGirl.photo_url;
+            if (avatarElement) {
+                if (topGirl.photo_url) {
+                    avatarElement.src = topGirl.photo_url;
+                } else {
+                    // Аватар по умолчанию
+                    avatarElement.src = 'https://i.pravatar.cc/80?u=' + topGirl.id;
+                }
             }
-            
-            console.log('ТОП-1 девочка:', topGirl.name);
         } else {
+            console.log('Нет кандидатов в таблице');
+            
             // Если нет кандидатов, показываем заглушку
-            document.getElementById('topGirlName').textContent = 'Пока нет';
-            document.getElementById('topGirlVotes').textContent = '0';
+            const nameElement = document.getElementById('topGirlName');
+            const votesElement = document.getElementById('topGirlVotes');
+            
+            if (nameElement) nameElement.textContent = 'Нет кандидатов';
+            if (votesElement) votesElement.textContent = '0';
         }
     } catch (error) {
-        console.error('Ошибка загрузки ТОП-1:', error);
+        console.error('Ошибка в updateTopGirl:', error);
     }
 }
-
 // Добавьте вызов функции в initApp
 async function initApp() {
     await getUserIp();
@@ -2238,6 +2257,7 @@ async function initApp() {
                 updateLeaderboard();
                 showMessage(`✅ +100 ${winner.name}!`, 'success');
                 showRecommendations(winner.id);
+                updateTopGirl();
                 
                 selectedCandidateId = null;
                 selectNewPair();
