@@ -927,458 +927,668 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ============================================
-        // СОСТОЯНИЕ
-        // ============================================
-        let currentUser = null;
-        let currentStickers = [];
-        let maxStickers = 1; // Обычный аккаунт
-        let currentFrame = 'standard';
+    // ============================================
+    // ПЕРЕМЕННЫЕ
+    // ============================================
+    let currentUser = null;
+    let currentStickers = [];
+    let maxStickers = 1;
+    let currentFrame = 'standard';
 
-        const stickerPositions = [
-            'sticker-pos-1', 'sticker-pos-2', 'sticker-pos-3', 'sticker-pos-4', 'sticker-pos-5',
-            'sticker-pos-6', 'sticker-pos-7', 'sticker-pos-8', 'sticker-pos-9'
-        ];
+    const stickerPositions = [
+        'sticker-pos-1', 'sticker-pos-2', 'sticker-pos-3', 'sticker-pos-4', 'sticker-pos-5',
+        'sticker-pos-6', 'sticker-pos-7', 'sticker-pos-8', 'sticker-pos-9'
+    ];
 
-        // ============================================
-        // ПРОВЕРКА АВТОРИЗАЦИИ
-        // ============================================
-        async function checkAuth() {
-            const userId = localStorage.getItem('userId');
-            
-            if (!userId) {
-                window.location.href = 'login.html';
-                return;
-            }
+    // ============================================
+    // LOCALSTORAGE - СОХРАНЕНИЕ ПРОФИЛЯ
+    // ============================================
+    function saveProfileToLocalStorage() {
+        if (!currentUser) return;
+        
+        const profileData = {
+            id: currentUser.id,
+            nickname: currentUser.nickname,
+            real_name: currentUser.real_name,
+            class: currentUser.class,
+            avatar_url: currentUser.avatar_url,
+            status: currentUser.status,
+            is_prime: currentUser.is_prime,
+            display_name: currentUser.display_name || currentUser.nickname,
+            music_data: currentUser.music_data,
+            frame: currentFrame,
+            stickers: currentStickers.map(s => ({
+                id: s.id,
+                url: s.sticker_url,
+                position: s.position
+            }))
+        };
+        
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+        localStorage.setItem('userId', currentUser.id);
+        localStorage.setItem('userNickname', currentUser.nickname);
+        localStorage.setItem('userPrime', currentUser.is_prime);
+    }
 
+    function loadProfileFromLocalStorage() {
+        const profileData = localStorage.getItem('profileData');
+        if (profileData) {
             try {
-                const { data, error } = await supabaseClient
-                    .from('users')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
-
-                if (error || !data) {
-                    localStorage.clear();
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                currentUser = data;
-                maxStickers = data.is_prime ? 5 : 1;
+                const data = JSON.parse(profileData);
+                currentFrame = data.frame || 'standard';
                 
-                // Загружаем данные
-                document.getElementById('userNickname').textContent = data.nickname;
-                document.getElementById('userClass').textContent = data.class;
-                document.getElementById('userPrime').textContent = data.is_prime ? '👑 Prime' : '👑 Обычный';
                 document.getElementById('avatar').src = data.avatar_url || 'https://i.pravatar.cc/300';
+                document.getElementById('userNickname').textContent = data.display_name || data.nickname;
+                document.getElementById('userClass').textContent = data.class;
                 document.getElementById('statusDisplay').textContent = data.status || 'Статус не установлен';
                 
-                await loadStickers();
-                await loadReactions();
-                await loadMusic();
+                selectFrame(currentFrame);
                 
-            } catch (error) {
-                console.error('Ошибка:', error);
+                if (data.stickers) {
+                    currentStickers = data.stickers.map(s => ({
+                        id: s.id,
+                        sticker_url: s.url,
+                        position: s.position
+                    }));
+                    renderStickers();
+                }
+                
+                return true;
+            } catch (e) {
+                console.error('Ошибка загрузки из localStorage:', e);
+                return false;
+            }
+        }
+        return false;
+    }
+
+    // ============================================
+    // ПРОВЕРКА PREMIUM СТАТУСА
+    // ============================================
+    async function checkPrimeStatus() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('verified_users')
+                .select('*')
+                .eq('username', currentUser.nickname)
+                .maybeSingle();
+
+            if (data) {
+                currentUser.is_prime = true;
+                await supabaseClient
+                    .from('users')
+                    .update({ is_prime: true })
+                    .eq('id', currentUser.id);
+            }
+        } catch (error) {
+            console.error('Ошибка проверки премиум статуса:', error);
+        }
+    }
+
+    // ============================================
+    // ПРОВЕРКА АВТОРИЗАЦИИ
+    // ============================================
+    async function checkAuth() {
+        const userId = localStorage.getItem('userId');
+        
+        if (!userId) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        try {
+            loadProfileFromLocalStorage();
+
+            const { data, error } = await supabaseClient
+                .from('users')
+                .select('*')
+                .eq('id', userId)
+                .single();
+
+            if (error || !data) {
                 localStorage.clear();
                 window.location.href = 'login.html';
-            }
-        }
-
-        // ============================================
-        // ЗАГРУЗКА СТИКЕРОВ
-        // ============================================
-        async function loadStickers() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('user_stickers')
-                    .select('*')
-                    .eq('user_id', currentUser.id);
-
-                if (error) throw error;
-
-                currentStickers = data || [];
-                renderStickers();
-                
-                document.getElementById('stickerCounter').textContent = 
-                    `${currentStickers.length}/${maxStickers}`;
-
-            } catch (error) {
-                console.error('Ошибка загрузки стикеров:', error);
-            }
-        }
-
-        // ============================================
-        // ДОБАВЛЕНИЕ СТИКЕРА ПО URL
-        // ============================================
-        async function addStickerByUrl() {
-            const urlInput = document.getElementById('stickerUrlInput');
-            const url = urlInput.value.trim();
-            
-            if (!url) {
-                showMessage('Введите URL стикера', 'error');
                 return;
             }
 
-            if (currentStickers.length >= maxStickers) {
-                showMessage(`Достигнут лимит стикеров (${maxStickers})`, 'error');
-                return;
-            }
-
-            try {
-                const newSticker = {
-                    user_id: currentUser.id,
-                    sticker_url: url,
-                    position: stickerPositions[currentStickers.length],
-                    rarity: 'common'
-                };
-
-                const { data, error } = await supabaseClient
-                    .from('user_stickers')
-                    .insert(newSticker)
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                currentStickers.push(data);
-                renderStickers();
-                urlInput.value = '';
-                
-                showMessage('✅ Стикер добавлен!', 'success');
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================
-        // УДАЛЕНИЕ СТИКЕРА
-        // ============================================
-        async function removeSticker(stickerId) {
-            try {
-                const { error } = await supabaseClient
-                    .from('user_stickers')
-                    .delete()
-                    .eq('id', stickerId);
-
-                if (error) throw error;
-
-                currentStickers = currentStickers.filter(s => s.id !== stickerId);
-                renderStickers();
-                showMessage('Стикер удален', 'success');
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================
-        // ОТОБРАЖЕНИЕ СТИКЕРОВ
-        // ============================================
-        function renderStickers() {
-            const container = document.getElementById('avatarContainer');
+            currentUser = data;
+            await checkPrimeStatus();
             
-            // Удаляем старые стикеры (оставляем только аватар и рамку)
-            while (container.children.length > 1) {
-                container.removeChild(container.lastChild);
-            }
+            maxStickers = currentUser.is_prime ? 5 : 1;
+            
+            document.getElementById('userNickname').textContent = currentUser.display_name || currentUser.nickname;
+            document.getElementById('userClass').textContent = currentUser.class;
+            document.getElementById('userPrime').textContent = currentUser.is_prime ? '👑 Prime' : '👑 Обычный';
+            document.getElementById('avatar').src = currentUser.avatar_url || 'https://i.pravatar.cc/300';
+            document.getElementById('statusDisplay').textContent = currentUser.status || 'Статус не установлен';
+            
+            await loadStickers();
+            await loadReactions();
+            await loadMusic();
+            
+            saveProfileToLocalStorage();
 
-            currentStickers.forEach((sticker, index) => {
-                const stickerWrapper = document.createElement('div');
-                stickerWrapper.style.position = 'relative';
-                stickerWrapper.style.display = 'contents';
-                
-                const stickerEl = document.createElement('img');
-                stickerEl.src = sticker.sticker_url;
-                stickerEl.className = `sticker ${sticker.position || stickerPositions[index]}`;
-                stickerEl.onerror = () => stickerEl.remove();
-                
-                const removeBtn = document.createElement('div');
-                removeBtn.className = 'sticker-remove';
-                removeBtn.innerHTML = '✕';
-                removeBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    removeSticker(sticker.id);
-                };
-                
-                container.appendChild(stickerEl);
-                container.appendChild(removeBtn);
-            });
+        } catch (error) {
+            console.error('Ошибка:', error);
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    }
+
+    // ============================================
+    // ЗАГРУЗКА СТИКЕРОВ
+    // ============================================
+    async function loadStickers() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('user_stickers')
+                .select('*')
+                .eq('user_id', currentUser.id);
+
+            if (error) throw error;
+
+            currentStickers = data || [];
+            renderStickers();
             
             document.getElementById('stickerCounter').textContent = 
                 `${currentStickers.length}/${maxStickers}`;
+
+        } catch (error) {
+            console.error('Ошибка загрузки стикеров:', error);
+        }
+    }
+
+    // ============================================
+    // ОТОБРАЖЕНИЕ СТИКЕРОВ
+    // ============================================
+    function renderStickers() {
+        const container = document.getElementById('avatarContainer');
+        
+        while (container.children.length > 1) {
+            container.removeChild(container.lastChild);
         }
 
-        // ============================================
-        // ВЫБОР РАМКИ
-        // ============================================
-        function selectFrame(frameType) {
-            currentFrame = frameType;
-            const frameDiv = document.getElementById('avatarFrame');
+        currentStickers.forEach((sticker, index) => {
+            const stickerWrapper = document.createElement('div');
+            stickerWrapper.style.position = 'relative';
+            stickerWrapper.style.display = 'contents';
             
-            const frames = {
-                standard: '',
-                neon: '<div class="avatar-frame-neon"></div>',
-                gold: '<div class="avatar-frame-gold"></div>',
-                event: '<div class="avatar-frame-event"></div>'
+            const stickerEl = document.createElement('img');
+            stickerEl.src = sticker.sticker_url;
+            stickerEl.className = `sticker ${sticker.position || stickerPositions[index]}`;
+            stickerEl.onerror = () => stickerEl.remove();
+            
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'sticker-remove';
+            removeBtn.innerHTML = '✕';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                removeSticker(sticker.id);
             };
             
-            frameDiv.innerHTML = frames[frameType] || '';
-            
-            document.querySelectorAll('.frame-option').forEach(el => {
-                el.classList.remove('active');
-            });
-            event.target.closest('.frame-option').classList.add('active');
+            container.appendChild(stickerEl);
+            container.appendChild(removeBtn);
+        });
+        
+        document.getElementById('stickerCounter').textContent = 
+            `${currentStickers.length}/${maxStickers}`;
+        saveProfileToLocalStorage();
+    }
+
+    // ============================================
+    // ДОБАВЛЕНИЕ СТИКЕРА
+    // ============================================
+    async function addStickerByUrl() {
+        const urlInput = document.getElementById('stickerUrlInput');
+        const url = urlInput.value.trim();
+        
+        if (!url) {
+            showMessage('Введите URL стикера', 'error');
+            return;
         }
 
-        // ============================================
-        // ОБНОВЛЕНИЕ СТАТУСА
-        // ============================================
-        async function updateStatus() {
-            const status = document.getElementById('statusInput').value.trim();
+        if (currentStickers.length >= maxStickers) {
+            showMessage(`Достигнут лимит стикеров (${maxStickers})`, 'error');
+            return;
+        }
+
+        try {
+            const newSticker = {
+                user_id: currentUser.id,
+                sticker_url: url,
+                position: stickerPositions[currentStickers.length],
+                rarity: 'common'
+            };
+
+            const { data, error } = await supabaseClient
+                .from('user_stickers')
+                .insert(newSticker)
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            currentStickers.push(data);
+            renderStickers();
+            urlInput.value = '';
+            saveProfileToLocalStorage();
+            showMessage('✅ Стикер добавлен!', 'success');
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    // ============================================
+    // УДАЛЕНИЕ СТИКЕРА
+    // ============================================
+    async function removeSticker(stickerId) {
+        try {
+            const { error } = await supabaseClient
+                .from('user_stickers')
+                .delete()
+                .eq('id', stickerId);
+
+            if (error) throw error;
+
+            currentStickers = currentStickers.filter(s => s.id !== stickerId);
+            renderStickers();
+            saveProfileToLocalStorage();
+            showMessage('Стикер удален', 'success');
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    // ============================================
+    // ВЫБОР РАМКИ
+    // ============================================
+    function selectFrame(frameType) {
+        currentFrame = frameType;
+        const frameDiv = document.getElementById('avatarFrame');
+        
+        const frames = {
+            standard: '',
+            neon: '<div class="avatar-frame-neon"></div>',
+            gold: '<div class="avatar-frame-gold"></div>',
+            event: '<div class="avatar-frame-event"></div>'
+        };
+        
+        frameDiv.innerHTML = frames[frameType] || '';
+        saveProfileToLocalStorage();
+    }
+
+    // ============================================
+    // ВИРТУАЛЬНОЕ ИМЯ
+    // ============================================
+    async function updateDisplayName() {
+        const newName = prompt('Введите виртуальное имя (или оставьте пустым для ника):', 
+            currentUser.display_name || currentUser.nickname);
+        
+        if (newName === null) return;
+        
+        try {
+            const displayName = newName.trim() || currentUser.nickname;
             
-            if (status.length > 50) {
-                showMessage('Максимум 50 символов', 'error');
-                return;
+            const { error } = await supabaseClient
+                .from('users')
+                .update({ display_name: displayName })
+                .eq('id', currentUser.id);
+
+            if (error) throw error;
+
+            currentUser.display_name = displayName;
+            document.getElementById('userNickname').textContent = displayName;
+            saveProfileToLocalStorage();
+            showMessage('✅ Имя обновлено!', 'success');
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    // ============================================
+    // ОБНОВЛЕНИЕ КЛАССА
+    // ============================================
+    async function updateClass() {
+        const classes = ['7А', '7Б', '8А', '8Б', '9А', '9Б', '10А', '11А'];
+        const currentClass = currentUser.class;
+        
+        const classList = classes.map(c => 
+            c === currentClass ? `${c} (текущий)` : c
+        ).join('\n');
+        
+        const newClass = prompt(`Выберите класс:\n${classList}`, currentClass);
+        
+        if (!newClass || !classes.includes(newClass)) {
+            showMessage('Выберите класс из списка', 'error');
+            return;
+        }
+
+        try {
+            const { error } = await supabaseClient
+                .from('users')
+                .update({ class: newClass })
+                .eq('id', currentUser.id);
+
+            if (error) throw error;
+
+            currentUser.class = newClass;
+            document.getElementById('userClass').textContent = newClass;
+            saveProfileToLocalStorage();
+            showMessage('✅ Класс обновлен!', 'success');
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    // ============================================
+    // СМЕНА АВАТАРА
+    // ============================================
+    async function changeAvatar() {
+        const url = prompt('Введите URL новой аватарки:', currentUser.avatar_url);
+        if (!url) return;
+
+        try {
+            const { error } = await supabaseClient
+                .from('users')
+                .update({ avatar_url: url })
+                .eq('id', currentUser.id);
+
+            if (error) throw error;
+
+            document.getElementById('avatar').src = url;
+            currentUser.avatar_url = url;
+            saveProfileToLocalStorage();
+            showMessage('✅ Аватар обновлен!', 'success');
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    // ============================================
+    // ОБНОВЛЕНИЕ СТАТУСА
+    // ============================================
+    async function updateStatus() {
+        const status = document.getElementById('statusInput').value.trim();
+        
+        if (status.length > 50) {
+            showMessage('Максимум 50 символов', 'error');
+            return;
+        }
+
+        try {
+            const { error } = await supabaseClient
+                .from('users')
+                .update({ status: status })
+                .eq('id', currentUser.id);
+
+            if (error) throw error;
+
+            currentUser.status = status;
+            document.getElementById('statusDisplay').textContent = status || 'Статус не установлен';
+            document.getElementById('statusInput').value = '';
+            saveProfileToLocalStorage();
+            showMessage('✅ Статус обновлен!', 'success');
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    // ============================================
+    // МУЗЫКА
+    // ============================================
+    async function parseMusicUrl(url) {
+        try {
+            if (url.includes('spotify.com/track/')) {
+                const trackId = url.split('track/')[1].split('?')[0];
+                return {
+                    title: 'Spotify Track',
+                    artist: 'Artist',
+                    cover: 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9',
+                    url: url,
+                    embed: `<iframe style="border-radius:12px; width:100%; height:80px;" src="https://open.spotify.com/embed/track/${trackId}" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`,
+                    platform: 'spotify'
+                };
             }
-
-            try {
-                const { error } = await supabaseClient
-                    .from('users')
-                    .update({ status: status })
-                    .eq('id', currentUser.id);
-
-                if (error) throw error;
-
-                currentUser.status = status;
-                document.getElementById('statusDisplay').textContent = status || 'Статус не установлен';
-                document.getElementById('statusInput').value = '';
+            else if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) {
+                let videoId = '';
+                if (url.includes('youtu.be/')) {
+                    videoId = url.split('youtu.be/')[1].split('?')[0];
+                } else if (url.includes('watch')) {
+                    videoId = url.split('v=')[1].split('&')[0];
+                }
                 
-                showMessage('✅ Статус обновлен!', 'success');
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
+                return {
+                    title: 'YouTube Video',
+                    artist: 'YouTube Channel',
+                    cover: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+                    url: url,
+                    embed: `<iframe width="100%" height="100" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
+                    platform: 'youtube'
+                };
             }
-        }
-
-        // ============================================
-        // СМЕНА АВАТАРА
-        // ============================================
-        async function changeAvatar() {
-            const url = prompt('Введите URL новой аватарки:', currentUser.avatar_url);
-            if (!url) return;
-
-            try {
-                const { error } = await supabaseClient
-                    .from('users')
-                    .update({ avatar_url: url })
-                    .eq('id', currentUser.id);
-
-                if (error) throw error;
-
-                document.getElementById('avatar').src = url;
-                currentUser.avatar_url = url;
-                showMessage('✅ Аватар обновлен!', 'success');
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
+            else {
+                return {
+                    title: 'Музыкальный трек',
+                    artist: 'Исполнитель',
+                    cover: 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9',
+                    url: url,
+                    embed: `<audio controls style="width:100%"><source src="${url}" type="audio/mpeg"></audio>`,
+                    platform: 'unknown'
+                };
             }
-        }
-
-        // ============================================
-        // ПАРСИНГ МУЗЫКАЛЬНОЙ ССЫЛКИ
-        // ============================================
-        async function parseMusicUrl(url) {
-            // Здесь будет парсинг ссылок Spotify, YouTube и т.д.
-            // Пока демо-версия
+        } catch (error) {
+            console.error('Ошибка парсинга ссылки:', error);
             return {
-                title: 'Тестовый трек',
+                title: 'Трек',
                 artist: 'Исполнитель',
                 cover: 'https://i.scdn.co/image/ab67616d0000b273c8b5c9c3b5c9c3b5c9c3b5c9',
-                url: url
+                url: url,
+                embed: `<audio controls style="width:100%"><source src="${url}" type="audio/mpeg"></audio>`,
+                platform: 'error'
             };
         }
+    }
 
-        // ============================================
-        // ДОБАВЛЕНИЕ ТРЕКА
-        // ============================================
-        async function addTrack() {
-            const url = document.getElementById('trackUrl').value.trim();
-            if (!url) {
-                showMessage('Введите ссылку на трек', 'error');
-                return;
-            }
-
-            try {
-                const musicData = await parseMusicUrl(url);
-                
-                const { error } = await supabaseClient
-                    .from('users')
-                    .update({ 
-                        music_url: url,
-                        music_data: musicData
-                    })
-                    .eq('id', currentUser.id);
-
-                if (error) throw error;
-
-                renderPlayer(musicData);
-                document.getElementById('trackUrl').value = '';
-                showMessage('✅ Трек добавлен!', 'success');
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
-            }
+    async function addTrack() {
+        const url = document.getElementById('trackUrl').value.trim();
+        if (!url) {
+            showMessage('Введите ссылку на трек', 'error');
+            return;
         }
 
-        // ============================================
-        // ЗАГРУЗКА МУЗЫКИ
-        // ============================================
-        async function loadMusic() {
-            if (currentUser.music_data) {
-                renderPlayer(currentUser.music_data);
-            }
-        }
-
-        // ============================================
-        // ОТОБРАЖЕНИЕ ПЛЕЕРА
-        // ============================================
-        function renderPlayer(track) {
-            const container = document.getElementById('playerContainer');
+        try {
+            const musicData = await parseMusicUrl(url);
             
-            container.innerHTML = `
-                <div class="mini-player">
-                    <img src="${track.cover}" class="track-cover" alt="Обложка">
-                    <div class="track-info">
-                        <div class="track-title">${track.title}</div>
-                        <div class="track-artist">${track.artist}</div>
-                    </div>
-                    <button class="track-play" onclick="playTrack('${track.url}')">▶</button>
-                    <button class="track-remove" onclick="removeTrack()">Удалить</button>
+            const { error } = await supabaseClient
+                .from('users')
+                .update({ 
+                    music_url: url,
+                    music_data: musicData
+                })
+                .eq('id', currentUser.id);
+
+            if (error) throw error;
+
+            renderPlayer(musicData);
+            document.getElementById('trackUrl').value = '';
+            saveProfileToLocalStorage();
+            showMessage('✅ Трек добавлен!', 'success');
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка: ' + error.message, 'error');
+        }
+    }
+
+    async function loadMusic() {
+        if (currentUser.music_data) {
+            renderPlayer(currentUser.music_data);
+        }
+    }
+
+    function renderPlayer(track) {
+        const container = document.getElementById('playerContainer');
+        
+        container.innerHTML = `
+            <div class="mini-player">
+                <img src="${track.cover}" class="track-cover" alt="Обложка">
+                <div class="track-info">
+                    <div class="track-title">${track.title}</div>
+                    <div class="track-artist">${track.artist}</div>
                 </div>
-            `;
+                <button class="track-play" onclick="playTrack('${track.url}')">▶</button>
+                <button class="track-remove" onclick="removeTrack()">Удалить</button>
+            </div>
+            <div style="margin-top: 10px;">
+                ${track.embed}
+            </div>
+        `;
+    }
+
+    function playTrack(url) {
+        window.open(url, '_blank');
+    }
+
+    async function removeTrack() {
+        try {
+            const { error } = await supabaseClient
+                .from('users')
+                .update({ music_url: null, music_data: null })
+                .eq('id', currentUser.id);
+
+            if (error) throw error;
+
+            document.getElementById('playerContainer').innerHTML = '';
+            saveProfileToLocalStorage();
+            showMessage('Трек удален', 'success');
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showMessage('Ошибка: ' + error.message, 'error');
         }
+    }
 
-        function playTrack(url) {
-            window.open(url, '_blank');
-        }
+    // ============================================
+    // РЕАКЦИИ
+    // ============================================
+    async function loadReactions() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('profile_reactions')
+                .select('*')
+                .eq('user_id', currentUser.id);
 
-        async function removeTrack() {
-            try {
-                const { error } = await supabaseClient
-                    .from('users')
-                    .update({ music_url: null, music_data: null })
-                    .eq('id', currentUser.id);
+            if (error) throw error;
 
-                if (error) throw error;
-
-                document.getElementById('playerContainer').innerHTML = '';
-                showMessage('Трек удален', 'success');
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================
-        // РЕАКЦИИ
-        // ============================================
-        async function loadReactions() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('profile_reactions')
-                    .select('*')
-                    .eq('user_id', currentUser.id);
-
-                if (error) throw error;
-
-                data?.forEach(r => {
-                    const el = document.getElementById(`reaction-${r.reaction}`);
-                    if (el) el.textContent = r.count;
-                });
-
-            } catch (error) {
-                console.error('Ошибка загрузки реакций:', error);
-            }
-        }
-
-        async function addReaction(reaction) {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('profile_reactions')
-                    .upsert({
-                        user_id: currentUser.id,
-                        reaction: reaction,
-                        count: supabaseClient.rpc('increment', { x: 1 })
-                    })
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                const el = document.getElementById(`reaction-${reaction}`);
-                if (el) el.textContent = data.count;
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-            }
-        }
-
-        // ============================================
-        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-        // ============================================
-        function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            const msg = document.createElement('div');
-            msg.className = `message ${type}`;
-            msg.textContent = text;
-            container.appendChild(msg);
-            setTimeout(() => msg.remove(), 3000);
-        }
-
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
-
-            // Обработчики
-            document.getElementById('addStickerByUrlBtn').addEventListener('click', addStickerByUrl);
-            document.getElementById('changeAvatarBtn').addEventListener('click', changeAvatar);
-            document.getElementById('updateStatusBtn').addEventListener('click', updateStatus);
-            document.getElementById('addTrackBtn').addEventListener('click', addTrack);
-            document.getElementById('viewProfileBtn').addEventListener('click', () => {
-                window.open(`check_account.html?id=${currentUser.id}`, '_blank');
-            });
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                localStorage.clear();
-                window.location.href = 'login.html';
-            });
-
-            // Enter для полей ввода
-            document.getElementById('stickerUrlInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addStickerByUrl();
+            const reactions = ['❤️', '🔥', '😎', '🤡', '💀'];
+            const grid = document.getElementById('reactionsGrid');
+            
+            let html = '';
+            reactions.forEach(reaction => {
+                const found = data?.find(r => r.reaction === reaction);
+                const count = found?.count || 0;
+                html += `
+                    <div class="reaction-btn" onclick="addReaction('${reaction}')">
+                        ${reaction} <span class="reaction-count">${count}</span>
+                    </div>
+                `;
             });
             
-            document.getElementById('statusInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') updateStatus();
-            });
-            
-            document.getElementById('trackUrl').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addTrack();
-            });
+            grid.innerHTML = html;
+
+        } catch (error) {
+            console.error('Ошибка загрузки реакций:', error);
+        }
+    }
+
+    async function addReaction(reaction) {
+        try {
+            const { data, error } = await supabaseClient
+                .from('profile_reactions')
+                .upsert({
+                    user_id: currentUser.id,
+                    reaction: reaction,
+                    count: supabaseClient.rpc('increment', { x: 1 })
+                })
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            loadReactions();
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+
+    // ============================================
+    // ВСПОМОГАТЕЛЬНЫЕ
+    // ============================================
+    function showMessage(text, type) {
+        const container = document.getElementById('messageContainer');
+        const msg = document.createElement('div');
+        msg.className = `message ${type}`;
+        msg.textContent = text;
+        container.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+    }
+
+    // ============================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        checkAuth();
+
+        // Обработчики
+        document.getElementById('addStickerByUrlBtn').addEventListener('click', addStickerByUrl);
+        document.getElementById('changeAvatarBtn').addEventListener('click', changeAvatar);
+        document.getElementById('updateStatusBtn').addEventListener('click', updateStatus);
+        document.getElementById('addTrackBtn').addEventListener('click', addTrack);
+        document.getElementById('viewProfileBtn').addEventListener('click', () => {
+            window.open(`check_account.html?id=${currentUser.id}`, '_blank');
         });
-    </script>
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        // Кнопки для имени и класса (добавьте их в HTML)
+        const nameBtn = document.querySelector('[onclick="updateDisplayName()"]');
+        if (nameBtn) nameBtn.addEventListener('click', updateDisplayName);
+        
+        const classBtn = document.querySelector('[onclick="updateClass()"]');
+        if (classBtn) classBtn.addEventListener('click', updateClass);
+
+        // Enter для полей
+        document.getElementById('stickerUrlInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addStickerByUrl();
+        });
+        
+        document.getElementById('statusInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') updateStatus();
+        });
+        
+        document.getElementById('trackUrl').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTrack();
+        });
+    });
+</script>
 </body>
 </html>
