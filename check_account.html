@@ -689,6 +689,26 @@
             }
         }
 
+// Добавьте после загрузки профиля
+function displayPrimeBadge() {
+    if (profileUser.is_prime) {
+        const userInfoBar = document.querySelector('.user-info-bar');
+        const primeBadge = document.createElement('div');
+        primeBadge.style.cssText = `
+            background: gold;
+            color: #2c3e50;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 10px;
+            border-bottom: 3px solid #b38f4a;
+        `;
+        primeBadge.innerHTML = '👑 PREMIUM';
+        document.querySelector('.user-nickname-wrapper').appendChild(primeBadge);
+    }
+}
+        
         // ============================================
         // ОТОБРАЖЕНИЕ ПРОФИЛЯ
         // ============================================
