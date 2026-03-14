@@ -2,18 +2,17 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ-панель - Школа №62</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>админ-панель | школа 62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Стили (оставьте как есть) */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
@@ -50,15 +49,15 @@
             width: 100%;
             padding: 28px 24px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-            border: 2px solid #4a6fa5;
+            border: 2px solid #2e3440;
         }
 
         .login-card h2 {
             font-size: 1.6rem;
-            color: #2c3e50;
+            color: #1a1e2b;
             margin-bottom: 20px;
             padding-bottom: 12px;
-            border-bottom: 3px solid #4a6fa5;
+            border-bottom: 3px solid #2e3440;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -66,7 +65,7 @@
         }
 
         .login-card h2 span {
-            background: #4a6fa5;
+            background: #2e3440;
             color: white;
             font-size: 0.8rem;
             padding: 4px 12px;
@@ -84,12 +83,12 @@
         }
 
         .login-input:focus {
-            border-color: #4a6fa5;
+            border-color: #2e3440;
             outline: none;
         }
 
         .login-btn {
-            background: #4a6fa5;
+            background: #2e3440;
             color: white;
             border: none;
             width: 100%;
@@ -98,13 +97,16 @@
             font-weight: 700;
             border-radius: 40px;
             cursor: pointer;
-            border-bottom: 4px solid #2c3e50;
-            transition: all 0.1s;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #1a1e2b;
+            transform: translateY(-1px);
         }
 
         .login-btn:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
+            transform: translateY(0);
         }
 
         .login-error {
@@ -122,14 +124,32 @@
 
         /* Шапка */
         .header {
-            background: linear-gradient(145deg, #4a6fa5 0%, #2c3e50 100%);
+            background: linear-gradient(145deg, #2e3440 0%, #1a1e2b 100%);
             border-radius: 24px;
             padding: 18px 20px;
             margin-bottom: 20px;
-            box-shadow: 0 6px 0 #1a2a3a;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-img {
+            height: 36px;
+            width: auto;
+            object-fit: contain;
         }
 
         .header h1 {
@@ -139,8 +159,8 @@
         }
 
         .header h1 span {
-            background: #ffd966;
-            color: #2c3e50;
+            background: #f1c40f;
+            color: #1a1e2b;
             padding: 4px 12px;
             border-radius: 30px;
             font-size: 0.9rem;
@@ -155,13 +175,18 @@
             border-radius: 40px;
             font-weight: 700;
             cursor: pointer;
-            border-bottom: 4px solid #962d22;
-            transition: all 0.1s;
+            transition: all 0.2s;
         }
 
-        .logout-btn:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
+        .logout-btn:hover {
+            background: #a93226;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 600px) {
+            .logo-img {
+                height: 28px;
+            }
         }
 
         /* Статистика */
@@ -176,18 +201,19 @@
             background: white;
             border-radius: 20px;
             padding: 18px;
-            border: 2px solid #e0e0e0;
-            box-shadow: 0 4px 0 #c0c0c0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.05);
         }
 
         .stat-card h3 {
-            color: #7f8c8d;
+            color: #8b93a6;
             font-size: 0.9rem;
             margin-bottom: 10px;
+            font-weight: 500;
         }
 
         .stat-number {
-            color: #2c3e50;
+            color: #1a1e2b;
             font-size: 2rem;
             font-weight: 700;
         }
@@ -206,22 +232,21 @@
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            border: 2px solid #e0e0e0;
-            box-shadow: 0 3px 0 #c0c0c0;
-            transition: all 0.1s;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
             font-size: 0.9rem;
+            color: #8b93a6;
+        }
+
+        .tab:hover {
+            background: #f0f2f5;
+            color: #2e3440;
         }
 
         .tab.active {
-            background: #4a6fa5;
+            background: #2e3440;
             color: white;
-            border-color: #2c3e50;
-            box-shadow: 0 3px 0 #2c3e50;
-        }
-
-        .tab:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #c0c0c0;
+            border-color: #2e3440;
         }
 
         /* Панели */
@@ -230,8 +255,8 @@
             border-radius: 24px;
             padding: 24px;
             margin-bottom: 30px;
-            border: 2px solid #e0e0e0;
-            box-shadow: 0 4px 0 #c0c0c0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.05);
             display: none;
         }
 
@@ -240,10 +265,10 @@
         }
 
         .panel h2 {
-            color: #2c3e50;
+            color: #1a1e2b;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 3px solid #4a6fa5;
+            border-bottom: 2px solid #f0f2f5;
             font-size: 1.3rem;
             display: flex;
             align-items: center;
@@ -252,15 +277,15 @@
 
         /* Подпанели */
         .sub-panel {
-            background: #f8f9fa;
+            background: #f8f9fc;
             border-radius: 16px;
             padding: 20px;
             margin: 20px 0;
-            border: 1px solid #e0e0e0;
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .sub-panel h3 {
-            color: #2c3e50;
+            color: #1a1e2b;
             margin-bottom: 15px;
             font-size: 1.1rem;
             display: flex;
@@ -270,8 +295,8 @@
 
         /* Предупреждения */
         .warning-banner {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
+            background: #fcf9f0;
+            border: 2px solid #f1c40f;
             border-radius: 16px;
             padding: 15px 20px;
             margin-bottom: 20px;
@@ -283,7 +308,7 @@
         }
 
         .warning-banner.danger {
-            background: #f8d7da;
+            background: #fdedec;
             border-color: #c0392b;
         }
 
@@ -298,42 +323,31 @@
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
-            border-bottom: 3px solid;
-            transition: all 0.1s;
-        }
-
-        .warning-banner button:active {
-            transform: translateY(2px);
-            border-bottom-width: 1px;
+            transition: all 0.2s;
         }
 
         .btn-warning {
-            background: #ffc107;
-            border-bottom-color: #b38f4a;
+            background: #f1c40f;
+            color: #1a1e2b;
         }
 
         .btn-danger {
             background: #c0392b;
             color: white;
-            border-bottom-color: #962d22;
         }
 
         .btn-success {
             background: #27ae60;
             color: white;
-            border-bottom-color: #1e8449;
         }
 
         .btn-primary {
-            background: #4a6fa5;
+            background: #2e3440;
             color: white;
-            border-bottom-color: #2c3e50;
         }
 
-        .btn-info {
-            background: #3498db;
-            color: white;
-            border-bottom-color: #2980b9;
+        .btn-primary:hover {
+            background: #1a1e2b;
         }
 
         /* Таблицы */
@@ -350,27 +364,27 @@
         th {
             text-align: left;
             padding: 12px;
-            background: #f8f9fa;
-            color: #2c3e50;
+            background: #f8f9fc;
+            color: #1a1e2b;
             font-weight: 600;
             border-radius: 12px 12px 0 0;
         }
 
         td {
             padding: 12px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #f0f2f5;
         }
 
         tr.duplicate {
-            background: #fff3cd;
+            background: #fcf9f0;
         }
 
         tr.duplicate:hover {
-            background: #ffe69c;
+            background: #f8f0d8;
         }
 
         tr:hover {
-            background: #f8f9fa;
+            background: #f8f9fc;
         }
 
         /* Бейджи */
@@ -384,57 +398,48 @@
         }
 
         .badge.warning { 
-            background: #ffc107; 
-            color: #2c3e50;
-            border-bottom: 2px solid #b38f4a;
+            background: #f1c40f; 
+            color: #1a1e2b;
         }
         
         .badge.success { 
             background: #27ae60; 
             color: white;
-            border-bottom: 2px solid #1e8449;
         }
         
         .badge.danger { 
             background: #c0392b; 
             color: white;
-            border-bottom: 2px solid #962d22;
         }
         
         .badge.duplicate { 
-            background: #ffc107; 
-            color: #2c3e50;
-            border-bottom: 2px solid #b38f4a;
+            background: #f1c40f; 
+            color: #1a1e2b;
         }
 
         .badge.verified {
-            background: #4a6fa5;
+            background: #2e3440;
             color: white;
-            border-bottom: 2px solid #2c3e50;
         }
 
         .badge.info {
             background: #3498db;
             color: white;
-            border-bottom: 2px solid #2980b9;
         }
 
         .badge.prime {
             background: #f1c40f;
-            color: #2c3e50;
-            border-bottom: 2px solid #b38f4a;
+            color: #1a1e2b;
         }
 
         .badge.user {
             background: #95a5a6;
             color: white;
-            border-bottom: 2px solid #7f8c8d;
         }
 
         .badge.admin {
-            background: #e74c3c;
+            background: #c0392b;
             color: white;
-            border-bottom: 2px solid #c0392b;
         }
 
         /* Кнопки */
@@ -444,8 +449,7 @@
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
-            border-bottom: 3px solid;
-            transition: all 0.1s;
+            transition: all 0.2s;
             margin: 0 2px;
         }
 
@@ -454,39 +458,49 @@
             font-size: 0.8rem;
         }
 
-        .btn:active {
-            transform: translateY(2px);
-            border-bottom-width: 1px;
+        .btn-primary {
+            background: #2e3440;
+            color: white;
         }
 
-        .btn-primary {
-            background: #4a6fa5;
-            color: white;
-            border-bottom-color: #2c3e50;
+        .btn-primary:hover {
+            background: #1a1e2b;
         }
 
         .btn-success {
             background: #27ae60;
             color: white;
-            border-bottom-color: #1e8449;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
         }
 
         .btn-danger {
             background: #c0392b;
             color: white;
-            border-bottom-color: #962d22;
+        }
+
+        .btn-danger:hover {
+            background: #a93226;
         }
 
         .btn-warning {
-            background: #ffc107;
-            color: #2c3e50;
-            border-bottom-color: #b38f4a;
+            background: #f1c40f;
+            color: #1a1e2b;
+        }
+
+        .btn-warning:hover {
+            background: #d4ac0d;
         }
 
         .btn-info {
             background: #3498db;
             color: white;
-            border-bottom-color: #2980b9;
+        }
+
+        .btn-info:hover {
+            background: #2980b9;
         }
 
         /* Формы */
@@ -501,29 +515,36 @@
             flex: 1;
             min-width: 200px;
             padding: 12px 16px;
-            border: 2px solid #e0e0e0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 16px;
             font-size: 0.95rem;
+            background: #f8f9fc;
         }
 
         .input-group input:focus {
-            border-color: #4a6fa5;
             outline: none;
+            border-color: #2e3440;
+            background: #ffffff;
         }
 
         .input-group select {
             padding: 12px 16px;
-            border: 2px solid #e0e0e0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 16px;
             font-size: 0.95rem;
-            background: white;
+            background: #f8f9fc;
+        }
+
+        .input-group select:focus {
+            outline: none;
+            border-color: #2e3440;
         }
 
         /* Сообщения */
         .message {
             position: fixed;
-            top: 16px;
-            right: 16px;
+            top: 20px;
+            right: 20px;
             padding: 12px 20px;
             border-radius: 30px;
             color: white;
@@ -531,7 +552,6 @@
             z-index: 10001;
             animation: slideIn 0.2s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            border-bottom: 4px solid rgba(0,0,0,0.2);
         }
 
         @keyframes slideIn {
@@ -539,15 +559,15 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .message.success { background: #4a6fa5; }
+        .message.success { background: #2e3440; }
         .message.error { background: #c0392b; }
-        .message.warning { background: #ffc107; color: #2c3e50; }
+        .message.warning { background: #f1c40f; color: #1a1e2b; }
 
         /* Прогресс-бар */
         .progress-bar {
             width: 100%;
             height: 8px;
-            background: #e0e0e0;
+            background: #f0f2f5;
             border-radius: 4px;
             overflow: hidden;
             margin: 5px 0;
@@ -555,7 +575,7 @@
 
         .progress-fill {
             height: 100%;
-            background: #4a6fa5;
+            background: #2e3440;
             border-radius: 4px;
             transition: width 0.3s;
         }
@@ -569,20 +589,20 @@
         }
 
         .info-card {
-            background: #f8f9fa;
+            background: #f8f9fc;
             border-radius: 16px;
             padding: 15px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .info-card h4 {
-            color: #2c3e50;
+            color: #1a1e2b;
             margin-bottom: 10px;
             font-size: 1rem;
         }
 
         .info-card p {
-            color: #7f8c8d;
+            color: #8b93a6;
             font-size: 0.9rem;
             line-height: 1.5;
         }
@@ -607,7 +627,12 @@
         <div class="admin-panel" id="adminPanel">
             <!-- Шапка -->
             <div class="header">
-                <h1>⚡ АДМИН-ПАНЕЛЬ <span>Школа №62</span></h1>
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="top_logotype.png" alt="Школа 62" class="logo-img">
+                        <h1>⚡ АДМИН-ПАНЕЛЬ <span>Школа №62</span></h1>
+                    </div>
+                </div>
                 <button class="logout-btn" id="logoutBtn">Выйти</button>
             </div>
 
@@ -748,7 +773,7 @@
                     </table>
                 </div>
                 
-                <h3 style="margin: 30px 0 15px 0; color: #2c3e50;">➕ Добавить PREMIUM</h3>
+                <h3 style="margin: 30px 0 15px 0; color: #1a1e2b;">➕ Добавить PREMIUM</h3>
                 <div class="input-group">
                     <input type="text" id="newVerifiedUser" placeholder="Ник пользователя">
                     <input type="text" id="newVerifiedPass" placeholder="Пароль">
@@ -1119,10 +1144,6 @@
 
                 const { count: threadMessages } = await supabaseClient
                     .from('thread_messages')
-                    .select('*', { count: 'exact', head: true });
-
-                const { count: slivy } = await supabaseClient
-                    .from('slivy')
                     .select('*', { count: 'exact', head: true });
 
                 const { count: polls } = await supabaseClient
