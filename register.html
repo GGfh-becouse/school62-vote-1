@@ -3,152 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Регистрация - Школа №62</title>
+    <title>регистрация | школа 62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background: #f5f5f5;
+            background: #f8f9fc;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 16px;
+            padding: 20px;
         }
 
-        .register-card {
-            background: white;
-            border-radius: 32px;
+        .container {
             max-width: 500px;
             width: 100%;
-            padding: 28px 24px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
-            border: 2px solid #4a6fa5;
         }
 
-        .register-card h2 {
-            font-size: 1.6rem;
-            color: #2c3e50;
+        /* HEADER */
+        .header {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 16px 20px;
             margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid #4a6fa5;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-img {
+            height: 36px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            letter-spacing: -0.5px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-icon {
+            font-size: 1.2rem;
+            color: #8b93a6;
+            transition: color 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .header-icon:hover {
+            color: #2e3440;
+        }
+
+        @media (max-width: 600px) {
+            .logo-img {
+                height: 28px;
+            }
+        }
+
+        /* REGISTER CARD */
+        .register-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 32px 28px;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .register-header h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .register-header p {
+            color: #8b93a6;
+            font-size: 0.9rem;
+            font-weight: 400;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 600;
+            color: #1a1e2b;
+            font-weight: 500;
+            font-size: 0.9rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 16px;
+            padding: 14px 18px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 18px;
             font-size: 0.95rem;
+            background: #f8f9fc;
             transition: all 0.2s;
         }
 
         .form-control:focus {
-            border-color: #4a6fa5;
             outline: none;
+            border-color: #2e3440;
+            background: #ffffff;
         }
 
-        .class-select {
+        .form-control::placeholder {
+            color: #b5bcc8;
+            font-weight: 300;
+        }
+
+        .hint {
+            margin-top: 6px;
+            font-size: 0.75rem;
+            color: #8b93a6;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .hint.valid {
+            color: #27ae60;
+        }
+
+        .hint.invalid {
+            color: #c0392b;
+        }
+
+        /* CLASS SELECTION */
+        .class-section {
+            margin-bottom: 24px;
+        }
+
+        .class-section label {
+            display: block;
+            margin-bottom: 12px;
+            color: #1a1e2b;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .class-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
 
         .class-option {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 12px;
+            background: #f8f9fc;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            padding: 14px 8px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #1a1e2b;
         }
 
         .class-option:hover {
-            border-color: #4a6fa5;
-            background: #eef2f7;
+            border-color: #2e3440;
+            transform: translateY(-2px);
+            background: #ffffff;
         }
 
         .class-option.selected {
-            background: #4a6fa5;
+            background: #2e3440;
             color: white;
-            border-color: #2c3e50;
+            border-color: #2e3440;
         }
 
-        .hint {
-            color: #7f8c8d;
-            font-size: 0.8rem;
-            margin-top: 5px;
+        .class-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f0f2f5;
+        }
+
+        .class-option.disabled:hover {
+            transform: none;
+            border-color: rgba(0, 0, 0, 0.05);
         }
 
         .register-btn {
-            background: #4a6fa5;
+            background: #2e3440;
             color: white;
             border: none;
             width: 100%;
             padding: 16px;
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 600;
             border-radius: 40px;
             cursor: pointer;
-            border-bottom: 4px solid #2c3e50;
-            transition: all 0.1s;
+            transition: all 0.2s;
             margin-top: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .register-btn:hover {
+            background: #1a1e2b;
+            transform: translateY(-1px);
         }
 
         .register-btn:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
+            transform: translateY(0);
         }
 
         .register-btn:disabled {
-            background: #ccc;
-            border-bottom-color: #999;
+            background: #8b93a6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .login-link {
             text-align: center;
-            margin-top: 20px;
-            color: #7f8c8d;
+            margin-top: 24px;
+            color: #8b93a6;
+            font-size: 0.9rem;
         }
 
         .login-link a {
-            color: #4a6fa5;
+            color: #2e3440;
             text-decoration: none;
             font-weight: 600;
+            border-bottom: 1px solid #2e3440;
+            padding-bottom: 2px;
+            transition: opacity 0.2s;
         }
 
+        .login-link a:hover {
+            opacity: 0.7;
+        }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 560px;
+            width: calc(100% - 32px);
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-item-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8b93a6;
+            text-decoration: none;
+            font-size: 0.6rem;
+            font-weight: 500;
+            flex: 1;
+            padding: 8px 0;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+
+        .nav-item-bottom.active {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        .nav-item-bottom:hover {
+            color: #2e3440;
+            background: #f8f9fc;
+        }
+
+        .nav-icon-bottom {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        /* MESSAGES */
         .message {
             position: fixed;
-            top: 16px;
-            right: 16px;
+            top: 20px;
+            right: 20px;
             padding: 12px 20px;
             border-radius: 30px;
             color: white;
             font-weight: 500;
-            z-index: 10001;
+            font-size: 0.85rem;
+            z-index: 10002;
             animation: slideIn 0.2s;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15);
         }
 
         @keyframes slideIn {
@@ -156,54 +339,130 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .message.success { background: #4a6fa5; }
+        .message.success { background: #2e3440; }
         .message.error { background: #c0392b; }
 
+        /* RESPONSIVE */
         @media (max-width: 600px) {
-            .class-select {
+            .class-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .class-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .register-card {
+                padding: 24px 20px;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="register-card">
-        <h2>📝 РЕГИСТРАЦИЯ</h2>
-        
-        <div class="form-group">
-            <label>Настоящее имя (только для модерации, никто не увидит)</label>
-            <input type="text" id="realName" class="form-control" placeholder="Иван Иванов" maxlength="50">
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="top_logotype.png" alt="Школа 62" class="logo-img">
+                    <h1>стена</h1>
+                </div>
+                <div class="header-icons">
+                    <a href="your_account.html" class="header-icon">
+                        <i class="far fa-user"></i>
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Никнейм (латиница и цифры, до 10 символов)</label>
-            <input type="text" id="nickname" class="form-control" placeholder="school.2026" maxlength="10">
-            <div class="hint" id="nicknameHint">Только латиница и цифры</div>
-        </div>
+        <!-- Register Card -->
+        <div class="register-card">
+            <div class="register-header">
+                <h2>регистрация</h2>
+                <p>создайте новый аккаунт</p>
+            </div>
+            
+            <!-- Реальное имя (скрытое) -->
+            <div class="form-group">
+                <label>настоящее имя</label>
+                <input type="text" id="realName" class="form-control" placeholder="только для модерации" maxlength="50">
+                <div class="hint">
+                    <i class="far fa-eye-slash"></i> никто не увидит
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label>Пароль (минимум 6 символов)</label>
-            <input type="password" id="password" class="form-control" placeholder="••••••••" maxlength="50">
-            <div class="hint" id="passwordHint">Минимум 6 символов</div>
-        </div>
+            <!-- Никнейм -->
+            <div class="form-group">
+                <label>никнейм</label>
+                <input type="text" id="nickname" class="form-control" placeholder="например: school.2026" maxlength="10">
+                <div class="hint" id="nicknameHint">
+                    <i class="far fa-info-circle"></i> латиница, цифры и точки
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label>Повторите пароль</label>
-            <input type="password" id="passwordConfirm" class="form-control" placeholder="••••••••" maxlength="50">
-            <div class="hint" id="passwordConfirmHint"></div>
-        </div>
+            <!-- Пароль -->
+            <div class="form-group">
+                <label>пароль</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" maxlength="50">
+                <div class="hint" id="passwordHint">
+                    <i class="far fa-info-circle"></i> минимум 6 символов
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label>Класс</label>
-            <div class="class-select" id="classSelect"></div>
-        </div>
+            <!-- Подтверждение пароля -->
+            <div class="form-group">
+                <label>повторите пароль</label>
+                <input type="password" id="passwordConfirm" class="form-control" placeholder="••••••••" maxlength="50">
+                <div class="hint" id="passwordConfirmHint"></div>
+            </div>
 
-        <button class="register-btn" id="registerBtn" disabled>ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            <!-- Выбор класса -->
+            <div class="class-section">
+                <label>класс</label>
+                <div class="class-grid" id="classSelect"></div>
+            </div>
 
-        <div class="login-link">
-            Уже есть аккаунт? <a href="login.html">Войти</a>
+            <button class="register-btn" id="registerBtn" disabled>зарегистрироваться</button>
+            
+            <!-- Ссылка на правила -->
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="rules.html" style="color: #8b93a6; font-size: 0.8rem; text-decoration: none; border-bottom: 1px solid #8b93a6;">
+                    <i class="fas fa-scroll"></i> правила сообщества
+                </a>
+            </div>
+            
+            <div class="login-link">
+                уже есть аккаунт? <a href="login.html">войти</a>
+            </div>
         </div>
     </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item-bottom">
+            <i class="fas fa-home nav-icon-bottom"></i>
+            <span>главная</span>
+        </a>
+        <a href="votes.html" class="nav-item-bottom">
+            <i class="fas fa-chart-bar nav-icon-bottom"></i>
+            <span>голосования</span>
+        </a>
+        <a href="threads.html" class="nav-item-bottom">
+            <i class="fas fa-comment nav-icon-bottom"></i>
+            <span>темки</span>
+        </a>
+        <a href="slivy.html" class="nav-item-bottom">
+            <i class="fas fa-image nav-icon-bottom"></i>
+            <span>сливы</span>
+        </a>
+        <a href="your_account.html" class="nav-item-bottom">
+            <i class="fas fa-user nav-icon-bottom"></i>
+            <span>аккаунт</span>
+        </a>
+    </nav>
 
     <div id="messageContainer"></div>
 
@@ -213,10 +472,22 @@
         const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const classes = ['7А', '7Б', '8А', '8Б', '9А', '9Б', '10А', '10Б', '11А'];
+        // Генерация классов с 5 по 11
+        const classes = [];
+        
+        // 5-10 классы: А и Б
+        for (let i = 5; i <= 10; i++) {
+            classes.push(`${i}А`);
+            classes.push(`${i}Б`);
+        }
+        
+        // 11 класс: только А
+        classes.push('11А');
+
         let selectedClass = '';
         let isNicknameValid = false;
         let isPasswordValid = false;
+        let isRealNameFilled = false;
 
         // Заполняем классы
         const classSelect = document.getElementById('classSelect');
@@ -237,34 +508,57 @@
             checkForm();
         }
 
-        // Проверка ника
-        document.getElementById('nickname').addEventListener('input', function(e) {
-            const value = e.target.value;
+        // Валидация ника
+        document.getElementById('nickname').addEventListener('input', async function(e) {
+            const value = e.target.value.trim();
             const hint = document.getElementById('nicknameHint');
             
+            // Проверка формата
             const regex = /^[A-Za-z0-9.]+$/;
             if (value && !regex.test(value)) {
-                hint.textContent = '❌ Только латиница и цифры';
-                hint.style.color = '#c0392b';
+                hint.innerHTML = '<i class="fas fa-times"></i> только латиница, цифры и точки';
+                hint.className = 'hint invalid';
                 isNicknameValid = false;
             } else if (value.length > 10) {
-                hint.textContent = '❌ Максимум 10 символов';
-                hint.style.color = '#c0392b';
+                hint.innerHTML = '<i class="fas fa-times"></i> максимум 10 символов';
+                hint.className = 'hint invalid';
                 isNicknameValid = false;
-            } else if (value.length < 3) {
-                hint.textContent = '❌ Минимум 3 символа';
-                hint.style.color = '#c0392b';
+            } else if (value.length < 3 && value.length > 0) {
+                hint.innerHTML = '<i class="fas fa-times"></i> минимум 3 символа';
+                hint.className = 'hint invalid';
+                isNicknameValid = false;
+            } else if (value.length === 0) {
+                hint.innerHTML = '<i class="far fa-info-circle"></i> латиница, цифры и точки';
+                hint.className = 'hint';
                 isNicknameValid = false;
             } else {
-                hint.textContent = '✅ Доступно';
-                hint.style.color = '#27ae60';
-                isNicknameValid = true;
+                // Проверка уникальности
+                try {
+                    const { data } = await supabaseClient
+                        .from('users')
+                        .select('nickname')
+                        .eq('nickname', value)
+                        .maybeSingle();
+                    
+                    if (data) {
+                        hint.innerHTML = '<i class="fas fa-times"></i> этот ник уже занят';
+                        hint.className = 'hint invalid';
+                        isNicknameValid = false;
+                    } else {
+                        hint.innerHTML = '<i class="fas fa-check"></i> ник доступен';
+                        hint.className = 'hint valid';
+                        isNicknameValid = true;
+                    }
+                } catch (error) {
+                    console.error('Ошибка проверки ника:', error);
+                    isNicknameValid = false;
+                }
             }
             
             checkForm();
         });
 
-        // Проверка пароля
+        // Валидация пароля
         function checkPassword() {
             const password = document.getElementById('password').value;
             const confirm = document.getElementById('passwordConfirm').value;
@@ -272,28 +566,32 @@
             const confirmHint = document.getElementById('passwordConfirmHint');
 
             // Проверка длины пароля
-            if (password.length < 6) {
-                hint.textContent = '❌ Минимум 6 символов';
-                hint.style.color = '#c0392b';
+            if (password.length === 0) {
+                hint.innerHTML = '<i class="far fa-info-circle"></i> минимум 6 символов';
+                hint.className = 'hint';
+                isPasswordValid = false;
+            } else if (password.length < 6) {
+                hint.innerHTML = '<i class="fas fa-times"></i> минимум 6 символов';
+                hint.className = 'hint invalid';
                 isPasswordValid = false;
             } else {
-                hint.textContent = '✅ Минимум 6 символов';
-                hint.style.color = '#27ae60';
+                hint.innerHTML = '<i class="fas fa-check"></i> длина подходит';
+                hint.className = 'hint valid';
                 isPasswordValid = true;
             }
 
             // Проверка совпадения
             if (confirm) {
                 if (password !== confirm) {
-                    confirmHint.textContent = '❌ Пароли не совпадают';
-                    confirmHint.style.color = '#c0392b';
+                    confirmHint.innerHTML = '<i class="fas fa-times"></i> пароли не совпадают';
+                    confirmHint.className = 'hint invalid';
                     isPasswordValid = false;
                 } else {
-                    confirmHint.textContent = '✅ Пароли совпадают';
-                    confirmHint.style.color = '#27ae60';
+                    confirmHint.innerHTML = '<i class="fas fa-check"></i> пароли совпадают';
+                    confirmHint.className = 'hint valid';
                 }
             } else {
-                confirmHint.textContent = '';
+                confirmHint.innerHTML = '';
             }
 
             checkForm();
@@ -302,11 +600,15 @@
         document.getElementById('password').addEventListener('input', checkPassword);
         document.getElementById('passwordConfirm').addEventListener('input', checkPassword);
 
+        // Проверка реального имени
+        document.getElementById('realName').addEventListener('input', function(e) {
+            isRealNameFilled = e.target.value.trim().length > 0;
+            checkForm();
+        });
+
         function checkForm() {
-            const realName = document.getElementById('realName').value.trim();
             const btn = document.getElementById('registerBtn');
-            
-            btn.disabled = !(realName && isNicknameValid && isPasswordValid && selectedClass);
+            btn.disabled = !(isRealNameFilled && isNicknameValid && isPasswordValid && selectedClass);
         }
 
         function showMessage(text, type) {
@@ -324,19 +626,6 @@
             const password = document.getElementById('password').value.trim();
             
             try {
-                // Проверка уникальности ника
-                const { data: existing } = await supabaseClient
-                    .from('users')
-                    .select('nickname')
-                    .eq('nickname', nickname)
-                    .maybeSingle();
-                
-                if (existing) {
-                    showMessage('Этот ник уже занят', 'error');
-                    return;
-                }
-
-                // Создание пользователя
                 const { data, error } = await supabaseClient
                     .from('users')
                     .insert({
@@ -346,19 +635,19 @@
                         class: selectedClass,
                         avatar_url: 'https://i.pravatar.cc/300',
                         status: '',
-                        is_prime: false
+                        is_prime: false,
+                        display_name: nickname
                     })
                     .select()
                     .single();
 
                 if (error) throw error;
 
-                // Сохраняем ID пользователя
                 localStorage.setItem('userId', data.id);
                 localStorage.setItem('userNickname', data.nickname);
                 localStorage.setItem('userClass', data.class);
                 
-                showMessage('✅ Регистрация успешна!', 'success');
+                showMessage('✅ регистрация успешна!', 'success');
                 
                 setTimeout(() => {
                     window.location.href = 'your_account.html';
@@ -366,7 +655,7 @@
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                showMessage('Ошибка: ' + error.message, 'error');
+                showMessage('ошибка: ' + error.message, 'error');
             }
         });
     </script>
