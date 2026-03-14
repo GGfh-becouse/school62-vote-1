@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ... все стили без изменений ... */
         * {
             margin: 0;
             padding: 0;
@@ -60,17 +59,10 @@
             gap: 8px;
         }
 
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: #2e3440;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.9rem;
+        .logo-img {
+            height: 36px;
+            width: auto;
+            object-fit: contain;
         }
 
         .logo h1 {
@@ -95,6 +87,12 @@
 
         .header-icon:hover {
             color: #2e3440;
+        }
+
+        @media (max-width: 600px) {
+            .logo-img {
+                height: 28px;
+            }
         }
 
         /* USER INFO BAR */
@@ -884,39 +882,26 @@
                 justify-content: center;
             }
         }
-        /* Логотип */
-.logo-img {
-    height: 36px;
-    width: auto;
-    object-fit: contain;
-}
-
-@media (max-width: 600px) {
-    .logo-img {
-        height: 28px;
-    }
-}
-/* 👆 Здесь только одна закрывающая скобка */
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <div class="main-content">
-<!-- Header -->
-<div class="header">
-    <div class="header-content">
-        <div class="logo">
-            <img src="top_logotype.png" alt="Школа 62" class="logo-img">
-            <h1>стена</h1>
-        </div>
-        <div class="header-icons">
-            <a href="https://ggfh-becouse.github.io/school62-vote/your_account.html" class="header-icon">
-                <i class="far fa-user"></i>
-            </a>
-        </div>
-    </div>
-</div>
+            <!-- Header -->
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="top_logotype.png" alt="Школа 62" class="logo-img">
+                        <h1>стена</h1>
+                    </div>
+                    <div class="header-icons">
+                        <a href="your_account.html" class="header-icon">
+                            <i class="far fa-user"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
             <!-- User Info Bar -->
             <div class="user-info-bar" id="userInfoBar">
@@ -1034,35 +1019,34 @@
                 </div>
             </div>
             
-    <!-- В нижней части профиля -->
-<div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <a href="https://ggfh-becouse.github.io/school62-vote/rules.html" 
-       style="color: #8b93a6; font-size: 0.75rem; text-decoration: none;">
-        <i class="fas fa-scroll"></i> правила сообщества
-    </a>
-</div>
+            <!-- Ссылка на правила -->
+            <div style="text-align: center; margin-top: 20px; padding: 10px;">
+                <a href="rules.html" style="color: #8b93a6; font-size: 0.75rem; text-decoration: none;">
+                    <i class="fas fa-scroll"></i> правила сообщества
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a href="https://ggfh-becouse.github.io/school62-vote/index.html" class="nav-item-bottom">
+        <a href="index.html" class="nav-item-bottom">
             <i class="fas fa-home nav-icon-bottom"></i>
             <span>главная</span>
         </a>
-        <a href="https://ggfh-becouse.github.io/school62-vote/votes.html" class="nav-item-bottom">
+        <a href="votes.html" class="nav-item-bottom">
             <i class="fas fa-chart-bar nav-icon-bottom"></i>
             <span>голосования</span>
         </a>
-        <a href="https://ggfh-becouse.github.io/school62-vote/threads.html" class="nav-item-bottom">
+        <a href="threads.html" class="nav-item-bottom">
             <i class="fas fa-comment nav-icon-bottom"></i>
             <span>темки</span>
         </a>
-        <a href="https://ggfh-becouse.github.io/school62-vote/slivy.html" class="nav-item-bottom">
+        <a href="slivy.html" class="nav-item-bottom">
             <i class="fas fa-image nav-icon-bottom"></i>
             <span>сливы</span>
         </a>
-        <a href="https://ggfh-becouse.github.io/school62-vote/your_account.html" class="nav-item-bottom active">
+        <a href="your_account.html" class="nav-item-bottom active">
             <i class="fas fa-user nav-icon-bottom"></i>
             <span>аккаунт</span>
         </a>
@@ -1836,7 +1820,7 @@
             const userId = localStorage.getItem('userId');
             
             if (!userId) {
-                window.location.href = 'https://ggfh-becouse.github.io/school62-vote/login.html';
+                window.location.href = 'login.html';
                 return;
             }
 
@@ -1851,7 +1835,7 @@
 
                 if (error || !data) {
                     localStorage.clear();
-                    window.location.href = 'https://ggfh-becouse.github.io/school62-vote/login.html';
+                    window.location.href = 'login.html';
                     return;
                 }
 
@@ -1880,7 +1864,7 @@
             } catch (error) {
                 console.error('Ошибка:', error);
                 localStorage.clear();
-                window.location.href = 'https://ggfh-becouse.github.io/school62-vote/login.html';
+                window.location.href = 'login.html';
             }
         }
 
@@ -1896,7 +1880,7 @@
             document.getElementById('updateStatusBtn').addEventListener('click', updateStatus);
             document.getElementById('logoutBtn').addEventListener('click', () => {
                 localStorage.clear();
-                window.location.href = 'https://ggfh-becouse.github.io/school62-vote/login.html';
+                window.location.href = 'login.html';
             });
 
             // Enter для полей
