@@ -3,326 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Темки - Школа №62</title>
+    <title>темки | школа 62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background: #f5f5f5;
+            background: #f8f9fc;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 0;
-            margin: 0;
+            padding: 32px 0;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 600px;
             width: 100%;
-            background: white;
-            box-shadow: 0 0 30px rgba(0,0,0,0.05);
-            min-height: 100vh;
+            background: #f8f9fc;
             position: relative;
+            padding: 0 16px;
         }
 
-        /* Шапка */
+        .main-content {
+            display: block;
+            padding-bottom: 90px;
+        }
+
+        /* HEADER */
         .header {
-            background: linear-gradient(145deg, #4a6fa5 0%, #2c3e50 100%);
+            background: #ffffff;
             border-radius: 24px;
-            padding: 18px 20px;
-            margin: 16px;
-            box-shadow: 0 6px 0 #1a2a3a;
+            padding: 16px 20px;
+            margin: 8px 0 16px 0;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .logo-img {
+            height: 36px;
+            width: auto;
+            object-fit: contain;
         }
 
         .logo h1 {
-            color: white;
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 0;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-        }
-
-        .school-badge {
-            background: #ffd966;
-            color: #2c3e50;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border-bottom: 3px solid #b38f4a;
-        }
-
-        /* Горизонтальное меню */
-        .main-nav {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .nav-item {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            color: white;
-            text-decoration: none;
+            font-size: 1.4rem;
             font-weight: 600;
-            font-size: 0.9rem;
-            border-bottom: 3px solid rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            color: #1a1e2b;
+            letter-spacing: -0.5px;
         }
 
-        .nav-item.active {
-            background: #ffd966;
-            color: #2c3e50;
-            border-bottom-color: #b38f4a;
+        .header-icons {
+            display: flex;
+            gap: 16px;
         }
 
-        .nav-item:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .nav-icon {
-            font-size: 1.1rem;
-        }
-
-        /* Кнопка создания темки */
-        .create-thread-btn {
-            background: #4a6fa5;
-            color: white;
-            border: none;
-            width: calc(100% - 32px);
-            margin: 0 16px 20px 16px;
-            padding: 16px;
+        .header-icon {
             font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 40px;
+            color: #8b93a6;
+            transition: color 0.2s;
             cursor: pointer;
-            border-bottom: 4px solid #2c3e50;
-            transition: all 0.1s;
+            text-decoration: none;
+        }
+
+        .header-icon:hover {
+            color: #2e3440;
+        }
+
+        @media (max-width: 600px) {
+            .logo-img {
+                height: 28px;
+            }
+        }
+
+        /* NAVIGATION BAR */
+        .nav-bar {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 4px;
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-link {
             display: flex;
             align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 30px;
+            color: #8b93a6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex: 1;
             justify-content: center;
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+        }
+
+        .nav-link:hover {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        .nav-link.active {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        /* PRIME STATUS BAR */
+        .prime-status-bar {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .prime-info {
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .create-thread-btn:active {
-            transform: translateY(3px);
-            border-bottom-width: 2px;
+        .prime-badge {
+            width: 24px;
+            height: 24px;
+            background: #f1c40f;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 4px rgba(241, 196, 15, 0.3);
         }
 
-        /* Список темок */
-        .threads-container {
-            padding: 0 16px;
-            margin-bottom: 30px;
+        .prime-info span {
+            font-size: 0.85rem;
+            color: #1a1e2b;
+            font-weight: 500;
+        }
+
+        .prime-logout {
+            background: none;
+            border: none;
+            color: #8b93a6;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 4px 8px;
+            transition: color 0.2s;
+        }
+
+        .prime-logout:hover {
+            color: #e74c3c;
+        }
+
+        /* PREMIUM INDICATOR */
+        .premium-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f1c40f;
+            color: #1a1e2b;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* CREATE THREAD FORM */
+        .create-thread {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .create-thread h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8b93a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .thread-input,
+        .thread-textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            font-size: 0.9rem;
+            background: #f8f9fc;
+            transition: border-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .thread-input:focus,
+        .thread-textarea:focus {
+            outline: none;
+            border-color: #2e3440;
+            background: #ffffff;
+        }
+
+        .thread-textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .create-btn {
+            background: #2e3440;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .create-btn:hover {
+            background: #1a1e2b;
+        }
+
+        .create-btn:disabled {
+            background: #8b93a6;
+            cursor: not-allowed;
+        }
+
+        /* THREADS LIST */
+        .threads-list {
+            margin-bottom: 24px;
+        }
+
+        .threads-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .threads-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8b93a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .threads-count {
+            background: #f0f2f5;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #1a1e2b;
+            font-weight: 500;
         }
 
         .thread-item {
-            background: white;
+            background: #ffffff;
             border-radius: 20px;
             padding: 18px;
-            margin-bottom: 15px;
-            border: 2px solid #e0e0e0;
-            box-shadow: 0 4px 0 #c0c0c0;
-            cursor: pointer;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
             transition: all 0.2s;
-            animation: fadeIn 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.03);
         }
 
         .thread-item:hover {
-            border-color: #4a6fa5;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #a0a0a0;
+            transform: translateX(4px);
+            box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.1);
+        }
+
+        .thread-item.premium {
+            border-left: 3px solid #f1c40f;
+            background: #fcf9f0;
+        }
+
+        .thread-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 10px;
         }
 
         .thread-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1a1e2b;
+            line-height: 1.4;
+        }
+
+        .thread-author {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            color: #8b93a6;
+            white-space: nowrap;
+        }
+
+        .thread-author.premium {
+            color: #f1c40f;
+            font-weight: 500;
         }
 
         .thread-meta {
             display: flex;
-            gap: 20px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
+            gap: 16px;
+            color: #8b93a6;
+            font-size: 0.75rem;
         }
 
         .thread-meta span {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
-        .thread-stats {
-            display: flex;
-            gap: 15px;
-            padding-top: 10px;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .thread-stat {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #2c3e50;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        /* Модальное окно создания темки */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 10001;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 32px;
-            max-width: 500px;
-            width: 90%;
-            margin: 50px auto;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 2px solid #4a6fa5;
-        }
-
-        .modal-content h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #4a6fa5;
-        }
-
-        .modal-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        .modal-input:focus {
-            border-color: #4a6fa5;
-            outline: none;
-        }
-
-        .modal-textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            min-height: 120px;
-            margin-bottom: 20px;
-            font-family: inherit;
-            resize: vertical;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .modal-btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 700;
-            cursor: pointer;
-            border-bottom: 4px solid;
-            transition: all 0.1s;
-        }
-
-        .modal-btn.create {
-            background: #4a6fa5;
-            color: white;
-            border-bottom-color: #2c3e50;
-        }
-
-        .modal-btn.cancel {
-            background: #e0e0e0;
-            color: #2c3e50;
-            border-bottom-color: #b0b0b0;
-        }
-
-        .modal-btn:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
-        }
-
-        /* Сообщения */
-        .message {
-            position: fixed;
-            top: 16px;
-            right: 16px;
-            padding: 12px 20px;
-            border-radius: 30px;
-            color: white;
-            font-weight: 500;
-            z-index: 10002;
-            animation: slideIn 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            border-bottom: 4px solid rgba(0,0,0,0.2);
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .message.success { background: #4a6fa5; }
-        .message.error { background: #c0392b; }
-
-        /* Индикатор загрузки */
+        /* LOADER */
         .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4a6fa5;
+            border: 2px solid #f0f2f5;
+            border-top: 2px solid #2e3440;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 40px auto;
         }
 
         @keyframes spin {
@@ -330,378 +392,641 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8b93a6;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* MESSAGES */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            z-index: 10002;
+            animation: slideIn 0.2s;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .message.success { background: #2e3440; }
+        .message.error { background: #c0392b; }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 560px;
+            width: calc(100% - 32px);
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-item-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8b93a6;
+            text-decoration: none;
+            font-size: 0.6rem;
+            font-weight: 500;
+            flex: 1;
+            padding: 8px 0;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+
+        .nav-item-bottom.active {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        .nav-item-bottom:hover {
+            color: #2e3440;
+            background: #f8f9fc;
+        }
+
+        .nav-icon-bottom {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        /* ADMIN BUTTON */
+        .admin-button {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            background: #ffffff;
+            color: #2e3440;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            z-index: 999;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-button:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 10001;
+            display: none;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 28px;
+            max-width: 400px;
+            width: 90%;
+            margin: 80px auto;
+            padding: 24px;
+            box-shadow: 0 25px 35px -15px rgba(0, 0, 0, 0.2);
+            animation: modalSlide 0.3s;
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-10px); }
+        .modal-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            margin-bottom: 16px;
         }
 
-        .new-thread {
-            animation: fadeIn 0.3s;
+        .modal-card select,
+        .modal-card input,
+        .modal-card textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            background: #f8f9fc;
+            font-size: 0.9rem;
         }
 
-        .emoji {
-            font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Android Emoji', 'EmojiOne Color', sans-serif;
+        .modal-card select:focus,
+        .modal-card input:focus,
+        .modal-card textarea:focus {
+            outline: none;
+            border-color: #2e3440;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .modal-submit {
+            flex: 2;
+            background: #2e3440;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .modal-cancel {
+            flex: 1;
+            background: #f0f2f5;
+            color: #1a1e2b;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            body {
+                padding: 16px 0;
+            }
+
+            .thread-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .thread-author {
+                white-space: normal;
+            }
+
+            .admin-button {
+                bottom: 90px;
+            }
+
+            .logo-img {
+                height: 28px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <!-- Шапка с навигацией -->
-        <div class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <h1>ШКОЛЬНАЯ СТЕНА</h1>
-                    <span class="school-badge">№62</span>
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="top_logotype.png" alt="Школа 62" class="logo-img">
+                        <h1>стена</h1>
+                    </div>
+                    <div class="header-icons">
+                        <a href="your_account.html" class="header-icon">
+                            <i class="far fa-user"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="nav-bar">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    главная
+                </a>
+                <a href="threads.html" class="nav-link active">
+                    <i class="fas fa-comment"></i>
+                    темки
+                </a>
+            </div>
+
+            <!-- Prime Status -->
+            <div class="prime-status-bar" id="primeStatusBar" style="display: none;">
+                <div class="prime-info">
+                    <div class="prime-badge">P</div>
+                    <span id="primeUserName">Prime пользователь</span>
+                </div>
+                <button class="prime-logout" onclick="logoutPrime()">выйти</button>
+            </div>
+
+            <!-- Premium Indicator -->
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+                <span id="currentUserPremiumIndicator" style="display: none;" class="premium-indicator">
+                    <i class="fas fa-crown"></i> PREMIUM
+                </span>
+            </div>
+
+            <!-- Create Thread Form -->
+            <div class="create-thread">
+                <h3><i class="far fa-edit"></i> создать новую тему</h3>
+                <input type="text" id="threadTitle" class="thread-input" placeholder="заголовок темы" maxlength="100">
+                <textarea id="threadContent" class="thread-textarea" placeholder="содержание темы..." maxlength="2000"></textarea>
+                <button class="create-btn" id="createThreadBtn">создать тему</button>
+            </div>
+
+            <!-- Threads List -->
+            <div class="threads-list">
+                <div class="threads-header">
+                    <div class="threads-title">
+                        <i class="far fa-list-alt"></i> все темы
+                    </div>
+                    <span class="threads-count" id="threadsCount">0</span>
                 </div>
                 
-                <!-- Горизонтальное меню -->
-                <nav class="main-nav">
-                    <a href="index.html" class="nav-item">
-                        <span class="nav-icon">🏠</span>
-                        <span class="nav-text">Главная</span>
-                    </a>
-                    
-                    <a href="threads.html" class="nav-item active">
-                        <span class="nav-icon">💬</span>
-                        <span class="nav-text">Темки</span>
-                    </a>
-                    
-                    <a href="javascript:void(0)" class="nav-item" style="opacity: 0.6;">
-                        <span class="nav-icon">👤</span>
-                        <span class="nav-text">Аккаунт</span>
-                    </a>
-                </nav>
+                <div id="threadsContainer">
+                    <div class="loader"></div>
+                </div>
             </div>
-        </div>
-
-        <!-- Кнопка создания темки -->
-        <button type="button" class="create-thread-btn" id="createThreadBtn">
-            <span class="emoji">➕</span> СОЗДАТЬ ТЕМКУ
-        </button>
-
-        <!-- Список темок -->
-        <div class="threads-container" id="threadsList">
-            <div class="loader" id="threadsLoader"></div>
         </div>
     </div>
 
-    <!-- Модальное окно создания темки -->
-    <div class="modal" id="createThreadModal">
-        <div class="modal-content">
-            <h2>💬 СОЗДАТЬ НОВУЮ ТЕМКУ</h2>
-            
-            <input type="text" id="threadTitle" class="modal-input" placeholder="Название темки" maxlength="100">
-            
-            <textarea id="threadContent" class="modal-textarea" placeholder="Текст сообщения..." maxlength="2000"></textarea>
-            
+    <!-- Admin Button -->
+    <button class="admin-button" id="adminBtn">✎</button>
+
+    <!-- Admin Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-card">
+            <h3>связь с администрацией</h3>
+            <select id="adminType">
+                <option value="question">вопрос</option>
+                <option value="problem">проблема</option>
+                <option value="suggestion">предложение</option>
+            </select>
+            <input type="text" id="adminName" placeholder="ваше имя">
+            <textarea id="adminMessage" placeholder="сообщение..." rows="3"></textarea>
             <div class="modal-buttons">
-                <button type="button" class="modal-btn create" id="submitThread">СОЗДАТЬ</button>
-                <button type="button" class="modal-btn cancel" id="cancelThread">ОТМЕНА</button>
+                <button class="modal-submit" id="adminSubmit">отправить</button>
+                <button class="modal-cancel" id="adminCancel">отмена</button>
             </div>
         </div>
     </div>
 
-    <!-- Контейнер для сообщений -->
     <div id="messageContainer"></div>
 
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    // ============================================
-    // SUPABASE КОНФИГ
-    // ============================================
-    const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item-bottom">
+            <i class="fas fa-home nav-icon-bottom"></i>
+            <span>главная</span>
+        </a>
+        <a href="votes.html" class="nav-item-bottom">
+            <i class="fas fa-chart-bar nav-icon-bottom"></i>
+            <span>голосования</span>
+        </a>
+        <a href="threads.html" class="nav-item-bottom active">
+            <i class="fas fa-comment nav-icon-bottom"></i>
+            <span>темки</span>
+        </a>
+        <a href="slivy.html" class="nav-item-bottom">
+            <i class="fas fa-image nav-icon-bottom"></i>
+            <span>сливы</span>
+        </a>
+        <a href="your_account.html" class="nav-item-bottom">
+            <i class="fas fa-user nav-icon-bottom"></i>
+            <span>аккаунт</span>
+        </a>
+    </nav>
 
-    // ============================================
-    // ПЕРЕМЕННЫЕ
-    // ============================================
-    let userIp = null;
-    let verifiedUser = null;
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ============================================
-    // ПОЛУЧЕНИЕ IP
-    // ============================================
-    async function getUserIp() {
-        try {
-            const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
-            userIp = data.ip;
-            return userIp;
-        } catch {
-            userIp = 'user-' + Math.random().toString(36).substring(2, 10);
-            return userIp;
+        let userIp = null;
+        let verifiedUser = null;
+        let isPremiumUser = false;
+
+        // Проверяем верифицированного пользователя из localStorage
+        const savedPrime = localStorage.getItem('primeUser');
+        if (savedPrime) {
+            const primeData = JSON.parse(savedPrime);
+            verifiedUser = primeData.name;
+            isPremiumUser = primeData.isPrime || false;
+            
+            const indicator = document.getElementById('currentUserPremiumIndicator');
+            if (indicator) {
+                indicator.style.display = 'inline-flex';
+            }
         }
-    }
 
-    // ============================================
-    // ПОКАЗ СООБЩЕНИЙ
-    // ============================================
-    function showMessage(text, type) {
-        const container = document.getElementById('messageContainer');
-        const msg = document.createElement('div');
-        msg.className = `message ${type}`;
-        msg.textContent = text;
-        container.appendChild(msg);
-        setTimeout(() => msg.remove(), 3000);
-    }
+        async function getUserIp() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                userIp = data.ip;
+            } catch {
+                userIp = 'user-' + Math.random().toString(36).substring(2, 10);
+            }
+        }
 
-    // ============================================
-    // ЭКРАНИРОВАНИЕ HTML
-    // ============================================
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
 
-// ============================================
-// ЗАГРУЗКА ТЕМОК (С ДИАГНОСТИКОЙ)
-// ============================================
-async function loadThreads() {
-    const threadsList = document.getElementById('threadsList');
-    const loader = document.getElementById('threadsLoader');
-    
-    try {
-        console.log('Загрузка темок...');
-        
-        // Загружаем все треды
-        const { data: threads, error: threadsError } = await supabaseClient
-            .from('threads')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        if (threadsError) throw threadsError;
-        
-        console.log('Треды:', threads);
-        
-        // Загружаем все сообщения
-        const { data: messages, error: messagesError } = await supabaseClient
-            .from('thread_messages')
-            .select('*');
-        
-        if (messagesError) throw messagesError;
-        
-        console.log('Сообщения:', messages);
-        
-        // Считаем ответы
-        const replyCounts = {};
-        if (messages) {
-            messages.forEach(msg => {
-                // Ключ - ID треда
-                const threadId = msg.thread_id;
-                if (!replyCounts[threadId]) {
-                    replyCounts[threadId] = {
-                        total: 0,
-                        first: false
-                    };
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.logoutPrime = function() {
+            localStorage.removeItem('primeUser');
+            document.getElementById('primeStatusBar').style.display = 'none';
+            showMessage('вы вышли из prime', 'success');
+        };
+
+        // Загрузка тем
+        async function loadThreads() {
+            const container = document.getElementById('threadsContainer');
+            const countSpan = document.getElementById('threadsCount');
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('threads')
+                    .select('*')
+                    .order('bump_time', { ascending: false });
+                
+                if (error) throw error;
+                
+                const threads = data || [];
+                if (countSpan) countSpan.textContent = threads.length;
+                
+                if (threads.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">💬</div>
+                            <p>пока нет тем. создайте первую!</p>
+                        </div>
+                    `;
+                    return;
                 }
                 
-                // Считаем общее количество
-                replyCounts[threadId].total++;
+                let html = '';
+                threads.forEach(thread => {
+                    const date = new Date(thread.created_at).toLocaleString('ru', {
+                        day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+                    });
+                    
+                    // Проверяем премиум статус автора (если есть поле)
+                    const isAuthorPremium = thread.author_prime || false;
+                    
+                    html += `
+                        <a href="thread.html?id=${thread.id}" class="thread-item ${isAuthorPremium ? 'premium' : ''}">
+                            <div class="thread-header">
+                                <div class="thread-title">${escapeHtml(thread.title || 'Без названия')}</div>
+                                <div class="thread-author ${isAuthorPremium ? 'premium' : ''}">
+                                    <i class="far fa-user"></i> ${escapeHtml(thread.author_name || 'Аноним')}
+                                    ${isAuthorPremium ? '<i class="fas fa-crown" style="font-size:0.7rem;"></i>' : ''}
+                                </div>
+                            </div>
+                            <div class="thread-meta">
+                                <span><i class="far fa-clock"></i> ${date}</span>
+                                <span><i class="far fa-comment"></i> ${thread.reply_count || 0}</span>
+                                <span><i class="far fa-eye"></i> ${thread.views || 0}</span>
+                            </div>
+                        </a>
+                    `;
+                });
                 
-                // Отмечаем, есть ли первое сообщение
-                if (msg.is_first) {
-                    replyCounts[threadId].first = true;
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Ошибка загрузки тем:', error);
+                container.innerHTML = `
+                    <div class="empty-state" style="color: #c0392b;">
+                        <div class="empty-state-icon">❌</div>
+                        <p>ошибка загрузки тем</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ СОЗДАНИЯ ТЕМЫ
+        // ============================================
+        async function createThread() {
+            const title = document.getElementById('threadTitle').value.trim();
+            const content = document.getElementById('threadContent').value.trim();
+            
+            if (!title || !content) {
+                showMessage('заполните все поля', 'error');
+                return;
+            }
+            
+            if (title.length < 3) {
+                showMessage('слишком короткий заголовок', 'error');
+                return;
+            }
+            
+            const userId = localStorage.getItem('userId');
+            const userNickname = localStorage.getItem('userNickname');
+
+            if (!userId || !userNickname) {
+                showMessage('войдите, чтобы создать тему', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
+            
+            const createBtn = document.getElementById('createThreadBtn');
+            createBtn.disabled = true;
+            createBtn.textContent = 'создание...';
+            
+            try {
+                if (!userIp) await getUserIp();
+                
+                const now = new Date().toISOString();
+                
+                // Получаем данные пользователя (опционально)
+                const { data: userData } = await supabaseClient
+                    .from('users')
+                    .select('class, avatar_url, is_prime')
+                    .eq('id', parseInt(userId))
+                    .maybeSingle();
+
+                // СОЗДАЕМ ТЕМУ - ТОЛЬКО СУЩЕСТВУЮЩИЕ ПОЛЯ
+                const threadData = {
+                    title: title,
+                    author_name: verifiedUser || userNickname || 'Аноним',
+                    author_class: userData?.class || null,
+                    author_avatar: userData?.avatar_url || null,
+                    views: 0,
+                    reply_count: 0,
+                    bump_time: now,
+                    created_at: now
+                    // НЕТ updated_at и author_prime - их нет в таблице!
+                };
+
+                console.log('Создание темы:', threadData);
+
+                const { data: newThread, error: threadError } = await supabaseClient
+                    .from('threads')
+                    .insert([threadData])
+                    .select()
+                    .single();
+
+                if (threadError) {
+                    console.error('Ошибка создания темы:', threadError);
+                    throw threadError;
                 }
-            });
-        }
-        
-        console.log('Статистика по тредам:', replyCounts);
-        
-        loader.style.display = 'none';
-        
-        if (!threads || threads.length === 0) {
-            threadsList.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: #7f8c8d;">
-                    <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">💬</div>
-                    <p>Пока нет темок. Создайте первую!</p>
-                </div>
-            `;
-            return;
-        }
-        
-        let html = '';
-        threads.forEach(thread => {
-            const date = thread.created_at ? new Date(thread.created_at).toLocaleString('ru', {
-                day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
-            }) : 'Дата неизвестна';
-            
-            // Получаем статистику по этому треду
-            const stats = replyCounts[thread.id] || { total: 0, first: false };
-            
-            // Количество ответов = всего сообщений минус 1 (если есть первое сообщение)
-            const replyCount = stats.first ? stats.total - 1 : stats.total;
-            
-            // Имя автора
-            const authorName = thread.author_name || thread.created_by || 'Аноним';
-            
-            // Просмотры
-            const views = thread.views || 0;
-            
-            console.log(`Тред ${thread.id}: всего сообщений ${stats.total}, первое: ${stats.first}, ответов: ${replyCount}`);
-            
-            html += `
-                <div class="thread-item" onclick="openThread(${thread.id})">
-                    <div class="thread-title">${escapeHtml(thread.title || 'Без названия')}</div>
-                    <div class="thread-meta">
-                        <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(authorName)}</span>
-                        <span><span style="font-size: 1rem;">🕐</span> ${date}</span>
-                    </div>
-                    <div class="thread-stats">
-                        <span class="thread-stat"><span style="font-size: 1rem;">💬</span> ${replyCount} ${replyCount === 1 ? 'ответ' : 'ответов'}</span>
-                        <span class="thread-stat"><span style="font-size: 1rem;">👁️</span> ${views} ${views === 1 ? 'просмотр' : 'просмотров'}</span>
-                    </div>
-                </div>
-            `;
-        });
-        
-        threadsList.innerHTML = html;
-        
-    } catch (error) {
-        console.error('Ошибка загрузки темок:', error);
-        loader.style.display = 'none';
-        threadsList.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #c0392b;">
-                <div style="font-size: 48px; margin-bottom: 15px;">❌</div>
-                <p>Ошибка загрузки темок: ${error.message}</p>
-            </div>
-        `;
-    }
-}
 
-    // ============================================
-    // ОТКРЫТИЕ ТЕМКИ
-    // ============================================
-    function openThread(threadId) {
-        window.location.href = `thread.html?id=${threadId}`;
-    }
+                console.log('Тема создана, ID:', newThread.id);
 
-    // ============================================
-    // СОЗДАНИЕ ТЕМКИ
-    // ============================================
-    async function createThread() {
-        const title = document.getElementById('threadTitle').value.trim();
-        const content = document.getElementById('threadContent').value.trim();
-        
-        if (!title) {
-            showMessage('Введите название темки', 'error');
-            return;
-        }
-        
-        if (!content) {
-            showMessage('Введите сообщение', 'error');
-            return;
-        }
-        
-        try {
-            if (!userIp) await getUserIp();
-            
-            const now = new Date().toISOString();
-            
-            const threadData = {
-                title: title,
-                content: content,
-                author_name: verifiedUser || 'Аноним',
-                author_ip: userIp,
-                user_agent: navigator.userAgent,
-                reply_count: 1,
-                views: 0,
-                created_at: now
-            };
-            
-            console.log('Отправляемые данные:', threadData);
-            
-            const { data: thread, error: threadError } = await supabaseClient
-                .from('threads')
-                .insert(threadData)
-                .select()
-                .single();
-            
-            if (threadError) throw threadError;
-            
-            // Создаем первое сообщение
-            await supabaseClient
-                .from('thread_messages')
-                .insert({
-                    thread_id: thread.id,
+                // СОЗДАЕМ ПЕРВОЕ СООБЩЕНИЕ - ТОЛЬКО СУЩЕСТВУЮЩИЕ ПОЛЯ
+                const messageData = {
+                    thread_id: newThread.id,
                     content: content,
-                    author: verifiedUser || 'Аноним',
+                    author: verifiedUser || userNickname || 'Аноним',
                     ip_address: userIp,
                     user_agent: navigator.userAgent,
                     is_first: true,
                     created_at: now
-                });
-            
-            // Закрываем модалку и очищаем поля
-            document.getElementById('createThreadModal').style.display = 'none';
-            document.getElementById('threadTitle').value = '';
-            document.getElementById('threadContent').value = '';
-            
-            showMessage('✅ Темка создана!', 'success');
-            
-            // Перезагружаем список
-            loadThreads();
-            
-        } catch (error) {
-            console.error('Ошибка создания темки:', error);
-            showMessage('Ошибка: ' + error.message, 'error');
-        }
-    }
+                };
 
-    // ============================================
-    // ИНИЦИАЛИЗАЦИЯ
-    // ============================================
-    document.addEventListener('DOMContentLoaded', async () => {
-        console.log('Страница загружена');
-        
-        await getUserIp();
-        loadThreads();
-        
-        // Кнопка создания темки
-        const createBtn = document.getElementById('createThreadBtn');
-        if (createBtn) {
-            createBtn.addEventListener('click', () => {
-                document.getElementById('createThreadModal').style.display = 'block';
-            });
-        }
-        
-        // Кнопка отправки
-        const submitBtn = document.getElementById('submitThread');
-        if (submitBtn) {
-            submitBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                createThread();
-            });
-        }
-        
-        // Кнопка отмены
-        const cancelBtn = document.getElementById('cancelThread');
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', () => {
-                document.getElementById('createThreadModal').style.display = 'none';
+                console.log('Создание сообщения:', messageData);
+
+                const { error: messageError } = await supabaseClient
+                    .from('thread_messages')
+                    .insert([messageData]);
+
+                if (messageError) {
+                    console.error('Ошибка создания сообщения:', messageError);
+                    throw messageError;
+                }
+                
+                // Очищаем поля
                 document.getElementById('threadTitle').value = '';
                 document.getElementById('threadContent').value = '';
-            });
+                
+                showMessage('✅ тема создана', 'success');
+                
+                // Перезагружаем список тем
+                await loadThreads();
+                
+            } catch (error) {
+                console.error('Ошибка создания темы:', error);
+                showMessage('ошибка: ' + (error.message || 'неизвестная ошибка'), 'error');
+            } finally {
+                createBtn.disabled = false;
+                createBtn.textContent = 'создать тему';
+            }
         }
-        
-        // Закрытие по клику на фон
-        const modal = document.getElementById('createThreadModal');
-        if (modal) {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        }
-    });
-</script>
+
+        // Админка
+        const adminBtn = document.getElementById('adminBtn');
+        const adminModal = document.getElementById('adminModal');
+        const adminCancel = document.getElementById('adminCancel');
+        const adminSubmit = document.getElementById('adminSubmit');
+
+        adminBtn?.addEventListener('click', () => {
+            adminModal.style.display = 'block';
+        });
+
+        adminCancel?.addEventListener('click', () => {
+            adminModal.style.display = 'none';
+            document.getElementById('adminName').value = '';
+            document.getElementById('adminMessage').value = '';
+        });
+
+        adminModal?.addEventListener('click', (e) => {
+            if (e.target === adminModal) {
+                adminModal.style.display = 'none';
+                document.getElementById('adminName').value = '';
+                document.getElementById('adminMessage').value = '';
+            }
+        });
+
+        adminSubmit?.addEventListener('click', async () => {
+            const name = document.getElementById('adminName').value.trim() || 'Аноним';
+            const message = document.getElementById('adminMessage').value.trim();
+            
+            if (!message) {
+                showMessage('напишите сообщение', 'error');
+                return;
+            }
+
+            try {
+                await supabaseClient
+                    .from('feedback')
+                    .insert({
+                        type: 'admin_message',
+                        name: name,
+                        message: message,
+                        user_agent: navigator.userAgent
+                    });
+                
+                showMessage('сообщение отправлено', 'success');
+                adminModal.style.display = 'none';
+                document.getElementById('adminName').value = '';
+                document.getElementById('adminMessage').value = '';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('ошибка: ' + error.message, 'error');
+            }
+        });
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', async () => {
+            await getUserIp();
+            await loadThreads();
+            
+            document.getElementById('createThreadBtn').addEventListener('click', createThread);
+        });
+    </script>
 </body>
 </html>
