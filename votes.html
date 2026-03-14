@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>голосование | школа 62</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f8f9fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 32px 0;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #f8f9fc;
+            position: relative;
+            padding: 0 16px;
+        }
+
+        .main-content {
+            display: block;
+            padding-bottom: 90px;
+        }
+
+        /* HEADER */
+        .header {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin: 8px 0 16px 0;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #2e3440;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            letter-spacing: -0.5px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-icon {
+            font-size: 1.2rem;
+            color: #8b93a6;
+            transition: color 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .header-icon:hover {
+            color: #2e3440;
+        }
+
+        /* NAVIGATION BAR */
+        .nav-bar {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 4px;
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 30px;
+            color: #8b93a6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+        }
+
+        .nav-link:hover {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        .nav-link.active {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        /* AUTH STATUS BAR */
+        .auth-status-bar {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideDown 0.3s;
+        }
+
+        .auth-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .auth-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .auth-welcome {
+            font-size: 0.9rem;
+            color: #1a1e2b;
+            font-weight: 500;
+        }
+
+        .auth-name {
+            font-weight: 600;
+            color: #2e3440;
+        }
+
+        .auth-badge {
+            background: #f1c40f;
+            color: #1a1e2b;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .auth-btn {
+            background: #f0f2f5;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: #1a1e2b;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .auth-btn:hover {
+            background: #e4e6e9;
+        }
+
+        .auth-btn.primary {
+            background: #2e3440;
+            color: white;
+        }
+
+        .auth-btn.primary:hover {
+            background: #1a1e2b;
+        }
+
+        /* PAGE TITLE */
+        .page-title {
+            margin-bottom: 20px;
+        }
+
+        .page-title h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title p {
+            color: #8b93a6;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        /* WINNER CARD */
+        .winner-card {
+            background: linear-gradient(135deg, #2e3440, #1a1e2b);
+            border-radius: 32px;
+            padding: 32px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .winner-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .winner-crown {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 48px;
+            color: #f1c40f;
+            opacity: 0.3;
+            transform: rotate(15deg);
+        }
+
+        .winner-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+        }
+
+        .winner-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 40px;
+            overflow: hidden;
+            border: 4px solid #f1c40f;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.5);
+        }
+
+        .winner-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .winner-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #f1c40f;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .winner-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .winner-class {
+            font-size: 1rem;
+            color: #8b93a6;
+            margin-bottom: 20px;
+        }
+
+        .winner-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .winner-stat {
+            text-align: center;
+        }
+
+        .winner-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f1c40f;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .winner-stat-label {
+            font-size: 0.7rem;
+            color: #8b93a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            background: #f1c40f;
+            color: #1a1e2b;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* MESSAGE CARD */
+        .message-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .message-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-card p {
+            color: #1a1e2b;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        .message-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* WARNING CARD */
+        .warning-card {
+            background: #fcf9f0;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #f1c40f;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .warning-icon {
+            font-size: 24px;
+            color: #f1c40f;
+            flex-shrink: 0;
+        }
+
+        .warning-content {
+            flex: 1;
+        }
+
+        .warning-content p {
+            color: #1a1e2b;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .warning-content strong {
+            color: #f1c40f;
+            font-weight: 600;
+        }
+
+        /* LOADER */
+        .loader {
+            border: 2px solid #f0f2f5;
+            border-top: 2px solid #2e3440;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 40px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 560px;
+            width: calc(100% - 32px);
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-item-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8b93a6;
+            text-decoration: none;
+            font-size: 0.6rem;
+            font-weight: 500;
+            flex: 1;
+            padding: 8px 0;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+
+        .nav-item-bottom.active {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        .nav-item-bottom:hover {
+            color: #2e3440;
+            background: #f8f9fc;
+        }
+
+        .nav-icon-bottom {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        /* MESSAGES */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            z-index: 10002;
+            animation: slideIn 0.2s;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .message.success { background: #2e3440; }
+        .message.error { background: #c0392b; }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px 0;
+            }
+
+            .winner-name {
+                font-size: 1.6rem;
+            }
+
+            .winner-avatar {
+                width: 100px;
+                height: 100px;
+            }
+
+            .winner-stats {
+                gap: 20px;
+            }
+
+            .winner-stat-value {
+                font-size: 1.4rem;
+            }
+
+            .auth-status-bar {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        /* Логотип */
+.logo-img {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+    .logo-img {
+        height: 28px;
+    }
+}
+/* 👆 Здесь только одна закрывающая скобка */
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+<!-- Header -->
+<div class="header">
+    <div class="header-content">
+        <div class="logo">
+            <img src="top_logotype.png" alt="Школа 62" class="logo-img">
+            <h1>стена</h1>
+        </div>
+        <div class="header-icons">
+            <a href="https://ggfh-becouse.github.io/school62-vote/your_account.html" class="header-icon">
+                <i class="far fa-user"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+            <!-- Navigation -->
+            <div class="nav-bar">
+                <a href="https://ggfh-becouse.github.io/school62-vote/index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    главная
+                </a>
+                <a href="https://ggfh-becouse.github.io/school62-vote/votes.html" class="nav-link active">
+                    <i class="fas fa-chart-bar"></i>
+                    голосования
+                </a>
+                <a href="https://ggfh-becouse.github.io/school62-vote/threads.html" class="nav-link">
+                    <i class="fas fa-comment"></i>
+                    темки
+                </a>
+                <a href="https://ggfh-becouse.github.io/school62-vote/slivy.html" class="nav-link">
+                    <i class="fas fa-image"></i>
+                    сливы
+                </a>
+            </div>
+
+            <!-- Auth Status Bar -->
+            <div class="auth-status-bar" id="authStatusBar">
+                <div class="auth-info">
+                    <div class="auth-avatar" id="authAvatar">
+                        <img src="https://i.pravatar.cc/300" alt="">
+                    </div>
+                    <span class="auth-welcome" id="authWelcomeText">
+                        <span id="authDisplayName">Гость</span>
+                    </span>
+                </div>
+                <div class="auth-buttons" id="authButtons">
+                    <a href="https://ggfh-becouse.github.io/school62-vote/login.html" class="auth-btn">войти</a>
+                    <a href="https://ggfh-becouse.github.io/school62-vote/register.html" class="auth-btn primary">регистрация</a>
+                </div>
+            </div>
+
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1><i class="fas fa-chart-bar"></i> голосования</h1>
+                <p>результаты и новые опросы</p>
+            </div>
+
+            <!-- Winner Card (загружается динамически) -->
+            <div id="winnerContainer">
+                <div class="loader"></div>
+            </div>
+
+            <!-- Message Card -->
+            <div class="message-card">
+                <h2><i class="far fa-star"></i> спасибо за участие!</h2>
+                <p id="congratsText">Поздравляем победительницу голосования «Девочка школы»!</p>
+                <p id="winnerDescription">Она набрала наибольшее количество голосов среди участников и стала лидером текущего рейтинга. Спасибо всем пользователям, которые приняли участие в голосовании.</p>
+            </div>
+
+            <!-- Warning Card -->
+            <div class="warning-card">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="warning-content">
+                    <p><strong>⚠️ Внимание!</strong> Страница временно находится в разработке и пока недоступна для использования.</p>
+                    <p style="margin-top: 8px;">Мы аккуратно готовим обновление, чтобы сделать систему голосований более интересной и удобной. В ближайшее время здесь появятся новые опросы и интерактивные голосования.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="https://ggfh-becouse.github.io/school62-vote/index.html" class="nav-item-bottom">
+            <i class="fas fa-home nav-icon-bottom"></i>
+            <span>главная</span>
+        </a>
+        <a href="https://ggfh-becouse.github.io/school62-vote/votes.html" class="nav-item-bottom active">
+            <i class="fas fa-chart-bar nav-icon-bottom"></i>
+            <span>голосования</span>
+        </a>
+        <a href="https://ggfh-becouse.github.io/school62-vote/threads.html" class="nav-item-bottom">
+            <i class="fas fa-comment nav-icon-bottom"></i>
+            <span>темки</span>
+        </a>
+        <a href="https://ggfh-becouse.github.io/school62-vote/slivy.html" class="nav-item-bottom">
+            <i class="fas fa-image nav-icon-bottom"></i>
+            <span>сливы</span>
+        </a>
+        <a href="https://ggfh-becouse.github.io/school62-vote/your_account.html" class="nav-item-bottom">
+            <i class="fas fa-user nav-icon-bottom"></i>
+            <span>аккаунт</span>
+        </a>
+    </nav>
+
+    <div id="messageContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // ============================================
+        // ПЕРЕМЕННЫЕ
+        // ============================================
+        let currentUser = null;
+        let primeUser = null;
+        let winner = null;
+
+        // Загружаем данные пользователя из localStorage
+        const userId = localStorage.getItem('userId');
+        const userNickname = localStorage.getItem('userNickname');
+        const userAvatar = localStorage.getItem('userAvatar');
+
+        // Загружаем Prime статус
+        const savedPrime = localStorage.getItem('primeUser');
+        if (savedPrime) {
+            primeUser = JSON.parse(savedPrime);
+        }
+
+        // ============================================
+        // ОТОБРАЖЕНИЕ СТАТУСА АВТОРИЗАЦИИ
+        // ============================================
+        function updateAuthDisplay() {
+            const authAvatar = document.getElementById('authAvatar').querySelector('img');
+            const authDisplayName = document.getElementById('authDisplayName');
+            const authButtons = document.getElementById('authButtons');
+
+            if (userId && userNickname) {
+                authDisplayName.textContent = userNickname;
+                authAvatar.src = userAvatar || 'https://i.pravatar.cc/300';
+                
+                if (primeUser) {
+                    const badge = document.createElement('span');
+                    badge.className = 'auth-badge';
+                    badge.innerHTML = '<i class="fas fa-crown"></i> prime';
+                    authDisplayName.parentNode.appendChild(badge);
+                }
+
+                authButtons.innerHTML = `
+                    <a href="https://ggfh-becouse.github.io/school62-vote/your_account.html" class="auth-btn">
+                        <i class="far fa-user"></i> профиль
+                    </a>
+                `;
+            } else {
+                authDisplayName.textContent = 'Гость';
+                authAvatar.src = 'https://i.pravatar.cc/300';
+                authButtons.innerHTML = `
+                    <a href="https://ggfh-becouse.github.io/school62-vote/login.html" class="auth-btn">войти</a>
+                    <a href="https://ggfh-becouse.github.io/school62-vote/register.html" class="auth-btn primary">регистрация</a>
+                `;
+            }
+        }
+
+        // ============================================
+        // ЗАГРУЗКА ПОБЕДИТЕЛЬНИЦЫ
+        // ============================================
+        async function loadWinner() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('candidates')
+                    .select('*')
+                    .order('votes', { ascending: false })
+                    .limit(1);
+
+                if (error) throw error;
+
+                winner = data && data.length > 0 ? data[0] : null;
+                displayWinner();
+
+            } catch (error) {
+                console.error('Ошибка загрузки победительницы:', error);
+                document.getElementById('winnerContainer').innerHTML = `
+                    <div class="winner-card" style="background: linear-gradient(135deg, #8b93a6, #6c757d);">
+                        <div class="winner-content">
+                            <div class="winner-title">ПОБЕДИТЕЛЬНИЦА</div>
+                            <div class="winner-name">нет данных</div>
+                            <div class="winner-class">голосование ещё не проводилось</div>
+                            <div class="winner-badge">ожидание</div>
+                        </div>
+                        <div class="winner-crown">👑</div>
+                    </div>
+                `;
+            }
+        }
+
+        function displayWinner() {
+            const container = document.getElementById('winnerContainer');
+            
+            if (!winner) {
+                container.innerHTML = `
+                    <div class="winner-card" style="background: linear-gradient(135deg, #8b93a6, #6c757d);">
+                        <div class="winner-content">
+                            <div class="winner-title">ПОБЕДИТЕЛЬНИЦА</div>
+                            <div class="winner-name">нет данных</div>
+                            <div class="winner-class">голосование ещё не проводилось</div>
+                            <div class="winner-badge">ожидание</div>
+                        </div>
+                        <div class="winner-crown">👑</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const photoUrl = winner.photo_url || 'https://github.com/GGfh-becouse/school62-vote/blob/main/logotype.png?raw=true';
+            const name = winner.name || 'Неизвестно';
+            const className = winner.class || 'класс';
+            const votes = winner.votes || 0;
+
+            container.innerHTML = `
+                <div class="winner-card">
+                    <div class="winner-content">
+                        <div class="winner-avatar">
+                            <img src="${photoUrl}" alt="${escapeHtml(name)}">
+                        </div>
+                        <div class="winner-title">ПОБЕДИТЕЛЬНИЦА</div>
+                        <div class="winner-name">${escapeHtml(name)}</div>
+                        <div class="winner-class">${escapeHtml(className)}</div>
+                        <div class="winner-stats">
+                            <div class="winner-stat">
+                                <div class="winner-stat-value">${votes}</div>
+                                <div class="winner-stat-label">голосов</div>
+                            </div>
+                            <div class="winner-stat">
+                                <div class="winner-stat-value">🏆</div>
+                                <div class="winner-stat-label">1 место</div>
+                            </div>
+                        </div>
+                        <div class="winner-badge">девочка школы 2026</div>
+                    </div>
+                    <div class="winner-crown">👑</div>
+                </div>
+            `;
+
+            // Обновляем текст поздравления
+            const congratsText = document.getElementById('congratsText');
+            congratsText.textContent = `Поздравляем ${name} — победительницу голосования «Девочка школы»!`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthDisplay();
+            loadWinner();
+        });
+    </script>
+</body>
+</html
