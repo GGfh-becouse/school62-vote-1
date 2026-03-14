@@ -3,273 +3,517 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Тема - Школа №62</title>
+    <title>тема | школа 62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background: #f5f5f5;
+            background: #f8f9fc;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 0;
-            margin: 0;
+            padding: 32px 0;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 600px;
             width: 100%;
-            background: white;
-            box-shadow: 0 0 30px rgba(0,0,0,0.05);
-            min-height: 100vh;
+            background: #f8f9fc;
             position: relative;
+            padding: 0 16px;
         }
 
-        /* Шапка */
+        .main-content {
+            display: block;
+            padding-bottom: 90px;
+        }
+
+        /* HEADER */
         .header {
-            background: linear-gradient(145deg, #4a6fa5 0%, #2c3e50 100%);
+            background: #ffffff;
             border-radius: 24px;
-            padding: 12px 20px;
-            margin: 16px;
-            box-shadow: 0 6px 0 #1a2a3a;
+            padding: 16px 20px;
+            margin: 8px 0 16px 0;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .logo-img {
+            height: 36px;
+            width: auto;
+            object-fit: contain;
         }
 
         .logo h1 {
-            color: white;
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 0;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            letter-spacing: -0.5px;
         }
 
-        .school-badge {
-            background: #ffd966;
-            color: #2c3e50;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border-bottom: 3px solid #b38f4a;
-        }
-
-        .main-nav {
+        .header-icons {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 16px;
         }
 
-        .nav-item {
-            position: relative;
+        .header-icon {
+            font-size: 1.2rem;
+            color: #8b93a6;
+            transition: color 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .header-icon:hover {
+            color: #2e3440;
+        }
+
+        @media (max-width: 600px) {
+            .logo-img {
+                height: 28px;
+            }
+        }
+
+        /* NAVIGATION BAR */
+        .nav-bar {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 4px;
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-link {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            color: white;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 30px;
+            color: #8b93a6;
             text-decoration: none;
-            font-weight: 600;
             font-size: 0.9rem;
-            border-bottom: 3px solid rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex: 1;
+            justify-content: center;
         }
 
-        .nav-item:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.2);
+        .nav-link i {
+            font-size: 1rem;
         }
 
-        .back-btn {
-            background: #ffd966;
-            color: #2c3e50;
-            border-bottom-color: #b38f4a;
+        .nav-link:hover {
+            background: #f0f2f5;
+            color: #2e3440;
         }
 
-        .nav-icon {
-            font-size: 1.1rem;
+        .nav-link.active {
+            background: #f0f2f5;
+            color: #2e3440;
         }
 
-        /* Основной пост */
+        /* PRIME STATUS BAR */
+        .prime-status-bar {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .prime-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .prime-badge {
+            width: 24px;
+            height: 24px;
+            background: #f1c40f;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 4px rgba(241, 196, 15, 0.3);
+        }
+
+        .prime-info span {
+            font-size: 0.85rem;
+            color: #1a1e2b;
+            font-weight: 500;
+        }
+
+        .prime-logout {
+            background: none;
+            border: none;
+            color: #8b93a6;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 4px 8px;
+            transition: color 0.2s;
+        }
+
+        .prime-logout:hover {
+            color: #e74c3c;
+        }
+
+        /* PREMIUM INDICATOR */
+        .premium-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f1c40f;
+            color: #1a1e2b;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* MAIN POST */
         .main-post {
-            background: white;
+            background: #ffffff;
             border-radius: 24px;
-            padding: 20px;
-            margin: 0 16px 20px 16px;
-            border: 2px solid #4a6fa5;
-            box-shadow: 0 4px 0 #2c3e50;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .post-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e0e0e0;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
+            line-height: 1.3;
         }
 
         .post-meta {
             display: flex;
-            gap: 20px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
+            gap: 16px;
+            color: #8b93a6;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
             flex-wrap: wrap;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .post-meta span {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .post-author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .post-author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-author-info {
+            flex: 1;
+        }
+
+        .post-author-name {
+            font-weight: 600;
+            color: #1a1e2b;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-author-badge {
+            background: #f1c40f;
+            color: #1a1e2b;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.6rem;
+            font-weight: 600;
         }
 
         .post-content {
-            color: #2c3e50;
+            color: #1a1e2b;
             line-height: 1.6;
-            font-size: 1rem;
+            font-size: 0.95rem;
             white-space: pre-wrap;
+            word-break: break-word;
         }
 
-        /* Ответы */
+        /* REPLIES SECTION */
         .replies-section {
-            margin: 20px 16px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .replies-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .replies-title {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8b93a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .replies-count {
+            background: #f0f2f5;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #1a1e2b;
+            font-weight: 500;
         }
 
         .replies-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 16px;
+            margin-bottom: 24px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 4px;
         }
 
+        /* REPLY ITEM */
         .reply-item {
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 15px;
-            border-left: 4px solid #4a6fa5;
+            background: #f8f9fc;
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.2s;
+            animation: fadeIn 0.3s;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reply-item:hover {
+            transform: translateX(4px);
+        }
+
+        .reply-item.premium {
+            border-left: 3px solid #f1c40f;
+            background: #fcf9f0;
         }
 
         .reply-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 5px;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .reply-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .reply-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .reply-info {
+            flex: 1;
         }
 
         .reply-author {
-            font-weight: 700;
-            color: #2c3e50;
-            background: #ffd966;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            display: inline-flex;
+            font-weight: 600;
+            color: #1a1e2b;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+            display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
 
-        .reply-date {
-            color: #7f8c8d;
+        .reply-author.premium {
+            color: #f1c40f;
+        }
+
+        .reply-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
             font-size: 0.7rem;
+            color: #8b93a6;
         }
 
         .reply-content {
-            color: #34495e;
-            font-size: 0.95rem;
-            line-height: 1.4;
+            color: #1a1e2b;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            margin-left: 48px;
             white-space: pre-wrap;
+            word-break: break-word;
         }
 
-        /* Форма ответа */
+        /* REPLY FORM */
         .reply-form {
-            background: #f8f9fa;
+            background: #f8f9fc;
             border-radius: 20px;
             padding: 20px;
-            margin-top: 20px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .reply-form textarea {
             width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 16px;
-            font-size: 0.95rem;
-            min-height: 100px;
-            margin-bottom: 15px;
-            font-family: inherit;
+            font-size: 0.9rem;
+            background: #ffffff;
             resize: vertical;
+            min-height: 100px;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
         }
 
         .reply-form textarea:focus {
-            border-color: #4a6fa5;
             outline: none;
+            border-color: #2e3440;
         }
 
         .reply-btn {
-            background: #4a6fa5;
+            background: #2e3440;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 1rem;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.9rem;
             cursor: pointer;
-            border-bottom: 4px solid #2c3e50;
-            width: 100%;
+            transition: background 0.2s;
+            float: right;
         }
 
-        .reply-btn:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
+        .reply-btn:hover {
+            background: #1a1e2b;
         }
 
+        .reply-btn:disabled {
+            background: #8b93a6;
+            cursor: not-allowed;
+        }
+
+        /* LOADER */
+        .loader {
+            border: 2px solid #f0f2f5;
+            border-top: 2px solid #2e3440;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 40px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8b93a6;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* MESSAGES */
         .message {
             position: fixed;
-            top: 16px;
-            right: 16px;
+            top: 20px;
+            right: 20px;
             padding: 12px 20px;
             border-radius: 30px;
             color: white;
             font-weight: 500;
+            font-size: 0.85rem;
             z-index: 10002;
             animation: slideIn 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            border-bottom: 4px solid rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15);
         }
 
         @keyframes slideIn {
@@ -277,73 +521,305 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .message.success { background: #4a6fa5; }
+        .message.success { background: #2e3440; }
         .message.error { background: #c0392b; }
 
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4a6fa5;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 560px;
+            width: calc(100% - 32px);
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .nav-item-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8b93a6;
+            text-decoration: none;
+            font-size: 0.6rem;
+            font-weight: 500;
+            flex: 1;
+            padding: 8px 0;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+
+        .nav-item-bottom.active {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        .nav-item-bottom:hover {
+            color: #2e3440;
+            background: #f8f9fc;
+        }
+
+        .nav-icon-bottom {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        /* ADMIN BUTTON */
+        .admin-button {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            background: #ffffff;
+            color: #2e3440;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            z-index: 999;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-button:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 10001;
+            display: none;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 28px;
+            max-width: 400px;
+            width: 90%;
+            margin: 80px auto;
+            padding: 24px;
+            box-shadow: 0 25px 35px -15px rgba(0, 0, 0, 0.2);
+            animation: modalSlide 0.3s;
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            margin-bottom: 16px;
+        }
+
+        .modal-card select,
+        .modal-card input,
+        .modal-card textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            background: #f8f9fc;
+            font-size: 0.9rem;
+        }
+
+        .modal-card select:focus,
+        .modal-card input:focus,
+        .modal-card textarea:focus {
+            outline: none;
+            border-color: #2e3440;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .modal-submit {
+            flex: 2;
+            background: #2e3440;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .modal-cancel {
+            flex: 1;
+            background: #f0f2f5;
+            color: #1a1e2b;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            body {
+                padding: 16px 0;
+            }
+
+            .post-title {
+                font-size: 1.2rem;
+            }
+
+            .reply-content {
+                margin-left: 0;
+            }
+
+            .admin-button {
+                bottom: 90px;
+            }
+
+            .logo-img {
+                height: 28px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <!-- Шапка с навигацией -->
-        <div class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <h1>ШКОЛЬНАЯ СТЕНА</h1>
-                    <span class="school-badge">№62</span>
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="top_logotype.png" alt="Школа 62" class="logo-img">
+                        <h1>стена</h1>
+                    </div>
+                    <div class="header-icons">
+                        <a href="your_account.html" class="header-icon">
+                            <i class="far fa-user"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="nav-bar">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    главная
+                </a>
+                <a href="threads.html" class="nav-link active">
+                    <i class="fas fa-arrow-left"></i>
+                    ко всем темам
+                </a>
+            </div>
+
+            <!-- Prime Status -->
+            <div class="prime-status-bar" id="primeStatusBar" style="display: none;">
+                <div class="prime-info">
+                    <div class="prime-badge">P</div>
+                    <span id="primeUserName">Prime пользователь</span>
+                </div>
+                <button class="prime-logout" onclick="logoutPrime()">выйти</button>
+            </div>
+
+            <!-- Main Post -->
+            <div class="main-post" id="mainPost">
+                <div class="loader" id="postLoader"></div>
+            </div>
+
+            <!-- Replies Section -->
+            <div class="replies-section">
+                <div class="replies-header">
+                    <div class="replies-title">
+                        <i class="far fa-comment"></i> ответы
+                    </div>
+                    <span class="replies-count" id="repliesCount">0</span>
                 </div>
                 
-                <nav class="main-nav">
-                    <a href="index.html" class="nav-item">
-                        <span class="nav-icon">🏠</span>
-                        <span class="nav-text">Главная</span>
-                    </a>
-                    
-                    <a href="threads.html" class="nav-item back-btn">
-                        <span class="nav-icon">←</span>
-                        <span class="nav-text">К темкам</span>
-                    </a>
-                </nav>
+                <div class="replies-list" id="repliesList">
+                    <div class="loader"></div>
+                </div>
+
+                <!-- Reply Form -->
+                <div class="reply-form">
+                    <textarea id="replyContent" placeholder="написать ответ..." maxlength="1000"></textarea>
+                    <button class="reply-btn" id="submitReply">отправить</button>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Основной пост -->
-        <div class="main-post" id="mainPost">
-            <div class="loader" id="postLoader"></div>
-        </div>
+    <!-- Admin Button -->
+    <button class="admin-button" id="adminBtn">✎</button>
 
-        <!-- Ответы -->
-        <div class="replies-section">
-            <div class="replies-title">
-                <span style="font-size: 1.3rem;">💬</span> Ответы (<span id="repliesCount">0</span>)
-            </div>
-            
-            <div class="replies-list" id="repliesList">
-                <!-- Loader будет добавлен через JS -->
-            </div>
-
-            <!-- Форма ответа -->
-            <div class="reply-form">
-                <textarea id="replyContent" placeholder="Написать ответ..." maxlength="1000"></textarea>
-                <button class="reply-btn" id="submitReply">📨 ОТПРАВИТЬ</button>
+    <!-- Admin Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-card">
+            <h3>связь с администрацией</h3>
+            <select id="adminType">
+                <option value="question">вопрос</option>
+                <option value="problem">проблема</option>
+                <option value="suggestion">предложение</option>
+            </select>
+            <input type="text" id="adminName" placeholder="ваше имя">
+            <textarea id="adminMessage" placeholder="сообщение..." rows="3"></textarea>
+            <div class="modal-buttons">
+                <button class="modal-submit" id="adminSubmit">отправить</button>
+                <button class="modal-cancel" id="adminCancel">отмена</button>
             </div>
         </div>
     </div>
 
     <div id="messageContainer"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item-bottom">
+            <i class="fas fa-home nav-icon-bottom"></i>
+            <span>главная</span>
+        </a>
+        <a href="votes.html" class="nav-item-bottom">
+            <i class="fas fa-chart-bar nav-icon-bottom"></i>
+            <span>голосования</span>
+        </a>
+        <a href="threads.html" class="nav-item-bottom active">
+            <i class="fas fa-comment nav-icon-bottom"></i>
+            <span>темки</span>
+        </a>
+        <a href="slivy.html" class="nav-item-bottom">
+            <i class="fas fa-image nav-icon-bottom"></i>
+            <span>сливы</span>
+        </a>
+        <a href="your_account.html" class="nav-item-bottom">
+            <i class="fas fa-user nav-icon-bottom"></i>
+            <span>аккаунт</span>
+        </a>
+    </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -355,16 +831,22 @@
         let verifiedUser = null;
         let threadId = null;
         let threadData = null;
+        let isPremiumUser = false;
+
+        const savedPrime = localStorage.getItem('primeUser');
+        if (savedPrime) {
+            const primeData = JSON.parse(savedPrime);
+            verifiedUser = primeData.name;
+            isPremiumUser = primeData.isPrime || false;
+        }
 
         async function getUserIp() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
                 const data = await response.json();
                 userIp = data.ip;
-                return userIp;
             } catch {
                 userIp = 'user-' + Math.random().toString(36).substring(2, 10);
-                return userIp;
             }
         }
 
@@ -389,6 +871,12 @@
             return urlParams.get('id');
         }
 
+        window.logoutPrime = function() {
+            localStorage.removeItem('primeUser');
+            document.getElementById('primeStatusBar').style.display = 'none';
+            showMessage('вы вышли из prime', 'success');
+        };
+
         async function loadThread() {
             threadId = getThreadIdFromUrl();
             
@@ -408,7 +896,6 @@
                 
                 threadData = data;
                 
-                // Увеличиваем счетчик просмотров
                 await supabaseClient
                     .from('threads')
                     .update({ views: (data.views || 0) + 1 })
@@ -421,10 +908,10 @@
                 console.error('Ошибка загрузки темы:', error);
                 document.getElementById('postLoader').style.display = 'none';
                 document.getElementById('mainPost').innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #c0392b;">
-                        <div style="font-size: 48px; margin-bottom: 15px;">❌</div>
-                        <p>Тема не найдена</p>
-                        <a href="threads.html" style="color: #4a6fa5; text-decoration: none;">Вернуться к темкам</a>
+                    <div class="empty-state" style="color: #c0392b;">
+                        <div class="empty-state-icon">❌</div>
+                        <p>тема не найдена</p>
+                        <a href="threads.html" style="color: #2e3440; text-decoration: none;">вернуться к темам</a>
                     </div>
                 `;
             }
@@ -435,17 +922,29 @@
             if (postLoader) postLoader.style.display = 'none';
             
             const date = new Date(thread.created_at).toLocaleString('ru', {
-                day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+                day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
             });
             
+            const isAuthorPremium = thread.author_prime || false;
+            
             document.getElementById('mainPost').innerHTML = `
-                <div class="post-title">${escapeHtml(thread.title)}</div>
-                <div class="post-meta">
-                    <span><span style="font-size: 1rem;">👤</span> ${escapeHtml(thread.author_name || 'Аноним')}</span>
-                    <span><span style="font-size: 1rem;">🕐</span> ${date}</span>
-                    <span><span style="font-size: 1rem;">👁️</span> ${thread.views || 0} просмотров</span>
+                <div class="post-author">
+                    <div class="post-author-avatar">
+                        <img src="https://i.pravatar.cc/300" alt="">
+                    </div>
+                    <div class="post-author-info">
+                        <div class="post-author-name">
+                            ${escapeHtml(thread.author_name || 'Аноним')}
+                            ${isAuthorPremium ? '<span class="post-author-badge"><i class="fas fa-crown"></i> prime</span>' : ''}
+                        </div>
+                        <div class="post-meta">
+                            <span><i class="far fa-clock"></i> ${date}</span>
+                            <span><i class="far fa-eye"></i> ${thread.views || 0}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="post-content">${escapeHtml(thread.content || '')}</div>
+                <h1 class="post-title">${escapeHtml(thread.title)}</h1>
+                <div class="post-content">${escapeHtml(thread.content || '').replace(/\n/g, '<br>')}</div>
             `;
         }
 
@@ -456,25 +955,25 @@
             if (!repliesList) return;
             
             try {
-                // Показываем загрузку
                 repliesList.innerHTML = '<div class="loader"></div>';
                 
                 const { data, error } = await supabaseClient
                     .from('thread_messages')
                     .select('*')
                     .eq('thread_id', threadId)
+                    .eq('is_first', false)
                     .order('created_at', { ascending: true });
                 
                 if (error) throw error;
                 
-                const replies = data?.filter(m => !m.is_first) || [];
+                const replies = data || [];
                 if (repliesCount) repliesCount.textContent = replies.length;
                 
                 if (replies.length === 0) {
                     repliesList.innerHTML = `
-                        <div style="text-align: center; padding: 20px; color: #7f8c8d;">
-                            <div style="font-size: 32px; margin-bottom: 10px;">💭</div>
-                            <p>Пока нет ответов. Будьте первым!</p>
+                        <div class="empty-state">
+                            <div class="empty-state-icon">💭</div>
+                            <p>пока нет ответов</p>
                         </div>
                     `;
                     return;
@@ -489,12 +988,19 @@
                     html += `
                         <div class="reply-item">
                             <div class="reply-header">
-                                <span class="reply-author">
-                                    <span style="font-size: 0.9rem;">👤</span> ${escapeHtml(reply.author || 'Аноним')}
-                                </span>
-                                <span class="reply-date">${date}</span>
+                                <div class="reply-avatar">
+                                    <img src="https://i.pravatar.cc/300" alt="">
+                                </div>
+                                <div class="reply-info">
+                                    <div class="reply-author">
+                                        ${escapeHtml(reply.author || 'Аноним')}
+                                    </div>
+                                    <div class="reply-meta">
+                                        <span>${date}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="reply-content">${escapeHtml(reply.content)}</div>
+                            <div class="reply-content">${escapeHtml(reply.content).replace(/\n/g, '<br>')}</div>
                         </div>
                     `;
                 });
@@ -504,77 +1010,142 @@
             } catch (error) {
                 console.error('Ошибка загрузки ответов:', error);
                 repliesList.innerHTML = `
-                    <div style="text-align: center; padding: 20px; color: #c0392b;">
-                        <div style="font-size: 32px; margin-bottom: 10px;">❌</div>
-                        <p>Ошибка загрузки ответов</p>
+                    <div class="empty-state" style="color: #c0392b;">
+                        <div class="empty-state-icon">❌</div>
+                        <p>ошибка загрузки ответов</p>
                     </div>
                 `;
             }
         }
 
-// ============================================
-// ОТПРАВКА ОТВЕТА (С ОБНОВЛЕНИЕМ СЧЕТЧИКА)
-// ============================================
-async function submitReply() {
-    const content = document.getElementById('replyContent').value.trim();
-    
-    if (!content) {
-        showMessage('Напишите ответ', 'error');
-        return;
-    }
-    
-    if (content.length < 2) {
-        showMessage('Слишком короткий ответ', 'error');
-        return;
-    }
-    
-    try {
-        if (!userIp) await getUserIp();
-        
-        const now = new Date().toISOString();
-        
-        // Сохраняем ответ
-        const { error: insertError } = await supabaseClient
-            .from('thread_messages')
-            .insert({
-                thread_id: threadId,
-                content: content,
-                author: verifiedUser || 'Аноним',
-                ip_address: userIp,
-                user_agent: navigator.userAgent,
-                is_first: false,
-                created_at: now
-            });
-        
-        if (insertError) {
-            console.error('Ошибка при создании ответа:', insertError);
-            showMessage('Ошибка: ' + insertError.message, 'error');
-            return;
+        // ============================================
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ОТВЕТА
+        // ============================================
+        async function submitReply() {
+            const content = document.getElementById('replyContent').value.trim();
+            
+            if (!content) {
+                showMessage('напишите ответ', 'error');
+                return;
+            }
+            
+            const userId = localStorage.getItem('userId');
+            const userNickname = localStorage.getItem('userNickname');
+
+            if (!userId || !userNickname) {
+                showMessage('войдите, чтобы отвечать', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitReply');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'отправка...';
+            
+            try {
+                if (!userIp) await getUserIp();
+                
+                const now = new Date().toISOString();
+                
+                // ВСТАВЛЯЕМ ТОЛЬКО СУЩЕСТВУЮЩИЕ ПОЛЯ
+                const messageData = {
+                    thread_id: parseInt(threadId),
+                    content: content,
+                    author: verifiedUser || userNickname || 'Аноним',
+                    ip_address: userIp,
+                    user_agent: navigator.userAgent,
+                    is_first: false,
+                    created_at: now
+                };
+
+                console.log('Отправка ответа:', messageData);
+
+                const { error: insertError } = await supabaseClient
+                    .from('thread_messages')
+                    .insert([messageData]);
+
+                if (insertError) {
+                    console.error('Ошибка при создании ответа:', insertError);
+                    throw insertError;
+                }
+                
+                // Обновляем счетчик в таблице threads
+                await supabaseClient
+                    .from('threads')
+                    .update({ 
+                        reply_count: (threadData.reply_count || 0) + 1,
+                        bump_time: now
+                    })
+                    .eq('id', threadId);
+                
+                document.getElementById('replyContent').value = '';
+                showMessage('✅ ответ отправлен', 'success');
+                
+                // Перезагружаем ответы
+                await loadReplies();
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('ошибка: ' + (error.message || 'неизвестная ошибка'), 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'отправить';
+            }
         }
-        
-        // Обновляем счетчик в таблице threads (опционально)
-        await supabaseClient
-            .from('threads')
-            .update({ 
-                reply_count: supabaseClient.rpc('increment', { x: 1 }),
-                bump_time: now,
-                last_activity: now
-            })
-            .eq('id', threadId);
-        
-        // Очищаем поле
-        document.getElementById('replyContent').value = '';
-        
-        showMessage('✅ Ответ отправлен!', 'success');
-        
-        // Перезагружаем ответы
-        await loadReplies();
-        
-    } catch (error) {
-        console.error('Ошибка отправки ответа:', error);
-        showMessage('Ошибка: ' + error.message, 'error');
-    }
-}
+
+        // Admin Modal
+        const adminBtn = document.getElementById('adminBtn');
+        const adminModal = document.getElementById('adminModal');
+        const adminCancel = document.getElementById('adminCancel');
+        const adminSubmit = document.getElementById('adminSubmit');
+
+        adminBtn?.addEventListener('click', () => {
+            adminModal.style.display = 'block';
+        });
+
+        adminCancel?.addEventListener('click', () => {
+            adminModal.style.display = 'none';
+            document.getElementById('adminName').value = '';
+            document.getElementById('adminMessage').value = '';
+        });
+
+        adminModal?.addEventListener('click', (e) => {
+            if (e.target === adminModal) {
+                adminModal.style.display = 'none';
+                document.getElementById('adminName').value = '';
+                document.getElementById('adminMessage').value = '';
+            }
+        });
+
+        adminSubmit?.addEventListener('click', async () => {
+            const name = document.getElementById('adminName').value.trim() || 'Аноним';
+            const message = document.getElementById('adminMessage').value.trim();
+            
+            if (!message) {
+                showMessage('напишите сообщение', 'error');
+                return;
+            }
+
+            try {
+                await supabaseClient
+                    .from('feedback')
+                    .insert({
+                        type: 'admin_message',
+                        name: name,
+                        message: message,
+                        user_agent: navigator.userAgent
+                    });
+                
+                showMessage('сообщение отправлено', 'success');
+                adminModal.style.display = 'none';
+                document.getElementById('adminName').value = '';
+                document.getElementById('adminMessage').value = '';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('ошибка: ' + error.message, 'error');
+            }
+        });
 
         // Инициализация
         document.addEventListener('DOMContentLoaded', async () => {
