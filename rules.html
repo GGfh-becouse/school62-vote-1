@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>правила | школа 62</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f8f9fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 32px 0;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #f8f9fc;
+            position: relative;
+            padding: 0 16px;
+        }
+
+        .main-content {
+            display: block;
+            padding-bottom: 90px;
+        }
+
+        /* HEADER */
+        .header {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin: 8px 0 16px 0;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-img {
+            height: 36px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            letter-spacing: -0.5px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-icon {
+            font-size: 1.2rem;
+            color: #8b93a6;
+            transition: color 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .header-icon:hover {
+            color: #2e3440;
+        }
+
+        @media (max-width: 600px) {
+            .logo-img {
+                height: 28px;
+            }
+        }
+
+        /* NAVIGATION BAR */
+        .nav-bar {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 4px;
+            box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 30px;
+            color: #8b93a6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+        }
+
+        .nav-link:hover {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        .nav-link.active {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        /* PAGE TITLE */
+        .page-title {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-title h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #1a1e2b;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .version-badge {
+            background: #f0f2f5;
+            color: #8b93a6;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* RULES CARD */
+        .rules-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .rules-section {
+            margin-bottom: 28px;
+        }
+
+        .rules-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: #f8f9fc;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2e3440;
+            font-size: 1.2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1e2b;
+        }
+
+        .section-content {
+            padding-left: 16px;
+        }
+
+        .rule-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            color: #1a1e2b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .rule-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .rule-number {
+            width: 24px;
+            height: 24px;
+            background: #f0f2f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #2e3440;
+            flex-shrink: 0;
+        }
+
+        .rule-text {
+            flex: 1;
+        }
+
+        .rule-text strong {
+            color: #2e3440;
+            font-weight: 600;
+        }
+
+        .rule-text ul {
+            margin-top: 8px;
+            margin-left: 20px;
+            color: #8b93a6;
+            font-size: 0.9rem;
+        }
+
+        .rule-text li {
+            margin-bottom: 6px;
+        }
+
+        .highlight {
+            background: #fcf9f0;
+            border-left: 4px solid #f1c40f;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+
+        .highlight p {
+            color: #1a1e2b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* INFO CARD */
+        .info-card {
+            background: #f8f9fc;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .info-card p {
+            color: #8b93a6;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card i {
+            color: #f1c40f;
+            font-size: 1rem;
+        }
+
+        /* BACK LINK */
+        .back-link {
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: #f0f2f5;
+            color: #1a1e2b;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #e4e6e9;
+        }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 560px;
+            width: calc(100% - 32px);
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 6px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-item-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8b93a6;
+            text-decoration: none;
+            font-size: 0.6rem;
+            font-weight: 500;
+            flex: 1;
+            padding: 8px 0;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+
+        .nav-item-bottom.active {
+            background: #f0f2f5;
+            color: #2e3440;
+        }
+
+        .nav-item-bottom:hover {
+            color: #2e3440;
+            background: #f8f9fc;
+        }
+
+        .nav-icon-bottom {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            body {
+                padding: 16px 0;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section-content {
+                padding-left: 0;
+            }
+
+            .rule-item {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .rule-number {
+                width: 100%;
+                text-align: left;
+                background: transparent;
+                justify-content: flex-start;
+                padding-left: 0;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="top_logotype.png" alt="Школа 62" class="logo-img">
+                        <h1>правила</h1>
+                    </div>
+                    <div class="header-icons">
+                        <a href="index.html" class="header-icon">
+                            <i class="fas fa-home"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Link -->
+            <div class="back-link">
+                <a href="javascript:history.back()" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> назад
+                </a>
+            </div>
+
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-scroll" style="color: #2e3440;"></i>
+                    правила сообщества
+                </h1>
+                <span class="version-badge">версия 2.0</span>
+            </div>
+
+            <!-- Rules Card -->
+            <div class="rules-card">
+                <!-- Раздел 1: Общие положения -->
+                <div class="rules-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <h2>1. Общие положения</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="rule-item">
+                            <div class="rule-number">1.1</div>
+                            <div class="rule-text">
+                                Сайт создан как независимый интернет-проект для опросов и взаимодействия пользователей.
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-number">1.2</div>
+                            <div class="rule-text">
+                                Он не является официальным ресурсом школы и не связан с её администрацией, педагогическим составом или государственными органами.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Раздел 2: Независимость проекта -->
+                <div class="rules-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-hand"></i>
+                        </div>
+                        <h2>2. Независимость проекта</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="rule-item">
+                            <div class="rule-number">2.1</div>
+                            <div class="rule-text">
+                                <strong>Данный сайт:</strong>
+                                <ul>
+                                    <li>не представляет интересы школы;</li>
+                                    <li>не управляется администрацией школы;</li>
+                                    <li>не является официальной платформой для объявлений;</li>
+                                    <li>не используется для публикации официальной информации.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-number">2.2</div>
+                            <div class="rule-text">
+                                Все материалы и функции сайта отражают исключительно позицию пользователей и разработчиков проекта.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Раздел 3: Поведение пользователей -->
+                <div class="rules-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h2>3. Поведение пользователей</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="rule-item">
+                            <div class="rule-number">3.1</div>
+                            <div class="rule-text">
+                                <strong>На сайте запрещается:</strong>
+                                <ul>
+                                    <li>оскорбления и травля;</li>
+                                    <li>распространение личных данных без согласия;</li>
+                                    <li>публикация клеветнической информации;</li>
+                                    <li>использование сайта для незаконной деятельности;</li>
+                                    <li>попытки взлома, обхода системы или вмешательства в работу сервиса.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Раздел 4: Уважение и безопасность -->
+                <div class="rules-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h2>4. Уважение и безопасность</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="rule-item">
+                            <div class="rule-number">4.1</div>
+                            <div class="rule-text">
+                                <strong>Мы придерживаемся принципов:</strong>
+                                <ul>
+                                    <li>уважительного общения;</li>
+                                    <li>честного участия в голосованиях;</li>
+                                    <li>безопасного использования платформы.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-number">4.2</div>
+                            <div class="rule-text">
+                                Администрация проекта оставляет за собой право ограничивать доступ пользователям, нарушающим правила.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Раздел 5: Ответственность -->
+                <div class="rules-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-scale-balanced"></i>
+                        </div>
+                        <h2>5. Ответственность</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="rule-item">
+                            <div class="rule-number">5.1</div>
+                            <div class="rule-text">
+                                Пользователи несут личную ответственность за размещаемый ими контент.
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-number">5.2</div>
+                            <div class="rule-text">
+                                Администрация сайта не несёт ответственности за мнения, опубликованные участниками.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Раздел 6: Изменения правил -->
+                <div class="rules-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-pen"></i>
+                        </div>
+                        <h2>6. Изменения правил</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="rule-item">
+                            <div class="rule-number">6.1</div>
+                            <div class="rule-text">
+                                Правила могут быть обновлены в любое время для улучшения безопасности и качества платформы.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Важное дополнение -->
+                <div class="highlight">
+                    <p>
+                        <i class="fas fa-heart" style="color: #f1c40f; margin-right: 8px;"></i>
+                        Помните: этот сайт создан для комфортного общения и участия в опросах. 
+                        Относитесь к другим так, как хотите, чтобы относились к вам!
+                    </p>
+                </div>
+
+                <!-- Информация -->
+                <div class="info-card">
+                    <p>
+                        <i class="fas fa-info-circle"></i>
+                        Последнее обновление правил: 14 марта 2026 года
+                    </p>
+                    <p style="margin-top: 8px;">
+                        <i class="fas fa-envelope"></i>
+                        По вопросам: <a href="your_account.html" style="color: #2e3440; text-decoration: none;">администрация</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item-bottom">
+            <i class="fas fa-home nav-icon-bottom"></i>
+            <span>главная</span>
+        </a>
+        <a href="votes.html" class="nav-item-bottom">
+            <i class="fas fa-chart-bar nav-icon-bottom"></i>
+            <span>голосования</span>
+        </a>
+        <a href="threads.html" class="nav-item-bottom">
+            <i class="fas fa-comment nav-icon-bottom"></i>
+            <span>темки</span>
+        </a>
+        <a href="slivy.html" class="nav-item-bottom">
+            <i class="fas fa-image nav-icon-bottom"></i>
+            <span>сливы</span>
+        </a>
+        <a href="your_account.html" class="nav-item-bottom">
+            <i class="fas fa-user nav-icon-bottom"></i>
+            <span>аккаунт</span>
+        </a>
+    </nav>
+
+    <div id="messageContainer"></div>
+
+    <script>
+        // Простой скрипт для красивого отображения (по желанию)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Можно добавить анимацию появления
+            const rules = document.querySelectorAll('.rules-section');
+            rules.forEach((rule, index) => {
+                rule.style.animation = `fadeIn 0.3s ease ${index * 0.1}s both`;
+            });
+        });
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>
