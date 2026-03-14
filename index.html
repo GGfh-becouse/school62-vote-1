@@ -160,293 +160,323 @@
             padding: 16px;
         }
 
-       /* Обновленная шапка */
-.header {
-    background: linear-gradient(145deg, #4a6fa5 0%, #2c3e50 100%);
-    border-radius: 24px;
-    padding: 12px 20px;
-    margin: 16px;
-    box-shadow: 0 6px 0 #1a2a3a;
-    position: relative;
-    overflow: hidden;
-}
+        /* Обновленная шапка */
+        .header {
+            background: linear-gradient(145deg, #4a6fa5 0%, #2c3e50 100%);
+            border-radius: 24px;
+            padding: 12px 20px;
+            margin: 16px 16px 8px 16px; /* Уменьшен нижний отступ */
+            box-shadow: 0 6px 0 #1a2a3a;
+            position: relative;
+            overflow: hidden;
+        }
 
-.header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-    pointer-events: none;
-}
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
 
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    position: relative;
-    z-index: 1;
-}
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.logo h1 {
-    color: white !important; /* Возвращаем белый цвет */
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin: 0;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-}
+        .logo h1 {
+            color: white !important;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        }
 
-.school-badge {
-    background: #ffd966;
-    color: #2c3e50;
-    padding: 4px 12px;
-    border-radius: 30px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    border-bottom: 3px solid #b38f4a;
-    animation: pulse 2s infinite;
-}
+        .school-badge {
+            background: #ffd966;
+            color: #2c3e50;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-bottom: 3px solid #b38f4a;
+            animation: pulse 2s infinite;
+        }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
 
-/* Горизонтальное меню */
-.main-nav {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
+        /* Горизонтальное меню */
+        .main-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
 
-.nav-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 40px;
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    border-bottom: 3px solid rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    cursor: pointer;
-}
+        .nav-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 3px solid rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+        }
 
-.nav-item.active {
-    background: #ffd966 !important; /* Возвращаем желтый для активного */
-    color: #2c3e50 !important;
-    border-bottom-color: #b38f4a;
-    animation: glow 2s infinite;
-}
+        .nav-item.active {
+            background: #ffd966 !important;
+            color: #2c3e50 !important;
+            border-bottom-color: #b38f4a;
+            animation: glow 2s infinite;
+        }
 
-@keyframes glow {
-    0%, 100% { box-shadow: 0 0 10px rgba(255, 217, 102, 0.5); }
-    50% { box-shadow: 0 0 20px rgba(255, 217, 102, 0.8); }
-}
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 217, 102, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 217, 102, 0.8); }
+        }
 
-.nav-item:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.2);
-}
+        .nav-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-.nav-item.active:hover {
-    background: #ffd966;
-    transform: translateY(-2px);
-}
+        .nav-item.active:hover {
+            background: #ffd966;
+            transform: translateY(-2px);
+        }
 
-.nav-item:active {
-    transform: translateY(1px);
-    border-bottom-width: 1px;
-}
+        .nav-item:active {
+            transform: translateY(1px);
+            border-bottom-width: 1px;
+        }
 
-.nav-item.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    pointer-events: none;
-}
+        .nav-item.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
 
-.nav-icon {
-    font-size: 1.1rem;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
-}
+        .nav-icon {
+            font-size: 1.1rem;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        }
 
-.nav-text {
-    position: relative;
-    z-index: 1;
-}
+        .nav-text {
+            position: relative;
+            z-index: 1;
+        }
 
-/* Бейджи для пунктов меню */
-.nav-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #e74c3c;
-    color: white;
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 20px;
-    font-weight: 700;
-    border-bottom: 2px solid #c0392b;
-    animation: bounce 1s infinite;
-}
+        /* Бейджи для пунктов меню */
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 20px;
+            font-weight: 700;
+            border-bottom: 2px solid #c0392b;
+            animation: bounce 1s infinite;
+        }
 
-.nav-badge.dev {
-    position: static;
-    background: #95a5a6;
-    color: white;
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 20px;
-    border-bottom: 2px solid #7f8c8d;
-    animation: none;
-}
+        .nav-badge.dev {
+            position: static;
+            background: #95a5a6;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 20px;
+            border-bottom: 2px solid #7f8c8d;
+            animation: none;
+        }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-2px); }
-}
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
 
-/* Эффект свечения при наведении */
-.nav-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-    pointer-events: none;
-}
+        /* Эффект свечения при наведении */
+        .nav-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            pointer-events: none;
+        }
 
-.nav-item:hover .nav-glow {
-    width: 200px;
-    height: 200px;
-}
+        .nav-item:hover .nav-glow {
+            width: 200px;
+            height: 200px;
+        }
 
-/* Подсказки при наведении */
-.nav-item {
-    position: relative;
-}
+        /* Подсказки при наведении */
+        .nav-item {
+            position: relative;
+        }
 
-.nav-item::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.8);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.7rem;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s;
-    pointer-events: none;
-    z-index: 1000;
-}
+        .nav-item::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
 
-.nav-item:hover::after {
-    opacity: 1;
-    visibility: visible;
-    bottom: -25px;
-}
+        .nav-item:hover::after {
+            opacity: 1;
+            visibility: visible;
+            bottom: -25px;
+        }
 
-/* Адаптивность для мобильных */
-@media (max-width: 600px) {
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .main-nav {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .nav-item {
-        flex: 1;
-        justify-content: center;
-    }
-    
-    .nav-text {
-        display: none; /* На мобильных скрываем текст, оставляем иконки */
-    }
-    
-    .nav-item:hover .nav-text {
-        display: inline; /* Показываем при наведении */
-        position: absolute;
-        bottom: -25px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.8);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        white-space: nowrap;
-    }
-}
+        /* Адаптивность для мобильных */
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .main-nav {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .nav-item {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .nav-text {
+                display: none; /* На мобильных скрываем текст, оставляем иконки */
+            }
+            
+            .nav-item:hover .nav-text {
+                display: inline; /* Показываем при наведении */
+                position: absolute;
+                bottom: -25px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 0.7rem;
+                white-space: nowrap;
+            }
+        }
 
-/* Адаптивность для мобильных */
-@media (max-width: 600px) {
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .main-nav {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .nav-item {
-        flex: 1;
-        justify-content: center;
-    }
-    
-    .nav-text {
-        display: none; /* На мобильных скрываем текст, оставляем иконки */
-    }
-    
-    .nav-item:hover .nav-text {
-        display: inline; /* Показываем при наведении */
-        position: absolute;
-        bottom: -25px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.8);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        white-space: nowrap;
-    }
-}
+        /* СТИЛИ ДЛЯ НОВОГО БЛОКА - ТАЙМЕР И ЛИДЕР */
+        .leader-timer-block {
+            background: #ff4d4d; /* Красный фон */
+            color: white;
+            padding: 12px 20px;
+            margin: 0 16px 16px 16px; /* Отступы как у шапки */
+            border-radius: 20px;
+            box-shadow: 0 4px 0 #b30000, 0 0 15px rgba(255, 0, 0, 0.5); /* Красная тень и свечение */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-weight: 700;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+            border: 1px solid #ff8080;
+            animation: redPulse 1.5s infinite; /* Анимация пульсации */
+        }
+
+        @keyframes redPulse {
+            0% { box-shadow: 0 4px 0 #b30000, 0 0 15px rgba(255, 0, 0, 0.7); }
+            50% { box-shadow: 0 4px 0 #b30000, 0 0 25px rgba(255, 0, 0, 1); }
+            100% { box-shadow: 0 4px 0 #b30000, 0 0 15px rgba(255, 0, 0, 0.7); }
+        }
+
+        .timer-part, .leader-part {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-part {
+            background: rgba(0,0,0,0.2);
+            padding: 6px 15px;
+            border-radius: 40px;
+            backdrop-filter: blur(2px);
+        }
+
+        .leader-part {
+            background: #ffd966; /* Желтый для контраста */
+            color: #2c3e50;
+            padding: 6px 15px;
+            border-radius: 40px;
+            font-weight: 700;
+            text-shadow: none;
+            border-bottom: 3px solid #b38f4a;
+        }
+
+        .leader-part span {
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .timer-number {
+            background: #2c3e50;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: #ffd966;
+        }
+        /* КОНЕЦ СТИЛЕЙ НОВОГО БЛОКА */
 
         /* Статистика */
         .user-stats {
@@ -1172,61 +1202,74 @@
     <div class="container">
         <div class="main-content" id="mainContent">
            <!-- Шапка -->
-<div class="header">
-    <div class="header-content">
-        <div class="logo">
-            <h1>СТЕНА</h1>
-            <span class="school-badge">№62</span>
-        </div>
-        
-        <!-- Горизонтальное меню -->
-        <nav class="main-nav">
-            <a href="index.html" class="nav-item active">
-                <span class="nav-icon">🏠</span>
-                <span class="nav-text">Главная</span>
-                <span class="nav-glow"></span>
-            </a>
-            
-            <a href="threads.html" class="nav-item" data-tooltip="Обсуждения по темам">
-                <span class="nav-icon">💬</span>
-                <span class="nav-text">Темки</span>
-                <span class="nav-badge">new</span>
-                <span class="nav-glow"></span>
-            </a>
-            
-            <a href="#" class="nav-item disabled">
-                <span class="nav-icon">👤</span>
-                <span class="nav-text">Аккаунт</span>
-                <span class="nav-badge dev">скоро</span>
-                <span class="nav-glow"></span>
-            </a>
-        </nav>
-    </div>
-</div>
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo">
+                        <h1>СТЕНА</h1>
+                        <span class="school-badge">№62</span>
+                    </div>
+                    
+                    <!-- Горизонтальное меню -->
+                    <nav class="main-nav">
+                        <a href="index.html" class="nav-item active">
+                            <span class="nav-icon">🏠</span>
+                            <span class="nav-text">Главная</span>
+                            <span class="nav-glow"></span>
+                        </a>
+                        
+                        <a href="threads.html" class="nav-item" data-tooltip="Обсуждения по темам">
+                            <span class="nav-icon">💬</span>
+                            <span class="nav-text">Темки</span>
+                            <span class="nav-badge">new</span>
+                            <span class="nav-glow"></span>
+                        </a>
+                        
+                        <a href="#" class="nav-item disabled">
+                            <span class="nav-icon">👤</span>
+                            <span class="nav-text">Аккаунт</span>
+                            <span class="nav-badge dev">скоро</span>
+                            <span class="nav-glow"></span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
 
-<!-- БЛОК С ГОЛОСОВАНИЯМИ -->
-<div class="polls-container" style="margin-bottom: 20px;">
+            <!-- *** НОВЫЙ БЛОК: ТАЙМЕР И ЛИДЕР *** -->
+            <div class="leader-timer-block" id="leaderTimerBlock">
+                <div class="timer-part">
+                    <span>⏳ До 15 марта:</span>
+                    <span class="timer-number" id="countdownTimer">00д 00:00:00</span>
+                </div>
+                <div class="leader-part" id="leaderPart">
+                    <span>👑 Лидер </span>
+                    <span id="leaderName">Загрузка...</span>
+                </div>
+            </div>
+            <!-- *** КОНЕЦ НОВОГО БЛОКА *** -->
 
-    <!-- Форма создания опроса -->
-    <div class="create-poll" style="background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 2px solid #e0e0e0; box-shadow: 0 4px 0 #c0c0c0;">
-        <h3 style="color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-            <span>📊</span> Создать опрос
-        </h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="text" id="pollQuestion" placeholder="Короткий вопрос (до 120 символов)" maxlength="120" 
-                   style="flex: 1; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 16px; font-size: 0.95rem; min-width: 200px;">
-            <button id="createPollBtn" style="background: #4a6fa5; color: white; border: none; padding: 14px 25px; border-radius: 40px; font-weight: 700; cursor: pointer; border-bottom: 4px solid #2c3e50;">
-                ➕ Создать
-            </button>
-        </div>
-        <div style="color: #7f8c8d; font-size: 0.8rem; margin-top: 8px;">
-            Только нужное 
-        </div>
-    </div>
+            <!-- БЛОК С ГОЛОСОВАНИЯМИ -->
+            <div class="polls-container" style="margin-bottom: 20px;">
 
-    <!-- Список опросов -->
-    <div id="pollsList"></div>
-</div>
+                <!-- Форма создания опроса -->
+                <div class="create-poll" style="background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 2px solid #e0e0e0; box-shadow: 0 4px 0 #c0c0c0;">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                        <span>📊</span> Создать опрос
+                    </h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="text" id="pollQuestion" placeholder="Короткий вопрос (до 120 символов)" maxlength="120" 
+                               style="flex: 1; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 16px; font-size: 0.95rem; min-width: 200px;">
+                        <button id="createPollBtn" style="background: #4a6fa5; color: white; border: none; padding: 14px 25px; border-radius: 40px; font-weight: 700; cursor: pointer; border-bottom: 4px solid #2c3e50;">
+                            ➕ Создать
+                        </button>
+                    </div>
+                    <div style="color: #7f8c8d; font-size: 0.8rem; margin-top: 8px;">
+                        Только нужное 
+                    </div>
+                </div>
+
+                <!-- Список опросов -->
+                <div id="pollsList"></div>
+            </div>
             
             <!-- Статистика -->
             <div class="user-stats">
@@ -1989,6 +2032,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 updateLeaderboard();
                 selectNewPair();
+                // Запускаем обновление лидера для нового блока
+                updateLeaderInfo();
             } catch (err) {
                 showMessage('Ошибка загрузки: ' + err.message, 'error');
             }
@@ -2156,6 +2201,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (userVoteCount >= 1) document.getElementById('ach1').classList.add('unlocked');
                 
                 updateLeaderboard();
+                // Обновляем информацию о лидере после голосования
+                updateLeaderInfo();
                 showMessage(`✅ +100 ${winner.name}!`, 'success');
                 showRecommendations(winner.id);
                 
@@ -2242,6 +2289,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // ============================================
+        // *** НОВАЯ ФУНКЦИЯ: Обновление информации о лидере ***
+        // ============================================
+        function updateLeaderInfo() {
+            const leaderNameElement = document.getElementById('leaderName');
+            if (!leaderNameElement) return;
+
+            if (!allCandidates || allCandidates.length === 0) {
+                leaderNameElement.textContent = 'Нет данных';
+                return;
+            }
+
+            // Находим кандидата с максимальным количеством голосов
+            const leader = allCandidates.reduce((max, candidate) => 
+                (candidate.votes || 0) > (max.votes || 0) ? candidate : max
+            , allCandidates[0]);
+
+            if (leader) {
+                leaderNameElement.textContent = `${leader.name} (${leader.votes || 0} ❤️)`;
+            } else {
+                leaderNameElement.textContent = 'Нет голосов';
+            }
+        }
+
+        // ============================================
+        // *** НОВАЯ ФУНКЦИЯ: Таймер до 15 марта ***
+        // ============================================
+        function startCountdown() {
+            const timerElement = document.getElementById('countdownTimer');
+            if (!timerElement) return;
+
+            function updateTimer() {
+                // Устанавливаем целевую дату: 15 марта следующего года
+                const now = new Date();
+                let targetYear = now.getFullYear();
+                const targetDate = new Date(targetYear, 2, 15, 0, 0, 0); // Месяцы: 0 - Янв, 2 - Март
+
+                // Если сегодняшняя дата больше 15 марта, то targetDate переносится на следующий год
+                if (now > targetDate) {
+                    targetYear++;
+                    targetDate.setFullYear(targetYear);
+                }
+
+                const diff = targetDate - now;
+
+                if (diff <= 0) {
+                    timerElement.textContent = '00д 00:00:00';
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                timerElement.textContent = `${days.toString().padStart(2, '0')}д ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            // Обновляем таймер каждую секунду
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // ============================================
         // СООБЩЕНИЯ
         // ============================================
         function showMessage(text, type) {
@@ -2261,7 +2371,9 @@ document.addEventListener('DOMContentLoaded', function() {
             await loadUserVotes();
             await loadCandidates();
             await loadComments();
-            await loadPolls(); 
+            await loadPolls();
+            // Запускаем таймер
+            startCountdown();
         }
 
         // ============================================
