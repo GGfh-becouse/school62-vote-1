@@ -1065,362 +1065,418 @@
     <div id="messageContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script>
+    const SUPABASE_URL = 'https://wdcwxvxkvyncybsefotj.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_VMEPI3FAZoKDgX4ae_pqcg_Euvs40hM';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ============================================
-        // ПЕРЕМЕННЫЕ
-        // ============================================
-        const classes = ['5', '6', '7', '8', '9', '10', '11'];
-        let selectedClass = '';
-        let selectedExam = '';
-        let selectedFile = null;
-        let uploadedImages = [];
-        let currentFilter = 'all';
+    // ============================================
+    // ПЕРЕМЕННЫЕ
+    // ============================================
+    const classes = ['5', '6', '7', '8', '9', '10', '11'];
+    let selectedClass = '';
+    let selectedExam = '';
+    let selectedFile = null;
+    let uploadedImages = [];
+    let currentFilter = 'all';
 
-        let primeUser = null;
-        const savedPrime = localStorage.getItem('primeUser');
-        if (savedPrime) {
-            primeUser = JSON.parse(savedPrime);
-            document.getElementById('primeStatusBar').style.display = 'flex';
-            document.getElementById('primeUserName').textContent = primeUser.name;
-        }
+    let primeUser = null;
+    const savedPrime = localStorage.getItem('primeUser');
+    if (savedPrime) {
+        primeUser = JSON.parse(savedPrime);
+        document.getElementById('primeStatusBar').style.display = 'flex';
+        document.getElementById('primeUserName').textContent = primeUser.name;
+    }
 
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================
-        function init() {
-            // Заполняем классы
-            const classSelector = document.getElementById('classSelector');
-            classes.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'class-option';
-                div.textContent = c;
-                div.onclick = () => selectClass(c, div);
-                classSelector.appendChild(div);
-            });
-
-            // Заполняем фильтр
-            const filterClasses = document.getElementById('filterClasses');
-            classes.forEach(c => {
-                const span = document.createElement('span');
-                span.className = 'filter-class';
-                span.textContent = c;
-                span.onclick = () => filterByClass(c);
-                filterClasses.appendChild(span);
-            });
-
-            // Настраиваем загрузку
-            setupUploadArea();
-            
-            // Загружаем сохраненные изображения
-            loadImages();
-
-            // Фильтр
-            document.getElementById('filterBadge').addEventListener('click', toggleFilter);
-            document.getElementById('resetFilter').addEventListener('click', resetFilter);
-        }
-
-        window.logoutPrime = function() {
-            primeUser = null;
-            localStorage.removeItem('primeUser');
-            document.getElementById('primeStatusBar').style.display = 'none';
-            showMessage('вы вышли из prime', 'success');
-        };
-
-        // ============================================
-        // ВЫБОР КЛАССА
-        // ============================================
-        function selectClass(className, element) {
-            document.querySelectorAll('.class-option').forEach(el => {
-                el.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            selectedClass = className;
-            checkForm();
-        }
-
-        // ============================================
-        // ВЫБОР ТИПА РАБОТЫ (кириллица)
-        // ============================================
-        document.querySelectorAll('.exam-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.exam-option').forEach(el => {
-                    el.classList.remove('selected');
-                });
-                this.classList.add('selected');
-                selectedExam = this.dataset.exam;
-                checkForm();
-            });
+    // ============================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ============================================
+    function init() {
+        // Заполняем классы
+        const classSelector = document.getElementById('classSelector');
+        classes.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'class-option';
+            div.textContent = c;
+            div.onclick = () => selectClass(c, div);
+            classSelector.appendChild(div);
         });
 
-        // ============================================
-        // ПРОВЕРКА ФОРМЫ
-        // ============================================
-        function checkForm() {
-            const uploadBtn = document.getElementById('uploadBtn');
-            uploadBtn.disabled = !(selectedFile && selectedClass && selectedExam);
-        }
+        // Заполняем фильтр
+        const filterClasses = document.getElementById('filterClasses');
+        classes.forEach(c => {
+            const span = document.createElement('span');
+            span.className = 'filter-class';
+            span.textContent = c;
+            span.onclick = () => filterByClass(c);
+            filterClasses.appendChild(span);
+        });
 
-        // ============================================
-        // НАСТРОЙКА ЗАГРУЗКИ
-        // ============================================
-        function setupUploadArea() {
-            const uploadArea = document.getElementById('uploadArea');
-            const fileInput = document.getElementById('fileInput');
+        // Настраиваем загрузку
+        setupUploadArea();
+        
+        // Загружаем изображения из базы
+        loadImages();
 
-            uploadArea.addEventListener('click', () => {
-                fileInput.click();
-            });
-
-            fileInput.addEventListener('change', (e) => {
-                handleFile(e.target.files[0]);
-            });
-
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                const file = e.dataTransfer.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    handleFile(file);
-                } else {
-                    showMessage('пожалуйста, выберите изображение', 'error');
-                }
-            });
-        }
-
-        // ============================================
-        // ОБРАБОТКА ФАЙЛА
-        // ============================================
-        function handleFile(file) {
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                showMessage('пожалуйста, выберите изображение', 'error');
-                return;
-            }
-
-            if (file.size > 10 * 1024 * 1024) {
-                showMessage('файл слишком большой (максимум 10MB)', 'error');
-                return;
-            }
-
-            selectedFile = file;
-
-            document.getElementById('fileName').textContent = file.name;
-            document.getElementById('fileSize').textContent = 
-                (file.size / 1024 / 1024).toFixed(2) + ' MB';
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('preview').src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-
-            document.getElementById('fileInfo').classList.add('active');
-            checkForm();
-        }
-
-// ============================================
-// ЗАГРУЗКА ИЗОБРАЖЕНИЙ ИЗ БАЗЫ
-// ============================================
-async function loadImages() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('slivy')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        uploadedImages = data || [];
-        applyFilter();
-
-    } catch (error) {
-        console.error('Ошибка загрузки изображений:', error);
-        showMessage('ошибка загрузки галереи', 'error');
+        // Фильтр
+        document.getElementById('filterBadge').addEventListener('click', toggleFilter);
+        document.getElementById('resetFilter').addEventListener('click', resetFilter);
     }
-}
-        function getBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
 
-        // ============================================
-        // СБРОС ФОРМЫ
-        // ============================================
-        function resetForm() {
-            selectedFile = null;
-            selectedClass = '';
-            selectedExam = '';
-            
-            document.getElementById('fileInput').value = '';
-            document.getElementById('fileInfo').classList.remove('active');
-            document.getElementById('photoComment').value = '';
-            
-            document.querySelectorAll('.class-option').forEach(el => {
-                el.classList.remove('selected');
-            });
+    window.logoutPrime = function() {
+        primeUser = null;
+        localStorage.removeItem('primeUser');
+        document.getElementById('primeStatusBar').style.display = 'none';
+        showMessage('вы вышли из prime', 'success');
+    };
+
+    // ============================================
+    // ВЫБОР КЛАССА
+    // ============================================
+    function selectClass(className, element) {
+        document.querySelectorAll('.class-option').forEach(el => {
+            el.classList.remove('selected');
+        });
+        element.classList.add('selected');
+        selectedClass = className;
+        checkForm();
+    }
+
+    // ============================================
+    // ВЫБОР ТИПА РАБОТЫ (кириллица)
+    // ============================================
+    document.querySelectorAll('.exam-option').forEach(option => {
+        option.addEventListener('click', function() {
             document.querySelectorAll('.exam-option').forEach(el => {
                 el.classList.remove('selected');
             });
-            
-            const uploadBtn = document.getElementById('uploadBtn');
-            uploadBtn.disabled = true;
-        }
+            this.classList.add('selected');
+            selectedExam = this.dataset.exam;
+            checkForm();
+        });
+    });
 
-        // ============================================
-        // ЗАГРУЗКА ИЗОБРАЖЕНИЙ
-        // ============================================
-        async function loadImages() {
-            const saved = localStorage.getItem('slivy_images');
-            uploadedImages = saved ? JSON.parse(saved) : [];
-            applyFilter();
-        }
+    // ============================================
+    // ПРОВЕРКА ФОРМЫ
+    // ============================================
+    function checkForm() {
+        const uploadBtn = document.getElementById('uploadBtn');
+        uploadBtn.disabled = !(selectedFile && selectedClass && selectedExam);
+    }
 
-        function applyFilter() {
-            const galleryGrid = document.getElementById('galleryGrid');
-            
-            let filtered = uploadedImages;
-            if (currentFilter !== 'all') {
-                filtered = uploadedImages.filter(img => img.class === currentFilter);
-            }
+    // ============================================
+    // НАСТРОЙКА ЗАГРУЗКИ
+    // ============================================
+    function setupUploadArea() {
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
 
-            if (filtered.length === 0) {
-                galleryGrid.innerHTML = `
-                    <div class="empty-gallery">
-                        <div class="empty-gallery-icon"><i class="far fa-images"></i></div>
-                        <p>${currentFilter === 'all' ? 'пока нет загруженных фото' : `нет фото для ${currentFilter} класса`}</p>
-                    </div>
-                `;
-                return;
-            }
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-            let html = '';
-            filtered.forEach(img => {
-                const date = new Date(img.date).toLocaleString('ru', {
-                    day: '2-digit', month: '2-digit'
-                });
-                
-                html += `
-                    <div class="gallery-item" onclick="openModal('${img.id}')">
-                        <img src="${img.url}" class="gallery-image" alt="Upload" loading="lazy">
-                        <div class="gallery-info">
-                            <div class="gallery-meta">
-                                <span class="gallery-class">${img.class}</span>
-                                <span class="gallery-exam">${img.exam.toUpperCase()}</span>
-                            </div>
-                            ${img.comment ? `<div class="gallery-comment">💬 ${escapeHtml(img.comment)}</div>` : ''}
-                            <div class="gallery-date">${date}</div>
-                        </div>
-                    </div>
-                `;
-            });
+        fileInput.addEventListener('change', (e) => {
+            handleFile(e.target.files[0]);
+        });
 
-            galleryGrid.innerHTML = html;
-        }
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
 
-        // ============================================
-        // ФИЛЬТР
-        // ============================================
-        function toggleFilter() {
-            const options = document.getElementById('filterOptions');
-            options.classList.toggle('active');
-        }
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
 
-        function filterByClass(className) {
-            document.querySelectorAll('.filter-class').forEach(el => {
-                el.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            currentFilter = className;
-            document.getElementById('filterBadge').textContent = `${className} класс`;
-            applyFilter();
-        }
-
-        function resetFilter() {
-            document.querySelectorAll('.filter-class').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            currentFilter = 'all';
-            document.getElementById('filterBadge').textContent = 'все классы';
-            document.getElementById('filterOptions').classList.remove('active');
-            applyFilter();
-        }
-
-        // ============================================
-        // МОДАЛЬНОЕ ОКНО
-        // ============================================
-        function openModal(imageId) {
-            const img = uploadedImages.find(i => i.id == imageId);
-            if (!img) return;
-
-            document.getElementById('modalImage').src = img.url;
-            document.getElementById('modalClass').textContent = `${img.class} класс`;
-            document.getElementById('modalExam').textContent = img.exam.toUpperCase();
-            document.getElementById('modalComment').textContent = img.comment || 'без комментария';
-            
-            const date = new Date(img.date).toLocaleString('ru', {
-                day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-            });
-            document.getElementById('modalDate').textContent = `загружено: ${date}`;
-            
-            document.getElementById('imageModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('imageModal').style.display = 'none';
-        }
-
-        // ============================================
-        // ПОКАЗ СООБЩЕНИЙ
-        // ============================================
-        function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            const msg = document.createElement('div');
-            msg.className = `message ${type}`;
-            msg.textContent = text;
-            container.appendChild(msg);
-            setTimeout(() => msg.remove(), 3000);
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ============================================
-        // ЗАПУСК
-        // ============================================
-        document.addEventListener('DOMContentLoaded', init);
-
-        document.getElementById('uploadBtn').addEventListener('click', uploadPhoto);
-
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('imageModal');
-            if (e.target === modal) {
-                closeModal();
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFile(file);
+            } else {
+                showMessage('пожалуйста, выберите изображение', 'error');
             }
         });
-    </script>
+    }
+
+    // ============================================
+    // ОБРАБОТКА ФАЙЛА
+    // ============================================
+    function handleFile(file) {
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showMessage('пожалуйста, выберите изображение', 'error');
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            showMessage('файл слишком большой (максимум 10MB)', 'error');
+            return;
+        }
+
+        selectedFile = file;
+
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('fileSize').textContent = 
+            (file.size / 1024 / 1024).toFixed(2) + ' MB';
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('preview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        document.getElementById('fileInfo').classList.add('active');
+        checkForm();
+    }
+
+    // ============================================
+    // ЗАГРУЗКА ФОТО В SUPABASE STORAGE
+    // ============================================
+    async function uploadPhoto() {
+        if (!selectedFile || !selectedClass || !selectedExam) return;
+
+        const userId = localStorage.getItem('userId');
+        const userNickname = localStorage.getItem('userNickname');
+
+        if (!userId || !userNickname) {
+            showMessage('войдите, чтобы загружать фото', 'error');
+            setTimeout(() => window.location.href = 'login.html', 1500);
+            return;
+        }
+
+        const uploadBtn = document.getElementById('uploadBtn');
+        const spinner = document.getElementById('loadingSpinner');
+        
+        uploadBtn.disabled = true;
+        spinner.style.display = 'block';
+
+        try {
+            const comment = document.getElementById('photoComment').value.trim() || '';
+            
+            // Создаем уникальное имя файла
+            const fileExt = selectedFile.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `slivy/${fileName}`;
+
+            // Загружаем в Storage
+            const { error: uploadError } = await supabaseClient
+                .storage
+                .from('images')
+                .upload(filePath, selectedFile);
+
+            if (uploadError) throw uploadError;
+
+            // Получаем публичную ссылку
+            const { data: urlData } = supabaseClient
+                .storage
+                .from('images')
+                .getPublicUrl(filePath);
+
+            const imageUrl = urlData.publicUrl;
+
+            // Сохраняем информацию в таблицу slivy
+            const { error: dbError } = await supabaseClient
+                .from('slivy')
+                .insert({
+                    user_id: parseInt(userId),
+                    uploader: userNickname,
+                    image_url: imageUrl,
+                    class: selectedClass,
+                    exam: selectedExam,
+                    comment: comment,
+                    created_at: new Date().toISOString()
+                });
+
+            if (dbError) throw dbError;
+
+            await loadImages();
+            resetForm();
+            showMessage('✅ фото загружено', 'success');
+
+        } catch (error) {
+            console.error('Ошибка загрузки:', error);
+            showMessage('ошибка при загрузке фото: ' + error.message, 'error');
+        } finally {
+            uploadBtn.disabled = false;
+            spinner.style.display = 'none';
+        }
+    }
+
+    // ============================================
+    // ЗАГРУЗКА ИЗОБРАЖЕНИЙ ИЗ БАЗЫ
+    // ============================================
+    async function loadImages() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('slivy')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            uploadedImages = data || [];
+            applyFilter();
+
+        } catch (error) {
+            console.error('Ошибка загрузки изображений:', error);
+            showMessage('ошибка загрузки галереи', 'error');
+        }
+    }
+
+    function applyFilter() {
+        const galleryGrid = document.getElementById('galleryGrid');
+        
+        let filtered = uploadedImages;
+        if (currentFilter !== 'all') {
+            filtered = uploadedImages.filter(img => img.class === currentFilter);
+        }
+
+        if (filtered.length === 0) {
+            galleryGrid.innerHTML = `
+                <div class="empty-gallery">
+                    <div class="empty-gallery-icon"><i class="far fa-images"></i></div>
+                    <p>${currentFilter === 'all' ? 'пока нет загруженных фото' : `нет фото для ${currentFilter} класса`}</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        filtered.forEach(img => {
+            const date = new Date(img.created_at).toLocaleString('ru', {
+                day: '2-digit', month: '2-digit'
+            });
+            
+            html += `
+                <div class="gallery-item" onclick="openModal('${img.id}')">
+                    <img src="${img.image_url}" class="gallery-image" alt="Upload" loading="lazy">
+                    <div class="gallery-info">
+                        <div class="gallery-meta">
+                            <span class="gallery-class">${img.class}</span>
+                            <span class="gallery-exam">${img.exam.toUpperCase()}</span>
+                        </div>
+                        ${img.comment ? `<div class="gallery-comment">💬 ${escapeHtml(img.comment)}</div>` : ''}
+                        <div class="gallery-date">${date}</div>
+                    </div>
+                </div>
+            `;
+        });
+
+        galleryGrid.innerHTML = html;
+    }
+
+    // ============================================
+    // СБРОС ФОРМЫ
+    // ============================================
+    function resetForm() {
+        selectedFile = null;
+        selectedClass = '';
+        selectedExam = '';
+        
+        document.getElementById('fileInput').value = '';
+        document.getElementById('fileInfo').classList.remove('active');
+        document.getElementById('photoComment').value = '';
+        
+        document.querySelectorAll('.class-option').forEach(el => {
+            el.classList.remove('selected');
+        });
+        document.querySelectorAll('.exam-option').forEach(el => {
+            el.classList.remove('selected');
+        });
+        
+        const uploadBtn = document.getElementById('uploadBtn');
+        uploadBtn.disabled = true;
+    }
+
+    // ============================================
+    // ФИЛЬТР
+    // ============================================
+    function toggleFilter() {
+        const options = document.getElementById('filterOptions');
+        options.classList.toggle('active');
+    }
+
+    function filterByClass(className) {
+        document.querySelectorAll('.filter-class').forEach(el => {
+            el.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        currentFilter = className;
+        document.getElementById('filterBadge').textContent = `${className} класс`;
+        applyFilter();
+    }
+
+    function resetFilter() {
+        document.querySelectorAll('.filter-class').forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        currentFilter = 'all';
+        document.getElementById('filterBadge').textContent = 'все классы';
+        document.getElementById('filterOptions').classList.remove('active');
+        applyFilter();
+    }
+
+    // ============================================
+    // МОДАЛЬНОЕ ОКНО
+    // ============================================
+    function openModal(imageId) {
+        const img = uploadedImages.find(i => i.id == imageId);
+        if (!img) return;
+
+        document.getElementById('modalImage').src = img.image_url;
+        document.getElementById('modalClass').textContent = `${img.class} класс`;
+        document.getElementById('modalExam').textContent = img.exam.toUpperCase();
+        document.getElementById('modalComment').textContent = img.comment || 'без комментария';
+        
+        const date = new Date(img.created_at).toLocaleString('ru', {
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        document.getElementById('modalDate').textContent = `загружено: ${date}`;
+        
+        document.getElementById('imageModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+
+    // ============================================
+    // ПОКАЗ СООБЩЕНИЙ
+    // ============================================
+    function showMessage(text, type) {
+        const container = document.getElementById('messageContainer');
+        const msg = document.createElement('div');
+        msg.className = `message ${type}`;
+        msg.textContent = text;
+        container.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ============================================
+    // ЗАПУСК
+    // ============================================
+    document.addEventListener('DOMContentLoaded', init);
+
+    document.getElementById('uploadBtn').addEventListener('click', uploadPhoto);
+
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('imageModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+</script>
 </body>
 </html>
