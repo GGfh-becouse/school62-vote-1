@@ -1232,50 +1232,26 @@
             checkForm();
         }
 
-        // ============================================
-        // ЗАГРУЗКА ФОТО
-        // ============================================
-        async function uploadPhoto() {
-            if (!selectedFile || !selectedClass || !selectedExam) return;
+// ============================================
+// ЗАГРУЗКА ИЗОБРАЖЕНИЙ ИЗ БАЗЫ
+// ============================================
+async function loadImages() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('slivy')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-            const uploadBtn = document.getElementById('uploadBtn');
-            const spinner = document.getElementById('loadingSpinner');
-            
-            uploadBtn.disabled = true;
-            spinner.style.display = 'block';
+        if (error) throw error;
 
-            try {
-                const comment = document.getElementById('photoComment').value.trim() || '';
+        uploadedImages = data || [];
+        applyFilter();
 
-                const imageData = {
-                    id: Date.now(),
-                    url: await getBase64(selectedFile),
-                    class: selectedClass,
-                    exam: selectedExam,
-                    comment: comment,
-                    date: new Date().toISOString(),
-                    uploader: primeUser?.name || 'Аноним'
-                };
-
-                const saved = localStorage.getItem('slivy_images');
-                const images = saved ? JSON.parse(saved) : [];
-                images.unshift(imageData);
-                localStorage.setItem('slivy_images', JSON.stringify(images));
-
-                await loadImages();
-
-                resetForm();
-                showMessage('✅ фото загружено', 'success');
-
-            } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                showMessage('ошибка при загрузке фото', 'error');
-            } finally {
-                uploadBtn.disabled = false;
-                spinner.style.display = 'none';
-            }
-        }
-
+    } catch (error) {
+        console.error('Ошибка загрузки изображений:', error);
+        showMessage('ошибка загрузки галереи', 'error');
+    }
+}
         function getBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
