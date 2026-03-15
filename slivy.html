@@ -851,6 +851,7 @@
 
         .message.success { background: #2e3440; }
         .message.error { background: #c0392b; }
+        .message.info { background: #f1c40f; color: #1a1e2b; }
 
         /* RESPONSIVE */
         @media (max-width: 600px) {
@@ -1233,18 +1234,19 @@
     }
 
     // ============================================
-    // ЗАГРУЗКА ФОТО В SUPABASE STORAGE
+    // ЗАГРУЗКА ФОТО В SUPABASE STORAGE (без регистрации)
     // ============================================
     async function uploadPhoto() {
         if (!selectedFile || !selectedClass || !selectedExam) return;
 
         const userId = localStorage.getItem('userId');
         const userNickname = localStorage.getItem('userNickname');
+        const comment = document.getElementById('photoComment').value.trim() || '';
 
-        if (!userId || !userNickname) {
-            showMessage('войдите, чтобы загружать фото', 'error');
-            setTimeout(() => window.location.href = 'login.html', 1500);
-            return;
+        // Если пользователь не авторизован, показываем уведомление но не блокируем
+        const isGuest = !userId || !userNickname;
+        if (isGuest) {
+            showMessage('💡 вы загружаете как гость. войдите в аккаунт, чтобы фото было подписано', 'info');
         }
 
         const uploadBtn = document.getElementById('uploadBtn');
@@ -1254,8 +1256,6 @@
         spinner.style.display = 'block';
 
         try {
-            const comment = document.getElementById('photoComment').value.trim() || '';
-            
             // Создаем уникальное имя файла
             const fileExt = selectedFile.name.split('.').pop();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
@@ -1277,12 +1277,12 @@
 
             const imageUrl = urlData.publicUrl;
 
-            // Сохраняем информацию в таблицу slivy
+            // Сохраняем информацию в таблицу slivy (для гостей user_id = null)
             const { error: dbError } = await supabaseClient
                 .from('slivy')
                 .insert({
-                    user_id: parseInt(userId),
-                    uploader: userNickname,
+                    user_id: userId ? parseInt(userId) : null,
+                    uploader: userNickname || primeUser?.name || 'Аноним',
                     image_url: imageUrl,
                     class: selectedClass,
                     exam: selectedExam,
@@ -1294,7 +1294,12 @@
 
             await loadImages();
             resetForm();
-            showMessage('✅ фото загружено', 'success');
+            
+            if (isGuest) {
+                showMessage('✅ фото загружено! хотите, чтобы ваше имя было под фото? войдите в аккаунт', 'info');
+            } else {
+                showMessage('✅ фото загружено', 'success');
+            }
 
         } catch (error) {
             console.error('Ошибка загрузки:', error);
@@ -1358,7 +1363,10 @@
                             <span class="gallery-class">${img.class}</span>
                             <span class="gallery-exam">${img.exam.toUpperCase()}</span>
                         </div>
-                        ${img.comment ? `<div class="gallery-comment">💬 ${escapeHtml(img.comment)}</div>` : ''}
+                        <div class="gallery-comment">
+                            👤 ${escapeHtml(img.uploader || 'Аноним')}
+                            ${img.comment ? ` • 💬 ${escapeHtml(img.comment)}` : ''}
+                        </div>
                         <div class="gallery-date">${date}</div>
                     </div>
                 </div>
@@ -1431,12 +1439,15 @@
         document.getElementById('modalImage').src = img.image_url;
         document.getElementById('modalClass').textContent = `${img.class} класс`;
         document.getElementById('modalExam').textContent = img.exam.toUpperCase();
-        document.getElementById('modalComment').textContent = img.comment || 'без комментария';
+        
+        const uploaderInfo = `👤 ${img.uploader || 'Аноним'}`;
+        const commentInfo = img.comment ? `💬 ${img.comment}` : '';
+        document.getElementById('modalComment').textContent = commentInfo || 'без комментария';
         
         const date = new Date(img.created_at).toLocaleString('ru', {
             day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
-        document.getElementById('modalDate').textContent = `загружено: ${date}`;
+        document.getElementById('modalDate').textContent = `загружено: ${date} • ${uploaderInfo}`;
         
         document.getElementById('imageModal').style.display = 'block';
     }
@@ -1454,7 +1465,7 @@
         msg.className = `message ${type}`;
         msg.textContent = text;
         container.appendChild(msg);
-        setTimeout(() => msg.remove(), 3000);
+        setTimeout(() => msg.remove(), 5000);
     }
 
     function escapeHtml(text) {
