@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>сливы | школа 62</title>
+    <title>Обсуждение заданий | школа 62</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -933,7 +933,7 @@
 
             <!-- Page Title -->
             <div class="page-title">
-                <h1><i class="fas fa-image"></i> сливы</h1>
+                <h1><i class="fas fa-image"></i> Помощь по СОР/СОЧ</h1>
                 <p>делись фотками с контрольных</p>
             </div>
 
@@ -1088,6 +1088,27 @@
         document.getElementById('primeStatusBar').style.display = 'flex';
         document.getElementById('primeUserName').textContent = primeUser.name;
     }
+
+    // Добавь в начало после переменных
+async function checkTableStructure() {
+    const { data, error } = await supabaseClient
+        .from('slivy')
+        .select('*')
+        .limit(1);
+    
+    if (error) {
+        console.error('Ошибка доступа к таблице slivy:', error);
+        showMessage('ошибка подключения к таблице', 'error');
+    } else {
+        console.log('Таблица slivy доступна');
+    }
+}
+
+// Вызови в init()
+function init() {
+    checkTableStructure(); // добавь эту строку
+    // ... остальной код
+}
 
     // ============================================
     // ИНИЦИАЛИЗАЦИЯ
