@@ -1594,126 +1594,116 @@
         // ============================================
         // ФУНКЦИИ ДЛЯ ГОЛОСОВАНИЙ
         // ============================================
-        async function createPoll() {
-            const question = document.getElementById('pollQuestionInput').value.trim();
-            
-            if (!question) {
-                showMessage('введите вопрос', 'error');
-                return;
-            }
+async function createPoll() {
+    const question = document.getElementById('pollQuestionInput').value.trim();
+    
+    if (!question) {
+        showMessage('введите вопрос', 'error');
+        return;
+    }
 
-            if (question.length < 5) {
-                showMessage('слишком короткий вопрос', 'error');
-                return;
-            }
+    if (question.length < 5) {
+        showMessage('слишком короткий вопрос', 'error');
+        return;
+    }
 
-            // Проверка авторизации
-            if (!userId || !userNickname) {
-                showMessage('войдите, чтобы создать опрос', 'error');
-                setTimeout(() => window.location.href = 'login.html', 1500);
-                return;
-            }
+    // Проверка авторизации
+    if (!userId || !userNickname) {
+        showMessage('войдите, чтобы создать опрос', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1500);
+        return;
+    }
 
-            // Антиспам - 30 секунд
-            const now = Date.now();
-            if (now - lastPollTime < 30000) {
-                showMessage('подождите 30 секунд перед созданием нового опроса', 'error');
-                return;
-            }
+    // Антиспам - 30 секунд
+    const now = Date.now();
+    if (now - lastPollTime < 30000) {
+        showMessage('подождите 30 секунд перед созданием нового опроса', 'error');
+        return;
+    }
 
-            const createBtn = document.getElementById('createPollBtn');
-            createBtn.disabled = true;
-            createBtn.textContent = '⏳ создание...';
+    const createBtn = document.getElementById('createPollBtn');
+    createBtn.disabled = true;
+    createBtn.textContent = '⏳ создание...';
 
-            try {
-                const { data, error } = await supabaseClient
-                    .from('polls')
-                    .insert({
-                        question: question,
-                        author: userNickname,
-                        author_id: parseInt(userId),
-                        yes_votes: 0,
-                        no_votes: 0,
-                        created_at: new Date().toISOString()
-                    })
-                    .select()
-                    .single();
+    try {
+        if (!userIp) await getUserIp();
 
-                if (error) throw error;
+        const pollData = {
+            question: question,
+            author: userNickname,
+            ip_address: userIp,
+            yes_votes: 0,
+            no_votes: 0,
+            created_at: new Date().toISOString()
+        };
 
-                polls.unshift(data);
-                lastPollTime = now;
-                
-                document.getElementById('pollQuestionInput').value = '';
-                displayPolls();
-                showMessage('✅ опрос создан!', 'success');
+        console.log('Создание опроса:', pollData);
 
-            } catch (error) {
-                console.error('Ошибка создания опроса:', error);
-                showMessage('ошибка: ' + error.message, 'error');
-            } finally {
-                createBtn.disabled = false;
-                createBtn.textContent = '➕ создать опрос';
-            }
+        const { data, error } = await supabaseClient
+            .from('polls')
+            .insert(pollData)
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Ошибка создания опроса:', error);
+            throw error;
         }
 
-        window.votePoll = async function(pollId, choice) {
-            if (!userId || !userNickname) {
-                showMessage('войдите, чтобы голосовать', 'error');
-                setTimeout(() => window.location.href = 'login.html', 1500);
-                return;
-            }
+        polls.unshift(data);
+        lastPollTime = now;
+        
+        document.getElementById('pollQuestionInput').value = '';
+        displayPolls();
+        showMessage('✅ опрос создан!', 'success');
 
-            try {
-                // Проверяем, голосовал ли пользователь уже
-                const { data: existingVote } = await supabaseClient
-                    .from('poll_votes')
-                    .select('*')
-                    .eq('poll_id', pollId)
-                    .eq('user_id', parseInt(userId))
-                    .maybeSingle();
+    } catch (error) {
+        console.error('Ошибка создания опроса:', error);
+        showMessage('ошибка: ' + error.message, 'error');
+    } finally {
+        createBtn.disabled = false;
+        createBtn.textContent = '➕ создать опрос';
+    }
+}
 
-                if (existingVote) {
-                    showMessage('вы уже голосовали в этом опросе', 'error');
-                    return;
-                }
+      window.votePoll = async function(pollId, choice) {
+    if (!userId || !userNickname) {
+        showMessage('войдите, чтобы голосовать', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1500);
+        return;
+    }
 
-                // Находим опрос
-                const poll = polls.find(p => p.id === pollId);
-                
-                // Обновляем счетчики
-                if (choice === 'yes') {
-                    await supabaseClient
-                        .from('polls')
-                        .update({ yes_votes: (poll.yes_votes || 0) + 1 })
-                        .eq('id', pollId);
-                    poll.yes_votes = (poll.yes_votes || 0) + 1;
-                } else {
-                    await supabaseClient
-                        .from('polls')
-                        .update({ no_votes: (poll.no_votes || 0) + 1 })
-                        .eq('id', pollId);
-                    poll.no_votes = (poll.no_votes || 0) + 1;
-                }
+    try {
+        // Находим опрос
+        const poll = polls.find(p => p.id === pollId);
+        
+        // Обновляем счетчики
+        if (choice === 'yes') {
+            const { error } = await supabaseClient
+                .from('polls')
+                .update({ yes_votes: (poll.yes_votes || 0) + 1 })
+                .eq('id', pollId);
+            
+            if (error) throw error;
+            poll.yes_votes = (poll.yes_votes || 0) + 1;
+        } else {
+            const { error } = await supabaseClient
+                .from('polls')
+                .update({ no_votes: (poll.no_votes || 0) + 1 })
+                .eq('id', pollId);
+            
+            if (error) throw error;
+            poll.no_votes = (poll.no_votes || 0) + 1;
+        }
 
-                // Сохраняем голос
-                await supabaseClient
-                    .from('poll_votes')
-                    .insert({
-                        poll_id: pollId,
-                        user_id: parseInt(userId),
-                        choice: choice,
-                        created_at: new Date().toISOString()
-                    });
+        displayPolls();
+        showMessage('✅ голос учтён!', 'success');
 
-                displayPolls();
-                showMessage('✅ голос учтён!', 'success');
-
-            } catch (error) {
-                console.error('Ошибка голосования:', error);
-                showMessage('ошибка: ' + error.message, 'error');
-            }
-        };
+    } catch (error) {
+        console.error('Ошибка голосования:', error);
+        showMessage('ошибка: ' + error.message, 'error');
+    }
+};
 
         // ============================================
         // ОСТАЛЬНЫЕ ФУНКЦИИ
