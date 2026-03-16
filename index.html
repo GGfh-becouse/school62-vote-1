@@ -461,6 +461,67 @@
             background: #1a1e2b;
         }
 
+        /* CREATE POLL SECTION */
+        .create-poll {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .create-poll h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8b93a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .poll-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 18px;
+            font-size: 0.95rem;
+            background: #f8f9fc;
+            transition: border-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .poll-input:focus {
+            outline: none;
+            border-color: #2e3440;
+            background: #ffffff;
+        }
+
+        .create-poll-btn {
+            background: #2e3440;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .create-poll-btn:hover {
+            background: #1a1e2b;
+        }
+
+        .create-poll-btn:disabled {
+            background: #8b93a6;
+            cursor: not-allowed;
+        }
+
         /* ACTIVE POLLS */
         .active-polls {
             background: #ffffff;
@@ -1286,6 +1347,13 @@
                 <div class="notification-badge">новости</div>
             </div>
 
+            <!-- CREATE POLL SECTION -->
+            <div class="create-poll">
+                <h3><i class="fas fa-plus-circle"></i> создать голосование</h3>
+                <input type="text" id="pollQuestionInput" class="poll-input" placeholder="введите вопрос..." maxlength="100">
+                <button class="create-poll-btn" id="createPollBtn">➕ создать опрос</button>
+            </div>
+
             <!-- Активные голосования -->
             <div class="active-polls">
                 <div class="section-header">
@@ -1397,6 +1465,7 @@
         let allCandidates = [];
         let commentLikes = JSON.parse(localStorage.getItem('commentLikes')) || {};
         let searchTimeout = null;
+        let lastPollTime = 0;
 
         // Загружаем данные пользователя из localStorage
         const userId = localStorage.getItem('userId');
@@ -1520,6 +1589,130 @@
 
         window.goToUserProfile = function(userId) {
             window.location.href = `check_account.html?id=${userId}`;
+        };
+
+        // ============================================
+        // ФУНКЦИИ ДЛЯ ГОЛОСОВАНИЙ
+        // ============================================
+        async function createPoll() {
+            const question = document.getElementById('pollQuestionInput').value.trim();
+            
+            if (!question) {
+                showMessage('введите вопрос', 'error');
+                return;
+            }
+
+            if (question.length < 5) {
+                showMessage('слишком короткий вопрос', 'error');
+                return;
+            }
+
+            // Проверка авторизации
+            if (!userId || !userNickname) {
+                showMessage('войдите, чтобы создать опрос', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
+
+            // Антиспам - 30 секунд
+            const now = Date.now();
+            if (now - lastPollTime < 30000) {
+                showMessage('подождите 30 секунд перед созданием нового опроса', 'error');
+                return;
+            }
+
+            const createBtn = document.getElementById('createPollBtn');
+            createBtn.disabled = true;
+            createBtn.textContent = '⏳ создание...';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('polls')
+                    .insert({
+                        question: question,
+                        author: userNickname,
+                        author_id: parseInt(userId),
+                        yes_votes: 0,
+                        no_votes: 0,
+                        created_at: new Date().toISOString()
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                polls.unshift(data);
+                lastPollTime = now;
+                
+                document.getElementById('pollQuestionInput').value = '';
+                displayPolls();
+                showMessage('✅ опрос создан!', 'success');
+
+            } catch (error) {
+                console.error('Ошибка создания опроса:', error);
+                showMessage('ошибка: ' + error.message, 'error');
+            } finally {
+                createBtn.disabled = false;
+                createBtn.textContent = '➕ создать опрос';
+            }
+        }
+
+        window.votePoll = async function(pollId, choice) {
+            if (!userId || !userNickname) {
+                showMessage('войдите, чтобы голосовать', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
+
+            try {
+                // Проверяем, голосовал ли пользователь уже
+                const { data: existingVote } = await supabaseClient
+                    .from('poll_votes')
+                    .select('*')
+                    .eq('poll_id', pollId)
+                    .eq('user_id', parseInt(userId))
+                    .maybeSingle();
+
+                if (existingVote) {
+                    showMessage('вы уже голосовали в этом опросе', 'error');
+                    return;
+                }
+
+                // Находим опрос
+                const poll = polls.find(p => p.id === pollId);
+                
+                // Обновляем счетчики
+                if (choice === 'yes') {
+                    await supabaseClient
+                        .from('polls')
+                        .update({ yes_votes: (poll.yes_votes || 0) + 1 })
+                        .eq('id', pollId);
+                    poll.yes_votes = (poll.yes_votes || 0) + 1;
+                } else {
+                    await supabaseClient
+                        .from('polls')
+                        .update({ no_votes: (poll.no_votes || 0) + 1 })
+                        .eq('id', pollId);
+                    poll.no_votes = (poll.no_votes || 0) + 1;
+                }
+
+                // Сохраняем голос
+                await supabaseClient
+                    .from('poll_votes')
+                    .insert({
+                        poll_id: pollId,
+                        user_id: parseInt(userId),
+                        choice: choice,
+                        created_at: new Date().toISOString()
+                    });
+
+                displayPolls();
+                showMessage('✅ голос учтён!', 'success');
+
+            } catch (error) {
+                console.error('Ошибка голосования:', error);
+                showMessage('ошибка: ' + error.message, 'error');
+            }
         };
 
         // ============================================
@@ -1789,8 +1982,7 @@
                 const { data, error } = await supabaseClient
                     .from('polls')
                     .select('*')
-                    .order('created_at', { ascending: false })
-                    .limit(3);
+                    .order('created_at', { ascending: false });
 
                 if (error) throw error;
                 polls = data || [];
@@ -1848,10 +2040,6 @@
             
             pollsList.innerHTML = html;
         }
-
-        window.votePoll = function(pollId, choice) {
-            showMessage(`голос учтён (${choice})`, 'success');
-        };
 
         // Загрузка количества тредов
         async function loadThreadsCount() {
@@ -1931,6 +2119,9 @@
             await loadThreadsCount();
             await loadCandidates();
             await loadPolls();
+
+            // Добавляем обработчик для создания опроса
+            document.getElementById('createPollBtn').addEventListener('click', createPoll);
         }
 
         initApp();
