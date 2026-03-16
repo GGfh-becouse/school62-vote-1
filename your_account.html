@@ -336,6 +336,61 @@
             background: #e4e6e9;
         }
 
+        /* INFO CARDS */
+        .info-card {
+            background: #f8f9fc;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #2e3440;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #8b93a6;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-value {
+            color: #1a1e2b;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .info-badge {
+            background: #f1c40f;
+            color: #1a1e2b;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
         /* STATUS SECTION */
         .status-section {
             margin-bottom: 24px;
@@ -881,6 +936,12 @@
                 flex-wrap: wrap;
                 justify-content: center;
             }
+
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -893,7 +954,7 @@
                 <div class="header-content">
                     <div class="logo">
                         <img src="top_logotype.png" alt="Школа 62" class="logo-img">
-                        <h1>стена</h1>
+                        <h1>профиль</h1>
                     </div>
                     <div class="header-icons">
                         <a href="your_account.html" class="header-icon">
@@ -948,10 +1009,35 @@
                     </div>
                 </div>
 
+                <!-- Profile Info Cards -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <i class="far fa-id-card"></i>
+                        информация о профиле
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="far fa-user"></i> никнейм (для входа)</span>
+                        <span class="info-value" id="profileLoginName">загрузка...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="far fa-star"></i> отображаемое имя</span>
+                        <span class="info-value" id="profileDisplayName">загрузка...</span>
+                        <span class="info-badge" id="displayNameBadge" style="display: none;">можно сменить</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="far fa-graduation-cap"></i> класс</span>
+                        <span class="info-value" id="profileClass">загрузка...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-crown"></i> статус</span>
+                        <span class="info-value" id="profilePrimeStatus">обычный</span>
+                    </div>
+                </div>
+
                 <!-- Profile Actions -->
                 <div class="profile-actions">
                     <button class="action-btn" onclick="updateDisplayName()">
-                        <i class="far fa-edit"></i> сменить имя
+                        <i class="far fa-edit"></i> сменить отображаемое имя
                     </button>
                     <button class="action-btn" onclick="updateClass()">
                         <i class="far fa-graduation-cap"></i> сменить класс
@@ -1077,7 +1163,7 @@
         ];
 
         // ============================================
-        // БАЗОВЫЕ ФУНКЦИИ (ОПРЕДЕЛЯЕМ ПЕРВЫМИ)
+        // БАЗОВЫЕ ФУНКЦИИ
         // ============================================
         function showMessage(text, type) {
             const container = document.getElementById('messageContainer');
@@ -1113,7 +1199,6 @@
                 frameDiv.innerHTML = frames[frameType] || '';
             }
             
-            // Подсветка активной рамки
             document.querySelectorAll('.frame-option').forEach(opt => opt.classList.remove('active'));
             const activeFrame = document.querySelector(`.frame-option[onclick*="'${frameType}'"]`);
             if (activeFrame) {
@@ -1422,7 +1507,6 @@
             const friendIdNum = parseInt(friendId);
 
             try {
-                // Пытаемся удалить связь где текущий пользователь - инициатор
                 const { error: error1 } = await supabaseClient
                     .from('friends')
                     .delete()
@@ -1430,7 +1514,6 @@
                     .eq('friend_id', friendIdNum)
                     .eq('status', 'accepted');
 
-                // Если первая попытка не удалась, пробуем обратную связь
                 if (error1 && error1.code === 'PGRST116') {
                     const { error: error2 } = await supabaseClient
                         .from('friends')
@@ -1457,7 +1540,6 @@
             try {
                 const userId = parseInt(currentUser.id);
                 
-                // Загружаем друзей (где пользователь - инициатор)
                 const { data: sentFriends, error: sentError } = await supabaseClient
                     .from('friends')
                     .select(`
@@ -1477,7 +1559,6 @@
 
                 if (sentError) throw sentError;
 
-                // Загружаем друзей (где пользователь - получатель)
                 const { data: receivedFriends, error: receivedError } = await supabaseClient
                     .from('friends')
                     .select(`
@@ -1497,7 +1578,6 @@
 
                 if (receivedError) throw receivedError;
 
-                // Объединяем обоих друзей
                 friends = [
                     ...(sentFriends?.map(f => f.users) || []),
                     ...(receivedFriends?.map(f => f.users) || [])
@@ -1505,7 +1585,6 @@
                 
                 document.getElementById('friendsCount').textContent = friends.length;
 
-                // Загружаем входящие запросы
                 const { data: requestsData, error: requestsError } = await supabaseClient
                     .from('friends')
                     .select(`
@@ -1526,7 +1605,6 @@
 
                 if (requestsError) throw requestsError;
 
-                // Загружаем отправленные запросы
                 const { data: sentData, error: sentError2 } = await supabaseClient
                     .from('friends')
                     .select(`
@@ -1557,7 +1635,6 @@
                     user: s.users
                 })) || [];
 
-                // Отображаем активную вкладку
                 switchFriendsTab('friends');
 
             } catch (error) {
@@ -1699,7 +1776,7 @@
         // ОБНОВЛЕНИЕ ИМЕНИ
         // ============================================
         window.updateDisplayName = async function() {
-            const newName = prompt('виртуальное имя:', 
+            const newName = prompt('виртуальное имя (как вас будут видеть другие):', 
                 currentUser.display_name || currentUser.nickname);
             
             if (newName === null) return;
@@ -1716,8 +1793,9 @@
 
                 currentUser.display_name = displayName;
                 document.getElementById('userNickname').textContent = displayName;
+                document.getElementById('profileDisplayName').textContent = displayName;
                 saveProfileToLocalStorage();
-                showMessage('✅ имя обновлено', 'success');
+                showMessage('✅ отображаемое имя обновлено', 'success');
 
             } catch (error) {
                 console.error('Ошибка:', error);
@@ -1746,6 +1824,7 @@
 
                 currentUser.class = newClass;
                 document.getElementById('userClass').textContent = newClass;
+                document.getElementById('profileClass').textContent = newClass;
                 saveProfileToLocalStorage();
                 showMessage('✅ класс обновлен', 'success');
 
@@ -1844,9 +1923,20 @@
                 
                 maxStickers = currentUser.is_prime ? 5 : 1;
                 
+                // Основная информация
                 document.getElementById('userNickname').textContent = currentUser.display_name || currentUser.nickname;
                 document.getElementById('userClass').textContent = currentUser.class || 'класс не указан';
                 document.getElementById('userPrime').textContent = currentUser.is_prime ? 'prime' : 'обычный';
+                
+                // Детальная информация
+                document.getElementById('profileLoginName').textContent = currentUser.nickname;
+                document.getElementById('profileDisplayName').textContent = currentUser.display_name || currentUser.nickname;
+                document.getElementById('profileClass').textContent = currentUser.class || 'класс не указан';
+                document.getElementById('profilePrimeStatus').textContent = currentUser.is_prime ? 'PREMIUM' : 'обычный';
+                
+                if (currentUser.display_name && currentUser.display_name !== currentUser.nickname) {
+                    document.getElementById('displayNameBadge').style.display = 'inline-block';
+                }
                 
                 const avatarUrl = currentUser.avatar_url || 'https://i.pravatar.cc/300';
                 document.getElementById('avatar').src = avatarUrl;
@@ -1874,7 +1964,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
 
-            // Обработчики
             document.getElementById('addStickerByUrlBtn').addEventListener('click', addStickerByUrl);
             document.getElementById('changeAvatarBtn').addEventListener('click', changeAvatar);
             document.getElementById('updateStatusBtn').addEventListener('click', updateStatus);
@@ -1883,7 +1972,6 @@
                 window.location.href = 'login.html';
             });
 
-            // Enter для полей
             document.getElementById('stickerUrlInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') addStickerByUrl();
             });
