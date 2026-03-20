@@ -887,20 +887,51 @@
 <body>
     <div class="container">
         <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="header-content">
-                    <div class="logo">
-                        <img src="top_logotype.png" alt="Школа 62" class="logo-img">
-                        <h1>стена</h1>
-                    </div>
-                    <div class="header-icons">
-                        <a href="your_account.html" class="header-icon">
-                            <i class="far fa-user"></i>
-                        </a>
-                    </div>
-                </div>
+<!-- HEADER -->
+<div class="header">
+    <div class="header-content">
+        <div class="logo">
+            <img src="top_logotype.png" alt="Школа 62" class="logo-img">
+            <h1>krg62</h1>
+        </div>
+        <div class="header-icons">
+            <!-- Иконка уведомлений с бейджем -->
+            <div class="header-icon" onclick="toggleNotifications()">
+                <i class="far fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
             </div>
+            <!-- Иконка профиля -->
+            <a href="your_account.html" class="header-icon">
+                <i class="far fa-user"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- NOTIFICATION CENTER -->
+<div class="notification-overlay" id="notificationOverlay" onclick="closeNotifications()"></div>
+
+<div class="notification-center" id="notificationCenter">
+    <div class="notification-header">
+        <h2>
+            <i class="far fa-bell"></i>
+            уведомления
+        </h2>
+        <button class="notification-close" onclick="closeNotifications()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="notification-tabs">
+        <button class="notification-tab active" onclick="filterNotifications('all')">все</button>
+        <button class="notification-tab" onclick="filterNotifications('urgent')">срочные</button>
+        <button class="notification-tab" onclick="filterNotifications('automatic')">автоматические</button>
+        <button class="notification-tab" onclick="filterNotifications('manual')">ручные</button>
+        <button class="notification-tab" onclick="filterNotifications('unread')">непрочитанные</button>
+    </div>
+
+    <div class="notification-list" id="notificationList"></div>
+</div>
 
             <!-- Navigation -->
             <div class="nav-bar">
